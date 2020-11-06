@@ -1,37 +1,30 @@
-## Welcome to GitHub Pages
+# The Slang Programming Language
 
-You can use the [editor on GitHub](https://github.com/shader-slang/shader-slang.github.io/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+Slang is a language for real-time graphics programming that extends HLSL with new capabilities for modular, extensible, and high-peformance programming.
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## Why Slang?
 
-### Markdown
+Real-time graphics developers need tools that help them achieve the highest posible performance on a variety of hardware platforms and GPU APIs while also managing the complexity of large and evolving GPU codebases. Slang has been designed and implemented based on these needs:
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+* Compatibility: The Slang language is backwards compatible with most existing HLSL, so you don't need to rewrite your code. The Slang compiler can generate code for D3D12, Vulkan, D3D11, CUDA, and CPU, with more targets on the way.
 
-```markdown
-Syntax highlighted code block
+* Modular and Extensible Graphics Code: The extensions that Slang adds to HLSL support cleaner and more modular shader code, allowing developers to confidently scale up their codebases to support ray tracing and other new real-time graphics techniques.
 
-# Header 1
-## Header 2
-### Header 3
+* Performance: Slang is first and foremost a GPU language, and its new features have been carefully implemented so that they do not compromise on the runtime performance of generated code.
 
-- Bulleted
-- List
+If you want to read more about the unique features of Slang, you can do so [here](features.md).
 
-1. Numbered
-2. List
+## Getting Started
 
-**Bold** and _Italic_ and `Code` text
+If you'd like to give Slang a try, please read our guide on how to [get started](getting-started.md).
 
-[Link](url) and ![Image](src)
-```
+## Contributing
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+The Slang project is developed as open-source software [on GitHub](https://github.com/shader-slang/slang).
+Issues and pull requests from individuals and organizations are welcome.
 
-### Jekyll Themes
+## License
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/shader-slang/shader-slang.github.io/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+The code of the Slang project is [available](https://github.com/shader-slang/slang/blob/master/LICENSE) under the MIT license.
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+By default, the Slang project is compiled ot use the [glslang](https://github.com/KhronosGroup/glslang) project, which is distributed under a BSD license.
