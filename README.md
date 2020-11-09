@@ -1,6 +1,6 @@
 ---
 title: The Slang Programming Language
-description: null
+description: Productivity and performance for real-time graphics developers
 ---
 
 Slang is a language for real-time graphics programming that extends HLSL with new capabilities for modular, extensible, and high-peformance programming.
