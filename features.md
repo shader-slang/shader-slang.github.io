@@ -1,6 +1,6 @@
+---
 title: Key Features of Slang
 description:
-
 ---
 
 The Slang language and compiler have been carefully designed and implemented to provide key benefits that are important to real-time graphics programmers.
