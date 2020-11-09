@@ -27,7 +27,7 @@ The Slang toolset does not enforce a "lowest common denominator" appraoch, and i
 
 Because the Slang compiler supports output of high-level source code, support for additional platforms can be added easily.
 
-## Paraemter Blocks: Simple and Efficient Shader Parameter Binding
+## Parameter Blocks: Simple and Efficient Shader Parameter Binding
 
 The Vulkand / Direct3D 12 APIs introduced the ideas of descriptor sets / tables, which provide a way to reduce the overhead of binding values to shader parameters by grouping those parameters into coarse-grained blocks. An important challenge in adopting descriptor sets/tables in existing GLSL / HLSL is that they require using tedious and manual annotation of every single shader parameter.
 
