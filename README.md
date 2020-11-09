@@ -27,4 +27,4 @@ Issues and pull requests from individuals and organizations are welcome.
 
 The code of the Slang project is [available](https://github.com/shader-slang/slang/blob/master/LICENSE) under the MIT license.
 
-By default, the Slang project is compiled ot use the [glslang](https://github.com/KhronosGroup/glslang) project, which is distributed under a BSD license.
+By default, the Slang project is compiled to use the [glslang](https://github.com/KhronosGroup/glslang) project, which is distributed under a BSD license.
