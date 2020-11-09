@@ -1,8 +1,11 @@
-# The Slang Programming Language
+title: The Slang Programming Language
+description:
+
+---
 
 Slang is a language for real-time graphics programming that extends HLSL with new capabilities for modular, extensible, and high-peformance programming.
 
-## Why Slang?
+# Why Slang?
 
 Real-time graphics developers need tools that help them achieve the highest posible performance on a variety of hardware platforms and GPU APIs while also managing the complexity of large and evolving GPU codebases. Slang has been designed and implemented based on these needs:
 
@@ -14,16 +17,16 @@ Real-time graphics developers need tools that help them achieve the highest posi
 
 If you want to read more about the unique features of Slang, you can do so [here](features.md).
 
-## Getting Started
+# Getting Started
 
 If you'd like to give Slang a try, please read our guide on how to [get started](getting-started.md).
 
-## Contributing
+# Contributing
 
 The Slang project is developed as open-source software [on GitHub](https://github.com/shader-slang/slang).
 Issues and pull requests from individuals and organizations are welcome.
 
-## License
+# License
 
 The code of the Slang project is [available](https://github.com/shader-slang/slang/blob/master/LICENSE) under the MIT license.
 

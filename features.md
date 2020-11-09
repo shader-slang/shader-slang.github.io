@@ -1,14 +1,17 @@
-# Key Features of Slang
+title: Key Features of Slang
+description:
+
+---
 
 The Slang language and compiler have been carefully designed and implemented to provide key benefits that are important to real-time graphics programmers.
 
-## Backwards-Compatible with Existing HLSL
+# Backwards-Compatible with Existing HLSL
 
 Because Slang extends the HLSL language, it is compatible with almost all the HLSL shaders and compute kernels you've already written. You don't need to rewrite your code from scratch to give it a try.
 
 Slang supports compute shaders, the traditional rasterization pipline, and ray tracing kernels.
 
-## Cross-Platform Code Generation
+# Cross-Platform Code Generation
 
 The Slang compiler can generate code for a wide variety of target platforms and graphics APIs.
 Currently, the compiler supports the following compilation targets:
@@ -27,7 +30,7 @@ The Slang toolset does not enforce a "lowest common denominator" appraoch, and i
 
 Because the Slang compiler supports output of high-level source code, support for additional platforms can be added easily.
 
-## Parameter Blocks: Simple and Efficient Shader Parameter Binding
+# Parameter Blocks: Simple and Efficient Shader Parameter Binding
 
 The Vulkand / Direct3D 12 APIs introduced the ideas of descriptor sets / tables, which provide a way to reduce the overhead of binding values to shader parameters by grouping those parameters into coarse-grained blocks. An important challenge in adopting descriptor sets/tables in existing GLSL / HLSL is that they require using tedious and manual annotation of every single shader parameter.
 
@@ -81,7 +84,7 @@ Note how the code is shorter and easier to read and understand. This Slang code 
 
 Parameter blocks can greatly reduce the amount of boilerplate that is required when declaring and binding descriptor sets / tables. The reduction in programmer effort makes it easier for applications to efficiently exploit these new features of modern graphics APIs.
 
-## Interfaces and Generics: Modular and Extensible Shader Specialization
+# Interfaces and Generics: Modular and Extensible Shader Specialization
 
 It is typical for graphics codebases to have a few features that multiple different implementations.
 As an instructive (but not entirely realistic) example, consider an old-fashioned "pass per light" codebase that supports multiple types of lights: point, directional, spot, etc.
@@ -161,7 +164,7 @@ By using interfaces and generics in Slang, a developer can overcome all of the m
 
 * The Slang compiler can also generate *unspecialized* code for functions like `computeDiffuse()`, by generating `switch` statements to select between the known implementations of an interface like `ILight`. Unspecialized code may not perform as well as fully-specialized code, but can be quicker to compile and produce fewer binary kernels. Note that support for unspecialized code generation is work in progress, and currently only works on CPU and CUDA targets.
 
-## Other Features
+# Other Features
 
 This document only describes some of the most important features that make Slang a good choice for writing real-time graphics code. Slang supports a number of other extensions beyond HLSL that support the needs of real-world shader codebases, including:
 

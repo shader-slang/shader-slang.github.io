@@ -1,6 +1,9 @@
-# Getting Started with Slang
+title: Getting Started with Slang
+description:
 
-## Releases
+---
+
+# Releases
 
 The fastest way to get started using Slang is to use a pre-built binary package, available through GitHub [releases](https://github.com/shader-slang/slang/releases). Binary packages are currently available for:
 
@@ -10,11 +13,11 @@ The fastest way to get started using Slang is to use a pre-built binary package,
 
 Binary releases include the command-line compiler `slangc`, a shared library for the compiler, and the header files necessary for interacting with that library.
 
-## Building from Source
+# Building from Source
 
 Instructions for building Slang from source code are maintained as part of the source code repository, [here](https://github.com/shader-slang/slang/blob/master/docs/building.md).
 
-## Documentation
+# Documentation
 
 The documentation for the Slang project is currently limited, but includes the following main pieces:
 
