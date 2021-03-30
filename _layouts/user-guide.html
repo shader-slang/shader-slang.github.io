@@ -13,14 +13,14 @@
       #dividerContainer {
           height: 98%;
       }
-      #left {
+      #leftColumn {
           float: left;
           width: 20%;
           height: 100%;
           overflow: scroll;
           scroll: auto;
       }
-      #right {
+      #rightColumn {
           float: left;
           width: 50%;
           height: 100%;
@@ -52,17 +52,16 @@
 	{% endif %}
         </section>
         <hr>
-        <section id="main_content">
         <div id="dividerContainer">
-            <div id="left">
+            <div id="leftColumn">
               Table of Contents
             </div>
-            <div id="right">
-              {{ content }}
+            <div id="rightColumn">
+              <section id="main_content">   
+                {{ content }}
+	      </section>
             </div>
 	</div>
-        </section>
-
         <footer>
         {% if site.github.is_project_page %}
           {{ site.title | default: site.github.repository_name }} is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a><br>
