@@ -1,8 +1,8 @@
-Slang is a language for real-time graphics programming that extends HLSL with new capabilities for modular, extensible, and high-peformance programming.
+Slang is a language for real-time graphics programming that extends HLSL with new capabilities for modular, extensible, and high-performance programming.
 
 # Why Slang?
 
-Real-time graphics developers need tools that help them achieve the highest posible performance on a variety of hardware platforms and GPU APIs while also managing the complexity of large and evolving GPU codebases. Slang has been designed and implemented based on these needs:
+Real-time graphics developers need tools that help them achieve the highest possible performance on a variety of hardware platforms and GPU APIs while also managing the complexity of large and evolving GPU codebases. Slang has been designed and implemented based on these needs:
 
 * Compatibility: The Slang language is backwards compatible with most existing HLSL, so you don't need to rewrite your code. The Slang compiler can generate code for D3D12, Vulkan, D3D11, CUDA, and CPU, with more targets on the way.
 
