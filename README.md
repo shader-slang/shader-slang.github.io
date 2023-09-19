@@ -1,4 +1,4 @@
-Slang is a language for real-time graphics programming that extends HLSL with new capabilities for modular, extensible, and high-peformance programming.
+Slang is a language for real-time graphics programming that extends HLSL with new capabilities for modular, extensible, and high-performance programming.
 
 # Why Slang?
 
