@@ -9,7 +9,7 @@ The Slang language and compiler have been carefully designed and implemented to 
 
 Because Slang extends the HLSL language, it is compatible with almost all the HLSL shaders and compute kernels you've already written. You don't need to rewrite your code from scratch to give it a try.
 
-Slang supports compute shaders, the traditional rasterization pipline, and ray tracing kernels.
+Slang supports compute shaders, the traditional rasterization pipeline, and ray tracing kernels.
 
 # Cross-Platform Code Generation
 
@@ -26,13 +26,13 @@ Currently, the compiler supports the following compilation targets:
 * CUDA-compatible C++ source code
 * CPU-compatible C++ source code
 
-The Slang toolset does not enforce a "lowest common denominator" appraoch, and instead strives to make it possible to take advantage of platform- or API-specific functionality when it is crucial to meeting performance goals.
+The Slang toolset does not enforce a "lowest common denominator" approach, and instead strives to make it possible to take advantage of platform- or API-specific functionality when it is crucial to meeting performance goals.
 
 Because the Slang compiler supports output of high-level source code, support for additional platforms can be added easily.
 
 # Parameter Blocks: Simple and Efficient Shader Parameter Binding
 
-The Vulkand / Direct3D 12 APIs introduced the ideas of descriptor sets / tables, which provide a way to reduce the overhead of binding values to shader parameters by grouping those parameters into coarse-grained blocks. An important challenge in adopting descriptor sets/tables in existing GLSL / HLSL is that they require using tedious and manual annotation of every single shader parameter.
+The Vulkan / Direct3D 12 APIs introduced the ideas of descriptor sets / tables, which provide a way to reduce the overhead of binding values to shader parameters by grouping those parameters into coarse-grained blocks. An important challenge in adopting descriptor sets/tables in existing GLSL / HLSL is that they require using tedious and manual annotation of every single shader parameter.
 
 For example, consider an HLSL shader that want to pass material and camera parameters as distinct sets/tables, and that needs to work on both D3D and Vulkan. A typical approach when using vanilla HLSL and the dxc compiler might be:
 
@@ -110,7 +110,7 @@ The benefit of such preprocessor-based approaches is that the same code can be c
 
 * Difficulty adding new implementations in a modular fashion. Adding a new light type requires modifications to every single `#if` site, which can include but subroutine bodies and shader parameter declarations. 
 
-* Long compile times and large binary sizes. Similar to C++ templates, preprocesor-based specialization requires all possible variants to be compiled separately. Even when doing prototyping, it is not possible to generate a version of the code based on dynamic branching.
+* Long compile times and large binary sizes. Similar to C++ templates, preprocessor-based specialization requires all possible variants to be compiled separately. Even when doing prototyping, it is not possible to generate a version of the code based on dynamic branching.
 
 Slang addresses these issues with a combination of two features: interface and generics.
 We can begin by codifying the contract that lights are supposed to implement as an `interface` declaration:
@@ -147,7 +147,7 @@ float3 computeDiffuse<L : ILight>( float3 albedo, float3 P, float3 N, L light )
 
 Note how the body of `computeDiffuse()` does not mention any particular light type(s).
 The Slang compiler statically checks that this function does not use any members of the type `L` that are not defined by the `ILight` interface.
-New light types can be added to the codebase as separate files/modules, and will automaticaly be compatible with the `computeDiffuse()` function.
+New light types can be added to the codebase as separate files/modules, and will automatically be compatible with the `computeDiffuse()` function.
 
 As a convenience, the Slang compiler also allows functions like `computeDiffuse()` to be written as taking a parameter of an interface type (like `ILight`), instead of using the `<>`-based generics syntax:
 
