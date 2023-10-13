@@ -10,11 +10,15 @@ Real-time graphics developers need tools that help them achieve the highest poss
 
 * Performance: Slang is first and foremost a GPU language, and its new features have been carefully implemented so that they do not compromise on the runtime performance of generated code.
 
+* Automatic Differentiation: Slang supports automatic differentiation as a first-class language feature. This enables developers to seemlessly integrate gradient-based learning techniques into their rendering systems, or to use graphics components in a machine learning framework via [slangpy](https://shader-slang.com/slang/user-guide/a1-02-slangpy.html). Slang supports differentiating arbitrary control flow, user-defined types, dynamic dispatch, generics, and global memory accesses. With Slang, existing real-time renderers written using Slang or plain HLSL can be made differentiable and learnable without major source code changes. 
+
 If you want to read more about the unique features of Slang, you can do so [here](features.md).
 
 # Getting Started
 
-If you'd like to give Slang a try, please read our guide on how to [get started](getting-started.md).
+If you'd like to give Slang a try, please read our guide on how to [get started](getting-started.md). Check out the [Slang User's Guide](https://shader-slang.com/slang/user-guide/index.html) to learn more about the language features.
+
+We also provide a [Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=shader-slang.slang-language-extension) for complete intellisense experience.
 
 # Contributing
 
