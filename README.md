@@ -16,7 +16,7 @@ If you want to read more about the unique features of Slang, you can do so [here
 
 # Getting Started
 
-If you'd like to give Slang a try, please read our guide on how to [get started](getting-started.md). Check out the [Slang User's Guide](https://shader-slang.com/slang/user-guide/index.html) to learn more about the language features.
+If you'd like to give Slang a try, please read our guide on how to [get started](getting-started.md). Check out the [Slang User's Guide](https://shader-slang.com/slang/user-guide/index.html) to learn more about the language features, and [Slang Standard Library Reference](https://shader-slang.com/stdlib-reference) for detailed documentation on Slang's builtin types and functions available for use in your shader code.
 
 We also provide a [Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=shader-slang.slang-language-extension) for complete intellisense experience.
 
