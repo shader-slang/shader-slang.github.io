@@ -1,6 +1,6 @@
 <div id="banner">
 <span id="bannerText">
-Slang is a GPU-first language that extends HLSL with new capabilities for modular, extensible, and high-performance programming.
+Slang is a GPU-first language with modern features for modular, extensible, and high-performance programming.
 </span>
 <img id="bannerCode" src="/assets/slang-example-code.gif"/>
 </div>

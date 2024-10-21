@@ -28,6 +28,7 @@ blockquote p {
 body {
     text-shadow: none;
     background: none;
+    font-size:20px;
 }
 #container 
 {
@@ -208,7 +209,7 @@ pre code {
 
 #centeringDiv {
   margin: auto;
-  max-width: 800px;
+  max-width: 900px;
 }
 #navDiv
 {
@@ -458,12 +459,12 @@ h2 {
 
 #bodyInner
 {
-  max-width: 800px;
+  max-width: 900px;
 }
 #innerHeader{
   display: flex;
   width: 100%;
-  max-width: 820px;
+  max-width: 920px;
   height:60px;
   align-items: center;
   flex-wrap: nowrap;
@@ -516,8 +517,9 @@ header
 }
 #bannerText
 {
-  font-size:20px;
+  font-size:26px;
   flex-grow: 1;
+  padding-right:20px;
 }
 #bannerCode
 {
