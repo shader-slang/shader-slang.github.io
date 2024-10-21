@@ -1,7 +1,14 @@
 <div id="banner">
-<span id="bannerText">
-Slang is a GPU-first language with modern features for modular, extensible, and high-performance programming.
-</span>
+<div id="bannerLeft">
+    <span id="bannerText">
+    Slang is a GPU-first language with modern features for modular, extensible, and high-performance programming.
+    </span>
+    <div id="mainPageBanerNav">
+    <a class="mainPageBtn" href="/slang-playground">Try</a>
+    <a class="mainPageBtn" href="https://github.com/shader-slang/slang/releases/latest">Download</a>
+    <a class="mainPageBtn" href="https://github.com/shader-slang/slang">GitHub</a>
+    </div>
+</div>
 <img id="bannerCode" src="/assets/slang-example-code.gif"/>
 </div>
 
