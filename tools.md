@@ -1,5 +1,19 @@
 # Tools
 
+## Slang Release
+
+[Download latest release here.](https://github.com/shader-slang/slang/releases/latest)
+
+Binary packages are currently available for:
+
+* Windows 64-bit x86-64, arm64
+* Ubuntu Linux 64-bit x86-64, arm64
+* MacOS x86-64, Apple Silicon
+
+Binary releases include the command-line compiler `slangc`, a shared library for the compiler, and the header files necessary for interacting with that library.
+
+Slang is also distributed with the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/).
+
 ## Editor Extensions
 
 <img src="assets/auto-complete.gif"/>

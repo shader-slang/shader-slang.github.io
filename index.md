@@ -1,4 +1,9 @@
-Slang is a language for real-time graphics programming that extends HLSL with new capabilities for modular, extensible, and high-performance programming.
+<div id="banner">
+<span id="bannerText">
+Slang is a GPU-first language that extends HLSL with new capabilities for modular, extensible, and high-performance programming.
+</span>
+<img id="bannerCode" src="/assets/slang-example-code.gif"/>
+</div>
 
 # Why Slang?
 

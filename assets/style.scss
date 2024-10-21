@@ -505,3 +505,22 @@ header
   padding: 10px 0px 10px 0px;
   width:100%;
 }
+
+#banner
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  width: 100%;
+  padding:0px;
+}
+#bannerText
+{
+  font-size:20px;
+  flex-grow: 1;
+}
+#bannerCode
+{
+  width:500px;
+  flex-grow: 0;
+}
