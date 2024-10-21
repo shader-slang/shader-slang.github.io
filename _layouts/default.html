@@ -4,7 +4,7 @@
     <meta charset='utf-8'>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="stylesheet" href="{{ '/assets/css/style.css?v=' | append: site.github.build_revision | relative_url }}">
+    <link rel="stylesheet" href="{{ '/assets/style.css?v=' | append: site.github.build_revision | relative_url }}">
     <link rel="stylesheet" type="text/css" href="{{ '/assets/css/print.css' | relative_url }}" media="print">
     <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -15,12 +15,22 @@
 
   <body>
     <div id="container">
-      <div class="inner">
+      <header>
+        <div id="innerHeader">
+          <img id="logoContainer" src="/assets/slang-logo.png">
+          <div class="main_nav">
+            <span class="mainNavItem"><a href="/">Home</a></li>
+            <span class="mainNavItem"><a href="/docs/getting-started">Getting Started</a></li>
+            <span class="mainNavItem"><a href="/slang-playground">Playground</a></li>
+            <span class="mainNavItem"><a href="/docs/">Documentation</a></li>
+            <span class="mainNavItem"><a href="/tools">Tools</a></li>
+            <span class="mainNavItem"><a href="/community">Community</a></li>
+          </div>
+        </div>
+      </header>
 
-        <header>
-          <h1>{{ page.title | default: site.title }}</h1>
-          <h2>{{ page.description }}</h2>
-        </header>
+      <div id="bodyInner">
+       
         <section id="downloads" class="clearfix">
           {% if site.show_downloads %}
           <a href="{{ site.github.zip_url }}" id="download-zip" class="button"><span>Download .zip</span></a>
