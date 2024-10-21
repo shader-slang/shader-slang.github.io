@@ -26,13 +26,6 @@ Instructions for building Slang from source code are maintained as part of the s
 
 Follow [this tutorial](/docs/first-slang-shader.md) on how to write your first slang shader and compile it for execution with the Vulkan API.
 
-## Configure your IDE
-
-Looking for intellisense support for writing Slang code?
-We provide a [Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=shader-slang.slang-language-extension)
-and [Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=shader-slang.slang-vs-extension) that provide full intellisense experience
-within these IDEs, including code completion, semantic highlighting, function signature help, go to definition and more.
-
 ## The User-Guide
 
 Check out the [Slang User's Guide](https://shader-slang.com/slang/user-guide/index.html) to learn more about the language features, and [Slang Standard Library Reference](https://shader-slang.com/stdlib-reference) for detailed documentation on Slang's builtin types and functions available for use in your shader code.

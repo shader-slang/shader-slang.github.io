@@ -1,28 +1,58 @@
 # Documentation
 
-## Guides
+## Overview
 
-The Slang [User's Guide](https://shader-slang.github.io/slang/user-guide/) provides an introduction to the Slang language and its major features, as well as the compilation and reflection API.
+#### [The Slang User's Guide](/slang/user-guide/)
+The guide provides an introduction to the Slang language and its major features, as well as the compilation and reflection API.
 
-There is also documentation specific to using the [`slangc`](command-line-slangc.md) command-line tool.
+#### [The Slang's Standard Modules Reference](/stdlib-reference/)
+
+The reference of the standard modules that comes with the Slang compiler.
+
+#### [Language Specification](https://github.com/shader-slang/spec)
+
+The formal specification of the Slang programming language. Work in progress.
+
+
+## Articles
+
+#### [The Commandline Tool Reference](https://github.com/shader-slang/slang/blob/master/docs/command-line-slangc-reference.md)
+
+There is the documentation specific to using the `slangc` command-line tool.
+
+#### [SPIR-V Specific Functionalities](/slang/user-guide/spirv-target-specific.html)
+
+Things to know when using Slang to compile to SPIR-V.
+
+#### Metal Specific Functionalities
+
+Things to know when using Slang to compile to the Metal Shading Language.
+
+#### WGSL Specific Functionalities
+
+Things to know when using Slang to compile to the WGSL.
+
 
 ## Tutorials
 
-- [Write your first slang shader](/docs/first-slang-shader.md).
-- Getting started with Slang as an HLSL user.
-- Getting started with Slang as an GLSL user.
+#### [Write your first slang shader](/docs/first-slang-shader)
+See how to write a simple compute shader in Slang and compile it for execution on Vulkan.
 
-## Advanced Users
---------------
+#### [Using the compilation API](/slang/user-guide/compiling)
+See how to use Slang's compilation API to integrate the Slang compiler into your application.
 
-For the benefit of advanced users we provide detailed documentation on how Slang compiles code for specific platforms.
-The [target compatibility guide](target-compatibility.md) gives an overview of feature compatibility for targets. 
+#### [Using the reflection API](/slang/user-guide/reflection)
+See how to use Slang's reflection API to query for parameter binding info at runtime.
 
-The [CPU target guide](cpu-target.md) gives information on compiling Slang or C++ source into shared libraries/executables or functions that can be directly executed. It also covers how to generate C++ code from Slang source.  
+#### Migrating to Slang from HLSL
 
-The [CUDA target guide](cuda-target.md) provides information on compiling Slang/HLSL or CUDA source. Slang can compile to equivalent CUDA source, as well as to PTX via the nvrtc CUDA complier.
+Main things to know if you are coming to Slang as an HLSL developer.
 
-Contributors
-------------
+#### Migrating to Slang from GLSL
 
-For contributors to the Slang project, the information under the [`design/`](design/) directory may help explain the rationale behind certain design decisions and help when ramping up in the codebase.
+Main things to know if you are coming to Slang as an GLSL developer.
+
+
+## Contributors
+
+For contributors to the Slang project, the information under the [docs/proposals/](https://github.com/shader-slang/slang/tree/master/docs/proposals) directory documents all feature proposals to the Slang language or the compiler API.
