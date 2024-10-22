@@ -27,11 +27,12 @@ Things to know when using Slang to compile to SPIR-V.
 #### Metal Specific Functionalities
 
 Things to know when using Slang to compile to the Metal Shading Language.
+[//]: # (TODO: write documentation in user-guide next to spirv doc, and update link here)
 
 #### WGSL Specific Functionalities
 
 Things to know when using Slang to compile to the WGSL.
-
+[//]: # (TODO: write documentation in user-guide next to spirv doc, and update link here)
 
 ## Tutorials
 
@@ -44,15 +45,27 @@ See how to use Slang's compilation API to integrate the Slang compiler into your
 #### [Using the reflection API](/slang/user-guide/reflection)
 See how to use Slang's reflection API to query for parameter binding info at runtime.
 
+#### Understanding Slang Generics
+
+Learn how to use Slang's generics and interfaces to write structured code that can be
+specialized at compile time. This tutorial covers the differences between generics and C++ templates
+and how to map common templated code to generics.
+
+[//]: # (TODO: write documentation and update link here)
+
 #### Migrating to Slang from HLSL
 
 Main things to know if you are coming to Slang as an HLSL developer.
+[//]: # (TODO: write documentation and update link here)
 
 #### Migrating to Slang from GLSL
 
 Main things to know if you are coming to Slang as an GLSL developer.
+[//]: # (TODO: write documentation and update link here)
 
 
 ## Contributors
+
+[//]: # (TODO: link more internal documentation and contribution process)
 
 For contributors to the Slang project, the information under the [docs/proposals/](https://github.com/shader-slang/slang/tree/master/docs/proposals) directory documents all feature proposals to the Slang language or the compiler API.
