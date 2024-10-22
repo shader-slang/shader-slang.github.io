@@ -16,7 +16,7 @@ Slang is also distributed with the [Vulkan SDK](https://www.lunarg.com/vulkan-sd
 
 ## Editor Extensions
 
-<img src="assets/auto-complete.gif"/>
+<img class="fullwidthImage" src="/assets/auto-complete.gif"/>
 
 Looking for intellisense support for writing Slang code?
 We provide a [Visual Studio Code extension](https://marketplace.visualstudio.com/items?itemName=shader-slang.slang-language-extension)

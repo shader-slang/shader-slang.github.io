@@ -465,14 +465,16 @@ h2 {
 #bodyInner
 {
   max-width: 900px;
+  padding-left:10px;
+  padding-right:10px;
 }
 #innerHeader{
   display: flex;
   width: 100%;
   max-width: 920px;
-  height:60px;
+  min-height:60px;
   align-items: center;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
 }
 
 .slang_title
@@ -493,13 +495,15 @@ h2 {
   flex-wrap: nowrap;
   justify-content: flex-end;
   flex-grow: 1;
+  margin-right:10px;
 }
 
 .mainNavItem
 {
   padding-top:25px;
-  padding-left:20px;
+  padding-left:0px;
   padding-right:0px;
+  margin-left: 20px;
 }
 
 header
@@ -519,23 +523,27 @@ header
   justify-content: center;
   width: 100%;
   padding:0px;
+  flex-wrap: wrap;
+  flex: 1 1;
 }
 #bannerLeft
 {
   flex-grow: 1;
   padding-right:20px;
   display: flex;
-  flex-direction: column;;
+  flex-direction: column;
+  max-width: 350px;
 }
 #bannerText
 {
   font-size:26px;
-  
 }
 #bannerCode
 {
-  width:500px;
-  flex-grow: 0;
+  margin-top: 15px;
+  width: 300px;
+  height:auto;
+  flex: 2 1;
 }
 #mainPageBanerNav
 {
@@ -553,4 +561,29 @@ header
 .mainPageBtn:hover
 {
   background-color: #e7f5f9;
+}
+.fullwidthImage
+{
+  width: 100%; /* Image can scale down to fit the container */
+  height: auto; /* Maintain aspect ratio */
+  max-width: 100%; /* Prevent the image from enlarging beyond its original size */
+}
+
+@media screen and (max-width: 1024px) {
+  header{flex-direction: row; flex-wrap: wrap;}
+  #innerHeader {flex-direction: row; flex-wrap: wrap;}
+  .main_nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+}
+
+@media screen and (max-width: 820px) {
+  header{flex-direction: row; flex-wrap: wrap;}
+  #innerHeader {flex-direction: row; flex-wrap: wrap;}
+  .main_nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
 }
