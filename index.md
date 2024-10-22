@@ -32,9 +32,10 @@ The Slang compiler can generate code for a wide variety of targets and APIs: D3D
 ## Access Latest GPU Feature
 <img class="fullwidthImage" style="max-width:800px" src="/assets/latest-feature.jpg"/>
 
-Being cross-platform does not need to mean reducing to accessible GPU feature set to the least common denominator of all platforms.
-Slang exposes latest features in Direct3D and Vulkan, and provides a capability system to allow application code to manage the feature set differences on different platforms.
-For example, Slang allows you to use [pointers](/slang/user-guide/convenience-features.html#pointers-limited) when generating SPIRV.
+Being cross-platform doesn't mean reducing accessible GPU feature set to the least common denominator of all platforms.
+Slang exposes latest features in Direct3D and Vulkan. For example, you can use [pointers](/slang/user-guide/convenience-features.html#pointers-limited) when generating SPIRV.
+To help applications managing feature set differences across platforms, Slang's [capability system](/slang/user-guide/capabilities.html) can ensure your code is only using available features on a target platform during the type-checking step, before generating the final code.
+
 In addition, Slang provides [flexible interop](/slang/user-guide/a1-04-interop.html) features to allow you to directly embed target code or SPIRV in your shaders.
 
 ## Automatic Differentiation
