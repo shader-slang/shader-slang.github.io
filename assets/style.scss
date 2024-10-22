@@ -8,6 +8,7 @@ a {
 a:hover {
     text-decoration: underline;
 }
+hr {padding:0px;}
 h2 {
   font-size:26px;
 }
@@ -580,10 +581,10 @@ header
 
 @media screen and (max-width: 820px) {
   header{flex-direction: row; flex-wrap: wrap;}
-  #innerHeader {flex-direction: row; flex-wrap: wrap;}
+  #innerHeader {flex-direction: row; flex-wrap: wrap; justify-content:center;}
   .main_nav {
     flex-direction: row;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: center;
   }
 }
