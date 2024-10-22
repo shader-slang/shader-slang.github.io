@@ -1,3 +1,5 @@
+[//]: # (TODO: do we need to create a blog now?)
+
 <div id="banner">
 <div id="bannerLeft">
     <span id="bannerText">
