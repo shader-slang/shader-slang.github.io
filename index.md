@@ -38,21 +38,24 @@ To help applications managing feature set differences across platforms, Slang's 
 
 In addition, Slang provides [flexible interop](/slang/user-guide/a1-04-interop.html) features to allow you to directly embed target code or SPIRV in your shaders.
 
-## Automatic Differentiation
+## Embrace Neural Graphics with Automatic Differentiation
 <img class="fullwidthImage" style="max-width:800px" src="/assets/autodiff.jpg"/>
 
 Slang can [automatically generate both forward and backward derivative propagation code](/slang/user-guide/autodiff.html) for complex functions that involve arbitrary control flow and dynamic dispatch. This allows users to easily make existing rendering codebases differentiable, or to use Slang as the kernel language in a PyTorch driven machine learning framework via [`slangtorch`](/slang/user-guide/a1-02-slangpy.html).
 
-## Module System
+## Scalable Software Development with Modules
 <img class="fullwidthImage" style="max-width:900px" src="/assets/modules-1.jpg"/>
 
 Slang provides a [module system](/slang/user-guide/modules.html) that can be used to logically organize code and benefit from separate compilation. Slang modules can be compiled offline to a custom IR (with optional obfuscation) and then linked at runtime to generate DXIL, SPIR-V etc.
 
 ## Code Specialization that Works with Modules
 
+<img class="fullwidthImage" style="max-width:500px" src="/assets/generics.jpg"/>
+
 Slang supports [generics and interfaces](/slang/user-guide/interfaces-generics.html) (a.k.a. type traits/protocols) to allow clear expression of shader specialization without resorting to preprocessor techniques or string-pasting. Unlike C++ templates, Slang's generics are checked ahead of time and don't produce cascading error messages that are difficult to diagnose. The same generic shader can be specialized for a variety of different types to produce specialized code ahead of time, or on the fly, completely under application control.
 
 ## Easy On-ramp from HLSL and GLSL
+<img class="fullwidthImage" style="max-width:700px" src="/assets/hlsl-compatibility.jpg"/>
 
 Slang's syntax is similar to HLSL and most existing HLSL code can be compiled with the Slang compiler out-of-the-box, or with minor modifications. It is possible to start taking advantage of Slang's benefits without rewriting or porting your shader codebase.
 
