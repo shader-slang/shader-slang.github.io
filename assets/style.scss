@@ -568,6 +568,9 @@ header
   width: 100%; /* Image can scale down to fit the container */
   height: auto; /* Maintain aspect ratio */
   max-width: 100%; /* Prevent the image from enlarging beyond its original size */
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
 @media screen and (max-width: 1024px) {
