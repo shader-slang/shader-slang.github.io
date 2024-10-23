@@ -29,7 +29,7 @@ The Slang shading language is designed to enable real-time graphics developers t
 ## Write Shaders Once, Run Anywhere
 <img class="fullwidthImage" style="max-width:600px" src="/assets/cross-platform.jpg"/>
 
-The Slang compiler can generate code for a wide variety of targets: D3D12, Vulkan, Metal, D3D11, OpenGL, CUDA, and even generate code to run on a CPU. For textual targets, such as Metal Shading Language(MSL) and CUDA, Slang produces readable code that preserves original identifier names, as well as the type and call structure, making it easier to debug.
+The Slang compiler can generate code for a wide variety of targets: D3D12, Vulkan, Metal, D3D11, OpenGL, CUDA, and even generate code to run on a CPU. For textual targets, such as Metal Shading Language (MSL) and CUDA, Slang produces readable code that preserves original identifier names, as well as the type and call structure, making it easier to debug.
 
 ## Access the Latest GPU Features
 <img class="fullwidthImage" style="max-width:800px" src="/assets/latest-feature.jpg"/>
