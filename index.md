@@ -24,47 +24,44 @@
 
 # Why Slang?
 
-The Slang system is designed to provide developers of real-time graphics applications with the services they need when working with large-scale and high-performance shader code.
+The Slang shading language is designed to enable real-time graphics developers to work with large-scale, high-performance shader code.
 
-## Write Cross Platform Shaders
+## Write Shaders Once, Run Anywhere
 <img class="fullwidthImage" style="max-width:600px" src="/assets/cross-platform.jpg"/>
 
-The Slang compiler can generate code for a wide variety of targets and APIs: D3D12, Vulkan, Metal, D3D11, OpenGL, CUDA, and CPU. Slang code can be broadly portable, but still take advantage of the unique features of each platform. For textual targets such as Metal Shading Language(MSL) and CUDA, Slang generates readable code that preserves the original identifier names and the type + call structure for ease of debugging.
+The Slang compiler can generate code for a wide variety of targets: D3D12, Vulkan, Metal, D3D11, OpenGL, CUDA, and even generate code to run on a CPU. For textual targets, such as Metal Shading Language(MSL) and CUDA, Slang produces readable code that preserves original identifier names, as well as the type and call structure, making it easier to debug.
 
-## Access Latest GPU Feature
+## Access the Latest GPU Features
 <img class="fullwidthImage" style="max-width:800px" src="/assets/latest-feature.jpg"/>
 
-Being cross-platform doesn't mean reducing accessible GPU feature set to the least common denominator of all platforms.
-Slang exposes latest features in Direct3D and Vulkan. For example, you can use [pointers](/slang/user-guide/convenience-features.html#pointers-limited) when generating SPIRV.
-To help applications managing feature set differences across platforms, Slang's [capability system](/slang/user-guide/capabilities.html) can ensure your code is only using available features on a target platform during the type-checking step, before generating the final code.
+Slang code is highly portable, but can still leverage unique platform capabilities, including the latest features in Direct3D and Vulkan. For example, developers can make full use of [pointers](/slang/user-guide/convenience-features.html#pointers-limited) when generating SPIR-V.
+Slang's [capability system](/slang/user-guide/capabilities.html) helps applications manage feature set differences across target platforms by ensuring code only uses available features during the type-checking step, before generating final code. Additionally, Slang provides [flexible interop](/slang/user-guide/a1-04-interop.html) features to enable directly embedding target code or SPIR-V into generated shaders.
 
-In addition, Slang provides [flexible interop](/slang/user-guide/a1-04-interop.html) features to allow you to directly embed target code or SPIRV in your shaders.
-
-## Embrace Neural Graphics with Automatic Differentiation
+## Leverage Neural Graphics with Automatic Differentiation
 <img class="fullwidthImage" style="max-width:800px" src="/assets/autodiff.jpg"/>
 
-Slang can [automatically generate both forward and backward derivative propagation code](/slang/user-guide/autodiff.html) for complex functions that involve arbitrary control flow and dynamic dispatch. This allows users to easily make existing rendering codebases differentiable, or to use Slang as the kernel language in a PyTorch driven machine learning framework via [`slangtorch`](/slang/user-guide/a1-02-slangpy.html).
+Slang can [automatically generate both forward and backward derivative propagation code](/slang/user-guide/autodiff.html) for complex functions that involve arbitrary control flow and dynamic dispatch. This allows existing rendering codebases to easily become differentiable, or for Slang to serve as the kernel language in a PyTorch-driven machine learning framework via [`slangtorch`](/slang/user-guide/a1-02-slangpy.html).
 
 ## Scalable Software Development with Modules
 <img class="fullwidthImage" style="max-width:900px" src="/assets/modules-1.jpg"/>
 
-Slang provides a [module system](/slang/user-guide/modules.html) that can be used to logically organize code and benefit from separate compilation. Slang modules can be compiled offline to a custom IR (with optional obfuscation) and then linked at runtime to generate DXIL, SPIR-V etc.
+Slang provides a [module system](/slang/user-guide/modules.html) that enables logical organization of code for separate compilation. Slang modules can be independently compiled offline to a custom IR (with optional obfuscation) and then linked at runtime to generate code in formats such as DXIL or SPIR-V.
 
 ## Code Specialization that Works with Modules
 
 <img class="fullwidthImage" style="max-width:500px" src="/assets/generics.jpg"/>
 
-Slang supports [generics and interfaces](/slang/user-guide/interfaces-generics.html) (a.k.a. type traits/protocols) to allow clear expression of shader specialization without resorting to preprocessor techniques or string-pasting. Unlike C++ templates, Slang's generics are checked ahead of time and don't produce cascading error messages that are difficult to diagnose. The same generic shader can be specialized for a variety of different types to produce specialized code ahead of time, or on the fly, completely under application control.
+Slang supports [generics and interfaces](/slang/user-guide/interfaces-generics.html) (a.k.a. type traits/protocols), allowing for clear expression of shader specialization without the need for preprocessor techniques or string-pasting. Unlike C++ templates, Slang's generics are pre-checked and don't produce cascading error messages that are difficult to diagnose. The same generic shader can be specialized for a variety of different types to produce specialized code ahead of time, or on the fly, entirely under application control.
 
-## Easy On-ramp from HLSL and GLSL
+## Easy On-ramp for HLSL and GLSL Codebases
 <img class="fullwidthImage" style="max-width:700px" src="/assets/hlsl-compatibility.jpg"/>
 
-Slang's syntax is similar to HLSL and most existing HLSL code can be compiled with the Slang compiler out-of-the-box, or with minor modifications. It is possible to start taking advantage of Slang's benefits without rewriting or porting your shader codebase.
+Slang's syntax is similar to HLSL, and most existing HLSL code can be compiled with the Slang compiler out-of-the-box, or with just minor modifications. This allows existing shader codebases to immediately benefit from Slang without requiring a complete rewrite or port.
 
-In addition, Slang offers a compatbility module that allows you to use most GLSL intrinsic functions and parameter binding syntax.
+Slang provides a compatibility module that enables the use of most GLSL intrinsic functions and GLSL's parameter binding syntax.
 
 ## Comprehensive Tooling Support
 <img class="fullwidthImage" style="max-width:700px" src="/assets/tooling-support.jpg"/>
 
-Slang has full intellisense features in Visual Studio Code and Visual Studio through the Language Server Protocol.
-Full debugging experience is also available with SPIRV and RenderDoc.
+Slang comes with full support of IntelliSense editing features in Visual Studio Code and Visual Studio through the Language Server Protocol.
+Full debugging capabilities are also available through RenderDoc and SPIR-V based tools.
