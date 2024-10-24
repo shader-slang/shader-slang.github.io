@@ -9,22 +9,22 @@ There are four types of Status:
 
 | Feature | Status | Notes |
 | --- | --- | --- |
-| Attributes and user defined attributes | Production |  |
-| Auto variable type inference | Production |  |
-| HLSL syntax | Production | Some known gaps around specific intrinsics; templates intentionally left out |
-| enum types | Production |  |
-| Extension | Production |  |
-| Intellisense | Production |  |
-| Modules (import) | Production | Being widely adopted in many code bases and haven't seen true quality issues reported for a long while. There are issues reported for quality of life improvements, but not about implementation defects. |
-| Namespaces | Production |  |
-| Operator Overload | Production |  |
-| Optional<T> | Production |  |
-| ParameterBlock<T> | Production |  |
-| Properties | Production | No issues found or reported in the last year. (this is to establish reference, many features not listed will fall in this category) |
-| Raytracing | Production |  |
-| Reflection | Production |  |
-| User-defined operator[] (with multi parameter support) | Production |  |
-| Vulkan Interop (scalar layout, -fvk-* options) | Production |  |
+| Attributes and user defined attributes | Stable |  |
+| Auto variable type inference | Stable |  |
+| HLSL syntax | Stable | Some known gaps around specific intrinsics; templates intentionally left out |
+| enum types | Stable |  |
+| Extension | Stable |  |
+| Intellisense | Stable |  |
+| Modules (import) | Stable | Being widely adopted in many code bases and haven't seen true quality issues reported for a long while. There are issues reported for quality of life improvements, but not about implementation defects. |
+| Namespaces | Stable |  |
+| Operator Overload | Stable |  |
+| Optional<T> | Stable |  |
+| ParameterBlock<T> | Stable |  |
+| Properties | Stable | No issues found or reported in the last year. (this is to establish reference, many features not listed will fall in this category) |
+| Raytracing | Stable |  |
+| Reflection | Stable |  |
+| User-defined operator[] (with multi parameter support) | Stable |  |
+| Vulkan Interop (scalar layout, -fvk-* options) | Stable |  |
 | Associated types for static dispatch | Experimental | Has been there for a long while with a lot of user code adoption |
 | Autodiff (first-order) | Experimental | Adopted by many large scale code bases (3000+ lines of code), have not seen correctness issues for a long period. There are requests for unimplemented features. Improvements, enhancements and refactors are known and planned. |
 | Autodiff (higher-order) | Experimental | Implemented and adopted in 2 different codebases. Known holes in design, and has not been widely adopted or exercised so its quality maybe significantly lower. |
