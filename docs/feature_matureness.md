@@ -48,9 +48,9 @@ There are four types of Status:
 | Non-generic existential types (static dispatch) | Experimental | Syntax around existential types may change. |
 | Obfuscation | Experimental | Implemented a long while ago and adopted by OV, not seeing bug reports but they may be broken with latest language developments and lack of sufficient testing, especially when used in tendum with precompiled modules and link time specialization. |
 | Precompiled Modules (serialization / up-to-date-ness verification) | Experimental | Adopted by one user library and tested with serveral applications. |
-| reinterpret<T> | Experimental |  |
 | SPIRV Debug | Experimental | Bug rate stablized, and has been working well. But need more adoption or testing to receive a higher matureness rating. |
 | SPIRV Pointers | Experimental | Adopted by many users, and address many corner case issues reported by the user. Related bug rate is converging to 0. |
 | Uniformity Analysis | Experimental | Implemented the first version, tested with 2 unit tests, no actual user code exercising it, not thoroughly tested, unlikely to work out of box when it gets actual use but expected to mature within 2 weeks in close iteration loop with adopting users. |
 | Uniformity Analysis | Experimental | Implemented the first version, tested with 2 unit tests, no actual user code exercising it, not thoroughly tested, unlikely to work out of box when it gets actual use but expected to mature within 2 weeks in close iteration loop with adopting users. |
 | `as` and `is` operators | Experimental |  |
+| `reinterpret<T>` | Experimental |  |
