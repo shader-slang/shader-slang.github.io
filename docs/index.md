@@ -18,20 +18,6 @@ The formal specification of the Slang programming language. Work in progress.
 List of Slang Features with their stableness/matureness.
 
 
-## Frequently Asked Questions
-
-#### Does Slang use LLVM?
-
-No. The Slang compiler itself is not built on the LLVM tech stack, and does not depend on LLVM.
-If you are using Slang to generate textual or SPIRV code, no LLVM binaries are required. If you are using Slang to produce standalone executables or dynamically linked
-libraries, then a prebuilt LLVM wrapper library called `slang-llvm` is required.
-
-#### What's the distribution size of Slang?
-
-The Slang compiler binary is around 5-10 MB depending on build configuration and target architecture.
-
-
-
 ## Articles
 
 #### [The Commandline Tool Reference](https://github.com/shader-slang/slang/blob/master/docs/command-line-slangc-reference.md)
@@ -91,3 +77,17 @@ Main things to know if you are coming to Slang as an GLSL developer.
 [//]: # (TODO: link more internal documentation and contribution process, build instructions etc.)
 
 For contributors to the Slang project, the information under the [docs/proposals/](https://github.com/shader-slang/slang/tree/master/docs/proposals) directory documents all feature proposals to the Slang language or the compiler API.
+
+
+## Frequently Asked Questions
+
+#### Does Slang use LLVM?
+
+No. The Slang compiler itself is not built on the LLVM tech stack, and does not depend on LLVM.
+If you are using Slang to generate textual or SPIRV code, no LLVM binaries are required. If you are using Slang to produce standalone executables or dynamically linked
+libraries, then a prebuilt LLVM wrapper library called `slang-llvm` is required.
+
+#### What's the distribution size of Slang?
+
+The Slang compiler binary is around 5-10 MB depending on build configuration and target architecture.
+
