@@ -24,7 +24,7 @@ Instructions for building Slang from source code are maintained as part of the s
 
 ## Your First Slang Shader
 
-Follow [this tutorial](/docs/first-slang-shader.md) on how to write your first slang shader and compile it for execution with the Vulkan API.
+Follow [this tutorial](/docs/first-slang-shader) on how to write your first slang shader and compile it for execution with the Vulkan API.
 
 ## The User-Guide
 
