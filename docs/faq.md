@@ -1,6 +1,6 @@
 # Frequently Asked Questions
 
-#### Where should I asked questions on Slang?
+#### Where should I ask questions on Slang?
 
 If you run into any questions with the Slang language, the compilation API or the reflection API, please post it on our [GitHub discussion page]((https://github.com/shader-slang/slang/discussions).
 
