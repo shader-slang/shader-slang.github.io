@@ -1,5 +1,14 @@
 # Frequently Asked Questions
 
+#### Where should I asked questions on Slang?
+
+If you run into any questions with the Slang language, the compilation API or the reflection API, please post it on our [GitHub discussion page]((https://github.com/shader-slang/slang/discussions).
+
+#### How do I report a compiler bug?
+
+Please post your issues on our [GitHub issues page](https://github.com/shader-slang/slang/issues).
+
+
 #### Does Slang use LLVM?
 
 No. The Slang compiler itself is not built on the LLVM tech stack, and does not depend on LLVM.
