@@ -80,6 +80,3 @@ Main things to know if you are coming to Slang as an GLSL developer.
 [//]: # (TODO: link more internal documentation and contribution process, build instructions etc.)
 
 For contributors to the Slang project, the information under the [docs/proposals/](https://github.com/shader-slang/slang/tree/master/docs/proposals) directory documents all feature proposals to the Slang language or the compiler API.
-
-
-## Frequently Asked Questions
