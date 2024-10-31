@@ -39,7 +39,7 @@ A language owner is the owner of the [`/docs/proposals/`](https://github.com/sha
 A bug fix starts with an GitHub issue describing the bug. Any community member can submit a pull request coming from your personal fork of Slang containing fixes for the bug. Such pull requests needs to be reviewed and approved by two committers who are owners of the files being changed by the pull request. Once the pull request is approved and passed all CI tests, it can be merged to the main branch. All pull requests are expected to meet
 our bar of code quality.
 
-#### Process for Language Changes
+#### Process for Slang Feature Changes
 
 Changes that add or modify syntax, language feature, Slang's core module, or the compilation and reflection API must go through our process for language changes. The full process is [documented here](/community/language-change-process).
 

@@ -25,13 +25,13 @@ Note that the implementation of a new feature is being made as commits to top-of
 
 ## Transition to Stable Status
 
-When your feature is stable enough to consider "stable", announce your "Intention to stabilize" the feature on the issue and on [designated channel on Slang’s GitHub forumslang-features@slang-lang.org and switch the feature tracker to “proposing to stabilize”. If you are not a committer, you will need to ask a committer to make this change for you.
+When your feature is stable enough to consider "stable", announce your "Intention to stabilize" the feature on the issue and on the [Announcement Channel in GitHub Discussions](https://github.com/shader-slang/slang/discussions/categories/announcements) and switch the feature tracker to "proposing to stabilize". If you are not a committer, you will need to ask a committer to make this change for you.
 
 Include in that PRs that (a) mark your feature stable in the code, (b) creates a doc in docs/feature_proposals/ that is the final form of your feature design, and (c) updates the spec.
 
 We encourage sending the intention to stabilize well in advance of wanting to actually have it ship stably — the more time, the more community feedback and ‘banging on the tires’ you can create.
 
-At decision time, the docs/features_proposals/OWNERs will discuss privately (using OWNERs consensus) and share their decision on the email thread. After this, the relevant PRs can land as normal and the feature is stable.
+At decision time, the owners listed in `docs/proposals/OWNERS.txt` will discuss privately (using OWNERs consensus) and share their decision on the email thread. After this, the relevant PRs can land as normal and the feature is stable.
 
 We expect that between 3-7 days will be given for community feedback in typical cases. Some lived experience is needed before we can make a policy about how long review periods need to last.
 
