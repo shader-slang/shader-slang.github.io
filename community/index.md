@@ -23,7 +23,7 @@ A committer is a community member who can review and approve pull requests. This
 
 Submissions to a repository by a change contributor who is not a Slang committer require two committers to approve the submission. If the author of the pull request is already a committer, then only one other committer is needed to review.
 
-If you think you might be ready to be a committer, ask one of the reviewers of your pull request or another committer familiar with your work to see if they will nominate you. They will discuss that in #slang-committers discord — two others in that will need to second the nomination. We will create a policy similar to the terms in https://www.chromium.org/getting-involved/become-a-committer/ for this.
+If you think you might be ready to be a committer, ask one of the reviewers of your pull request or another committer familiar with your work to see if they will nominate you. They will discuss that in #slang-committers discord — two others in that will need to second the nomination. See the [detailed document](/community/become-a-committer) for this process.
 
 #### Owner
 
