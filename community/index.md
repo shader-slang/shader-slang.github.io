@@ -41,7 +41,7 @@ our bar of code quality.
 
 #### Process for Language Changes
 
-Changes that add or modify syntax, language feature, Slang's core module, or the compilation and reflection API must go through our process for language changes. The full process is [documented here](/community/language-change-process.md).
+Changes that add or modify syntax, language feature, Slang's core module, or the compilation and reflection API must go through our process for language changes. The full process is [documented here](/community/language-change-process).
 
 ## Submitting a Pull Request
 
