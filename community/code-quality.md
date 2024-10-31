@@ -13,27 +13,27 @@ Many graphics applications are having issues with long shader compilation times.
 
 ## Testing
 
-*Unit and Integration Tests:* Include tests for all new features and bug fixes. Each pull request should add or update tests that validate the new functionality or fix. Pull requests should not break any existing tests.
+**Unit and Integration Tests:** Include tests for all new features and bug fixes. Each pull request should add or update tests that validate the new functionality or fix. Pull requests should not break any existing tests.
 
-*Reproducibility:* Ensure that any reported bug fixes or features work consistently across different environments supported by Slang.
+**Reproducibility:** Ensure that any reported bug fixes or features work consistently across different environments supported by Slang.
 
-*Maintain Test Coverage:* Maintain or improve existing test coverage. Avoid reducing the coverage or introducing untested paths in the code.
+**Maintain Test Coverage:** Maintain or improve existing test coverage. Avoid reducing the coverage or introducing untested paths in the code.
 
 ## Code Readability
 
-*Readable and Self-Explanatory:* Code should be easy to read and self-explanatory, even without comments. Avoid overly complex or nested structures; prioritize clarity over conciseness.
+**Readable and Self-Explanatory:** Code should be easy to read and self-explanatory, even without comments. Avoid overly complex or nested structures; prioritize clarity over conciseness.
 
-*Function and Variable Naming:* Use descriptive names for variables, functions, and classes. Names should make the code’s purpose immediately clear.
+**Function and Variable Naming:** Use descriptive names for variables, functions, and classes. Names should make the code’s purpose immediately clear.
 
-*Comments:* Use comments to document the purpose of new types and functions you introduce. For functions that implement complex logic, comments should focus on why the logic is needed, and not just a rephrase of what the code is doing.
+**Comments:** Use comments to document the purpose of new types and functions you introduce. For functions that implement complex logic, comments should focus on why the logic is needed, and not just a rephrase of what the code is doing.
 
-*Small, Focused Commits:* Keep each commit focused on a single change or issue. This helps reviewers understand the intent of the change and makes it easier to trace history later.
+**Small, Focused Commits:** Keep each commit focused on a single change or issue. This helps reviewers understand the intent of the change and makes it easier to trace history later.
 
 ## Code Review Process
 
-*Follow Review Feedback:* Be prepared to make changes based on feedback from committers. We aim for constructive reviews that ensure quality without stalling progress.
+**Follow Review Feedback:** Be prepared to make changes based on feedback from committers. We aim for constructive reviews that ensure quality without stalling progress.
 
-*Documentation and Clarity:* Provide a clear and detailed pull request description. Include context, goals, and any specific details reviewers should know to understand your contribution.
+**Documentation and Clarity:** Provide a clear and detailed pull request description. Include context, goals, and any specific details reviewers should know to understand your contribution.
 
 ## Community and Collaboration
 Be Respectful and Collaborative: Open-source projects are collaborative efforts. Communicate clearly, and respect feedback and the time of maintainers and reviewers.
