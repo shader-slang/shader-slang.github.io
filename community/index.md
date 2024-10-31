@@ -23,8 +23,6 @@ A committer is a community member who has write access to the Slang repository a
 
 Submissions to a repository by a change contributor who is not a Slang committer require two committers to approve the submission. If the author of the pull request is already a committer, then only one other committer is needed to review.
 
-If you think you might be ready to be a committer, ask one of the reviewers of your pull request or another committer familiar with your work to see if they will nominate you. They will discuss that in #slang-committers discord — two others in that will need to second the nomination. See [how to become a committer here](/community/become-a-committer).
-
 #### Owner
 
 Every file in the Slang repository has a list of owners. An owner of a directory has right to approve pull requests touching the directory. A pull request is considered approved only when at least two owners for each directory changed by the pull request have approved the pull request. If you are a committer and think you’re ready to become an owner of a directory, put up a PR to the relevant OWNERs and get two owners to review it. In face of conflict between owner, owner need to reach consensus amongst themselves.
@@ -45,3 +43,7 @@ Changes that add or modify syntax, language feature, Slang's core module, or the
 ## Submitting a Pull Request
 
 If you are ready to start contributing, please follow our [guide for creating a pull request](https://github.com/shader-slang/slang/blob/master/CONTRIBUTION.md). All pull requests are expected to meet our [bar of code quality](/community/code-quality).
+
+## Become a Committer
+
+If you think you might be ready to be a committer, ask one of the reviewers of your pull request or another committer familiar with your work to see if they will nominate you. They will discuss that in #slang-committers discord — two others in that will need to second the nomination. See [how to become a committer here](/community/become-a-committer).

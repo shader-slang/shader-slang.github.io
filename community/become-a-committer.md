@@ -42,7 +42,7 @@ Consistent quality and dedication are key criteria. Committers typically have:
 
 Once you meet the criteria above, you can nominate yourself to become a committer. This process includes:
 
-*Nomination:* You can nominate yourself to become a committer by creating a discussion thread on GitHub discussions. 
+*Nomination:* You can ask a committer to nominate you to become a committer via our discord channel.
 
 *Internal Review:* Existing committers will review your contributions, code review feedback, and responsiveness to determine your readiness.
 
