@@ -25,7 +25,7 @@ Submissions to a repository by a change contributor who is not a Slang committer
 
 #### Owner
 
-Every file in the Slang repository has a list of owners. An owner of a directory has right to approve pull requests touching the directory. A pull request is considered approved only when at least two owners for each directory changed by the pull request have approved the pull request. If you are a committer and think you’re ready to become an owner of a directory, put up a PR to the relevant OWNERs and get two owners to review it. In face of conflict between owner, owner need to reach consensus amongst themselves.
+Every file in the Slang repository has a list of owners. An owner of a directory has right to approve pull requests touching the directory. A pull request is approved only when at least two owners of each directory affected by the changes have given their approval. If you are a committer and think you’re ready to become an owner of a directory, put up a PR to the relevant OWNERs and get two owners to review it. In face of conflict between owner, owner need to reach consensus amongst themselves.
 
 #### Language Owner
 
