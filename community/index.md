@@ -19,11 +19,11 @@ report issues, start discussion threads, or submit pull requests.
 
 #### Committer
 
-A committer is a community member who can review and approve pull requests. This is a status that can be earned by maintaining a track record of submiting and landing code changes to the Slang project. All community members can review code submitted by other community members, but for a pull request to be considered approved and ready for merging, at least one **owner** (more info below) of each file you are touching must provide an approving review. Ideally a committer should choose reviewers who are familiar with the area of code you are touching. If you have doubts, look at the git blame for the file and the OWNERS files.
+A committer is a community member who has write access to the Slang repository and can approve pull requests. This is a status that can be earned by maintaining a track record of submiting and landing code changes to the Slang project. All community members can review code submitted by other community members, but for a pull request to be considered approved and ready for merging, at least one **owner** (more info below) of each file you are touching must provide an approving review. Ideally a committer should choose reviewers who are familiar with the area of code you are touching. If you have doubts, look at the git blame for the file and the OWNERS files.
 
 Submissions to a repository by a change contributor who is not a Slang committer require two committers to approve the submission. If the author of the pull request is already a committer, then only one other committer is needed to review.
 
-If you think you might be ready to be a committer, ask one of the reviewers of your pull request or another committer familiar with your work to see if they will nominate you. They will discuss that in #slang-committers discord — two others in that will need to second the nomination. See the [detailed document](/community/become-a-committer) for this process.
+If you think you might be ready to be a committer, ask one of the reviewers of your pull request or another committer familiar with your work to see if they will nominate you. They will discuss that in #slang-committers discord — two others in that will need to second the nomination. See [how to become a committer here](/community/become-a-committer).
 
 #### Owner
 
@@ -36,8 +36,7 @@ A language owner is the owner of the [`/docs/proposals/`](https://github.com/sha
 ## Processes for Code Changes
 
 #### Process for Bug Fixes
-A bug fix starts with an GitHub issue describing the bug. Any community member can submit a pull request coming from your personal fork of Slang containing fixes for the bug. Such pull requests needs to be reviewed and approved by two committers who are owners of the files being changed by the pull request. Once the pull request is approved and passed all CI tests, it can be merged to the main branch. All pull requests are expected to meet
-our [bar of code quality](/community/code-quality).
+A bug fix starts with an GitHub issue describing the bug. Any community member can submit a pull request coming from your personal fork of Slang containing fixes for the bug. Such pull requests needs to be reviewed and approved by two committers who are owners of the files being changed by the pull request. Once the pull request is approved and passed all CI tests, it can be merged to the main branch. 
 
 #### Process for Slang Feature Changes
 
@@ -45,4 +44,4 @@ Changes that add or modify syntax, language feature, Slang's core module, or the
 
 ## Submitting a Pull Request
 
-If you are ready to start contributing, please follow our [guide for creating a pull request](https://github.com/shader-slang/slang/blob/master/CONTRIBUTION.md).
+If you are ready to start contributing, please follow our [guide for creating a pull request](https://github.com/shader-slang/slang/blob/master/CONTRIBUTION.md). All pull requests are expected to meet our [bar of code quality](/community/code-quality).
