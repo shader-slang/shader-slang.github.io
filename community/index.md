@@ -45,4 +45,4 @@ Changes that add or modify syntax, language feature, Slang's core module, or the
 
 ## Submitting a Pull Request
 
-If you are ready to start contributing, please follow our [guide for creating a pull request](https://github.com/shader-slang/slang/CONTRIBUTION.md).
+If you are ready to start contributing, please follow our [guide for creating a pull request](https://github.com/shader-slang/slang/blob/master/CONTRIBUTION.md).
