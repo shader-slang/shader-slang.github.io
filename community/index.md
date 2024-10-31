@@ -2,7 +2,7 @@
 
 Slang is fully open-source and all developments for Slang take place within the public [GitHub repo](https://github.com/shader-slang/slang).
 If you'd like to contribute to the project, we are excited to have your input.
-Please review the following materials to learn more abount our community structure and our process of managing changes.
+Please review the following materials to learn more about our community structure and our process for accepting patches.
 
 ## Community Discussions
 
