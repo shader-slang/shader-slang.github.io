@@ -33,6 +33,8 @@ int MyFunc()
 }
 ```
 
+There is an option to make `enum` unscoped for Slang, `-unscoped-enums`.
+
 Because HLSL allows the enum name to be explicit, it will be simpler to change the HLSL shader in the Slang style when migrating from HLSL to Slang.
 ```
 enum MyEnum
@@ -71,6 +73,12 @@ struct Counter
     void increment() { count++; }
 };
 ```
+
+
+### Forward declaration is not needed and not supported
+Slang doesn't require the function declarations to appear before they are used.
+
+And Slang doesn't support to separate the declaration from its definition for member functions. The member functions must be fully defined when they are declared.
 
 
 ### Generics Instead of Templates
@@ -180,6 +188,31 @@ It is to provide consistent behavior when there can be different variations of t
 
 ### `unsigned int` is not supported
 Slang doesn't support type names that use more than one token. As a result, `unsigned int` or `signed int` are not supported. You will need to rename them to `uint` or `int` respectively.
+
+
+### Buffer Layouts
+Slang defaults to std140 for constant buffers and std430 for structured buffers and related.
+ - Use `-fvk-use-scalar-layout` set buffer layout to scalar block layout.
+ - Use `-fvk-use-gl-layout` to set std430 layout for raw buffer load/stores
+
+StructuredBuffer and related objects can also take a per resource layout
+```
+StructuredBuffer<MyStruct, Std140DataLayout>
+StructuredBuffer<MyStruct, Std430DataLayout>
+StructuredBuffer<MyStruct, ScalarDataLayout>
+```
+
+
+### `#pragma pack_matrix()` is not supported
+HLSL provides a way to change the matrix packing order with a pragma.
+
+While Slang doesn't support the same pragma syntax, you can achieve the same functionality with `-matrix-layout-column-major` or `-matrix-layout-row-major`.
+
+
+### Slang requires more strict type casting
+Slang requires more strict type casting but you can add your own casting functions if needed.
+Because of the difference, some casting issues may show as errors while migrating your HLSL shaders to Slang.
+
 
 
 ## Debugging and Performance Tips
