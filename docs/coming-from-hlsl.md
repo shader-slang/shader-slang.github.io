@@ -1,21 +1,22 @@
 # Migrating to Slang from HLSL
 
 ## Overview
-This guide covers the primary syntax and feature differences between HLSL and Slang. It provides key adjustments needed for a smooth migration and tips to improve debugging and performance. While the languages are similar, careful attention to specific syntax and function conventions will ensure HLSL shaders migrate seamlessly to Slang.
+This guide provides a comprehensive overview of the primary syntax and feature differences between HLSL and Slang. It offers essential adjustments needed for a smooth transition and tips to enhance debugging and performance.
 
-Since the syntax and function names between Slang and HLSL are similar, if not the same, HLSL shaders can be compiled as Slang shaders in most cases.
-But when migrating HLSL shaders to Slang, there are a few things you need to pay attention to.
-
-> Note: For the sake of explanation, the following examples use "#if COMPILER_SLANG/#else/#endif". But our recommendation is to completely convert your HLSL syntax to Slang syntax, because Slang can translate Slang shaders to HLSL shaders whenever you need.
+While the languages share similarities, paying close attention to specific syntax and function conventions will ensure a seamless migration of HLSL shaders to Slang.
 
 
 ## Key Syntax and Feature Differences
 
 ### `enum` is scoped in Slang
-In HLSL, `enum` is unscoped, meaning that the enum values can be referred to without the name of the enum itself.
-In Slang, `enum` is scoped, meaning that the enum values must come explicitly with the name of the enum.
+In HLSL, `enum` is unscoped, which means the enum values can be referred to without the enum's name.
+In Slang, `enum` is scoped, requiring explicit reference to the enum's name along with its values.
 
-```
+<table>
+<tr><td>HLSL shader</td><td>Slang shader</td></tr>
+<tr><td>
+  
+```hlsl
 enum MyEnum
 {
     MyEnum_A,
@@ -25,18 +26,30 @@ enum MyEnum
 
 int MyFunc()
 {
-#if COMPILING_SLANG
-    return int(MyEnum::MyEnum_A);
-#else
     return int(MyEnum_A);
-#endif
 }
 ```
+</td><td>
+  
+```hlsl
+enum MyEnum
+{
+    A,
+    B,
+    C
+};
 
-There is an option to make `enum` unscoped for Slang, `-unscoped-enums`.
-
-Because HLSL allows the enum name to be explicit, it will be simpler to change the HLSL shader in the Slang style when migrating from HLSL to Slang.
+int MyFunc()
+{
+    return int(MyEnum::A);
+}
 ```
+</td></tr></table>
+
+To make `enum` unscoped in Slang, use the `-unscoped-enums` option or add the `[UnscopedEnum]` attribute to explicitly declare an enum as unscoped.
+```hlsl
+// Slang shader
+[UnscopedEnum]
 enum MyEnum
 {
     MyEnum_A,
@@ -46,80 +59,108 @@ enum MyEnum
 
 int MyFunc()
 {
-    // The following line works for both Slang and DXC
-    return int(MyEnum::MyEnum_A);
+    return int(MyEnum_A);
 }
 ```
 
 
 ### Member functions are immutable by default
-By default, Slang member functions cannot mutate `this`. When a member function is immutable, it is as if the member function got the `const` keyword in C/C++.
+By default, Slang member functions do not allow mutations to `this`. It is as if the member function has the `const` keyword in C/C++.
 
-If you need to mutate `this`, you need to explicitly use the `[mutating]` attribute on each function.
+To mutate `this`, you must explicitly use the `[mutating]` attribute on each function.
 
-This behavior is very different from HLSL, but if you miss the keyword, the compiler will give you an error.
+This is a significant departure from HLSL, but the compiler will flag any missing keywords with an error.
+<table>
+<tr><td>HLSL shader</td><td>Slang shader</td></tr>
+<tr><td>
+  
+```hlsl
+struct Counter
+{
+    int count;
+    void increment() { count++; }
+};
 ```
-#if COMPILER_SLANG
-#define SLANG_MUTATING [mutating]
-#else
-#define SLANG_MUTATING
-#endif
-
+</td><td>
+  
+```hlsl
 struct Counter
 {
     int count;
 
-    SLANG_MUTATING
+    [mutating]
     void increment() { count++; }
 };
 ```
+</td></tr></table>
 
 
 ### Forward declaration is not needed and not supported
-Slang doesn't require the function declarations to appear before they are used.
+In Slang, function declarations do not need to precede their usage.
 
-And Slang doesn't support to separate the declaration from its definition for member functions. The member functions must be fully defined when they are declared.
+Furthermore, Slang does not support separating the declaration from its definition for member functions. Member functions must be fully defined at the point of declaration.
 
 
 ### Generics Instead of Templates
-Unlike HLSL, Slang doesn't provide a "template" feature.
-If your HLSL shaders are using templates, they need to be converted to use generics.
-It depends on the complexity, but the conversion process is pretty simple and easy in most cases.
+Slang does not support a "template" feature like HLSL does.
+If your HLSL shaders use templates, they will need to be converted to use generics.
+Depending on the complexity, this conversion process is generally straightforward.
 
-When the template argument takes a constant integer value, you can use the "let XX : uint32_t" syntax as follows,
-```
-#if COMPILER_SLANG
-__generic<uint strideX, uint strideY>
-#else // #if COMPILER_SLANG
+When the template argument is a constant integer value, use the `let XX : uint` or `uint XX` syntax as shown below,
+<table>
+<tr><td>HLSL shader</td><td>Slang shader</td></tr>
+<tr><td>
+  
+```hlsl
 template<uint strideX, uint strideY>
-#endif // #else // #if COMPILER_SLANG
 uint GetValue(const uint index)
 {
     return index % strideX, index / strideY;
 }
 ```
-
-When the template argument takes a typename, you must use a built-in interface or a custom interface you defined.
+</td><td>
+  
+```hlsl
+__generic<uint strideX, uint strideY>
+uint GetValue(const uint index)
+{
+    return index % strideX, index / strideY;
+}
 ```
-#if COMPILER_SLANG
-__generic<T> where T : IFloat
-#else // #if COMPILER_SLANG
+</td></tr></table>
+
+When the template argument is a typename, you must use a built-in interface or a custom interface you define.
+<table>
+<tr><td>HLSL shader</td><td>Slang shader</td></tr>
+<tr><td>
+  
+```hlsl
 template<typename T>
-#endif // #else // #if COMPILER_SLANG
 T max4(T x, T y, T z, T w)
 {
     return max(max(x, y), max(z, w));
 }
 ```
+</td><td>
+  
+```hlsl
+__generic<typename T> // `typename` can be omitted
+T max4(T x, T y, T z, T w)
+    where T : __BuiltinFloatingPointType
+{
+    return max(max(x, y), max(z, w));
+}
+```
+</td></tr></table>
 
-For more detailed explanations about how to define a custom interface, please see the [Slang User's Guide](https://shader-slang.com/slang/user-guide/interfaces-generics.html).
+For more detailed explanations on defining a custom interface, please refer to the [Slang User's Guide](https://shader-slang.com/slang/user-guide/interfaces-generics.html).
 
 
 ### `#pragma` for DXC wouldn't work for Slang
 
-If your HLSL shaders use `#pragma` for the DXC compiler, it wouldn't work for Slang.
-You will need to remove the lines, or wrap them as follows,
-```
+If your HLSL shaders use `#pragma` for the DXC compiler, these will not be compatible with Slang.
+You will need to remove these lines or encapsulate them as follows,
+```hlsl
 #if !COMPILER_SLANG
 // Generate vector truncation warnings to errors.
 #pragma warning(error: 3206)
@@ -130,16 +171,26 @@ You will need to remove the lines, or wrap them as follows,
 ### Operator Overloading
 Slang supports operator overloading, but it cannot be defined as a member method.
 
-```
-#if COMPILER_SLANG
-MyStruct operator+(MyStruct lhs, MyStruct rhs)
+<table>
+<tr><td>HLSL shader</td><td>Slang shader</td></tr>
+<tr><td>
+  
+```hlsl
+struct MyStruct
 {
-    return lhs.operator_ADD(rhs);
-}
-#else // #if COMPILER_SLANG
-#define operator_ADD operator+
-#endif // #else // #if COMPILER_SLANG
+    MyStruct operator+(MyStruct rhs)
+    {
+        MyStruct tmp;
+        tmp.value = value + rhs.value;
+        return tmp;
+    }
 
+    float value;
+};
+```
+</td><td>
+  
+```hlsl
 struct MyStruct
 {
     MyStruct operator_ADD(MyStruct rhs)
@@ -151,52 +202,69 @@ struct MyStruct
 
     float value;
 };
+
+MyStruct operator+(MyStruct lhs, MyStruct rhs)
+{
+    return lhs.operator_ADD(rhs);
+}
 ```
+</td></tr></table>
 
 ### Subscript Operator
-Slang doesn't allow overloading `operator[]` in the way HLSL does, and you need to use the `__subscript` keyword.
+Slang does not permit overloading the `operator[]` as HLSL does; instead, you must use the `__subscript` keyword.
 
-```
+<table>
+<tr><td>HLSL shader</td><td>Slang shader</td></tr>
+<tr><td>
+  
+```hlsl
 struct MyType
 {
     float values[12];
 
-#if COMPILER_SLANG
-    __subscript(int index) -> float
-    {
-        get { return val[index]; }
-    }
-#else // #if COMPILER_SLANG
     float operator[](int index)
     {
         return values[index];
     }
-#endif // #else // #if COMPILER_SLANG
 }
 ```
+</td><td>
+  
+```hlsl
+struct MyType
+{
+    float values[12];
 
-Please check out the [Slang User's Guide](https://shader-slang.com/slang/user-guide/convenience-features.html#subscript-operator) for more details.
+    __subscript(int index) -> float
+    {
+        get { return val[index]; }
+    }
+}
+```
+</td></tr></table>
+
+For more details, please consult the [Slang User's Guide](https://shader-slang.com/slang/user-guide/convenience-features.html#subscript-operator).
 
 
 ### Implicit parameter binding
-Slang binds resources based on the shader before Dead-Code-Elimination. As an example, it means that when a uniform parameter is not used by the shader, Slang will still assign a resource binding index to it.
+Slang binds resources based on the shader before Dead-Code-Elimination. This means that even if a uniform parameter is not utilized by the shader, Slang will still assign a resource binding index to it.
 
-This is different behavior from how HLSL works because the DXC compiler removes the unused parameters from the compiled shaders. Then the DXC reflection API provides the information on which parameters are actually being used.
+This differs from HLSL's behavior, where the DXC compiler removes unused parameters from the compiled shaders. The DXC reflection API then provides information on which parameters are actually being used.
 
-It is to provide consistent behavior when there can be different variations of the same shader. Because Slang doesn't remove the unused parameters in its linking process, the set of parameters will appear the same way regardless of how the shader was used or linked.
+This approach ensures consistent behavior across different variations of the same shader, as Slang does not remove unused parameters during its linking process, maintaining a consistent set of parameters regardless of how the shader was used or linked.
 
 
 ### `unsigned int` is not supported
-Slang doesn't support type names that use more than one token. As a result, `unsigned int` or `signed int` are not supported. You will need to rename them to `uint` or `int` respectively.
+Slang does not support type names that use more than one token. As a result, `unsigned int` or `signed int` are not supported. These should be renamed to `uint` or `int` respectively.
 
 
 ### Buffer Layouts
 Slang defaults to std140 for constant buffers and std430 for structured buffers and related.
- - Use `-fvk-use-scalar-layout` set buffer layout to scalar block layout.
+ - Use `-fvk-use-scalar-layout` to set buffer layout to scalar block layout.
  - Use `-fvk-use-gl-layout` to set std430 layout for raw buffer load/stores
 
 StructuredBuffer and related objects can also take a per resource layout
-```
+```hlsl
 StructuredBuffer<MyStruct, Std140DataLayout>
 StructuredBuffer<MyStruct, Std430DataLayout>
 StructuredBuffer<MyStruct, ScalarDataLayout>
@@ -210,38 +278,26 @@ While Slang doesn't support the same pragma syntax, you can achieve the same fun
 
 
 ### Slang requires more strict type casting
-Slang requires more strict type casting but you can add your own casting functions if needed.
-Because of the difference, some casting issues may show as errors while migrating your HLSL shaders to Slang.
+Slang demands more strict type casting, but you can add your own casting functions if needed.
+Due to this difference, some casting issues may appear as errors while migrating your HLSL shaders to Slang.
 
 
 
 ## Debugging and Performance Tips
 
-When debugging Slang shaders, disabling optimizations can simplify the debugging process. Use -O0 during development, and experiment with [ForceInline] to reduce compile times for performance-critical shaders.
+When debugging Slang shaders, disabling optimizations can simplify the debugging process. Use -O0 during development, and consider experimenting with [ForceInline] to reduce compile times for performance-critical shaders.
 
 
 ### `#line` directives
-There is a command-line option for Slang to emit or not emit `#line` directives when targeting C-like text formats such as HLSL, GLSL, Metal, and WGSL.
-When `#line` directives are emitted, it can help you to debug with shader debugging tools, because those tools can correlate back to the original Slang shader.
+Slang offers a command-line option to emit or suppress `#line` directives when targeting C-like text formats such as HLSL, GLSL, Metal, and WGSL.
+When `#line` directives are emitted, they can assist in debugging with shader debugging tools, as these tools can correlate back to the original Slang shader.
 
-For more information, please check out `LineDirectiveMode` on the [Slang User's Guide](https://shader-slang.com/slang/user-guide/compiling.html).
-
-
-### Play with [ForceInline]
-`[ForceInline]` is similar to the `inline` keyword in C++ in a way that the body of a function is inlined into the call locations. This normally doesn't make any observable differences, but we have noticed that the use of `[ForceInline]` can reduce the compile time compared to HLSL compilation with DXC.
-
-The reason is that the shader optimization step inside of DXC takes extra processes to optimize out the `out` or `inout` modifiers. When the function is inlined, those modifiers are unused and the compile time gets reduced.
-
-This characteristic can change in the future, but it will be worth experimenting with `[ForceInline]`.
+For more information, please refer to `LineDirectiveMode` in the [Slang User's Guide](https://shader-slang.com/slang/user-guide/compiling.html).
 
 
-### -O[0-3] Optimization Option
-When debugging, disabling the optimization may help.
+### Experiment with [ForceInline]
+`[ForceInline]` is akin to the `inline` keyword in C++, where the body of a function is inlined at the call locations. This typically does not make any observable differences, but we have noticed that using `[ForceInline]` can reduce compile times compared to HLSL compilation with DXC.
 
-Slang offers several optimization levels that can be specified during compilation. Use the -O option followed by a level from 0 to 3, where:
+This is because the shader optimization step inside DXC involves additional processes to optimize out the `out` or `inout` modifiers. When the function is inlined, these modifiers become redundant, thus reducing compile times.
 
--O0: Disable optimizations.
--O1: Basic optimizations.
--O2: More aggressive optimizations, potentially increasing compile time.
--O3: Maximum optimizations, suitable for release builds.
-
+This characteristic may change in the future, but it is worth experimenting with `[ForceInline]`.
