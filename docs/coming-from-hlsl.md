@@ -210,8 +210,10 @@ MyStruct operator+(MyStruct lhs, MyStruct rhs)
 ```
 </td></tr></table>
 
+For more details, please consult the [Slang User's Guide](https://shader-slang.com/slang/user-guide/convenience-features.html#operator-overloading)
+
 ### Subscript Operator
-Slang does not permit overloading the `operator[]` as HLSL does; instead, you must use the `__subscript` keyword.
+Slang uses a different syntax for overloading subscript operator so both reads and writes to a subscript location can be defined.
 
 <table>
 <tr><td>HLSL shader</td><td>Slang shader</td></tr>
@@ -238,6 +240,7 @@ struct MyType
     __subscript(int index) -> float
     {
         get { return val[index]; }
+        set { val[index] = newValue; }
     }
 }
 ```
