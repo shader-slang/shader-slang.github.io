@@ -40,7 +40,7 @@ Consistent quality and dedication are key criteria. Committers typically have:
 
 ## The Committer Nomination Process
 
-Once you meet the criteria above, you can nominate yourself to become a committer. This process includes:
+Once you meet the criteria above, you can request to be nominated to become a committer. This process includes:
 
 **Nomination:** You can ask a committer to nominate you to become a committer via our discord channel.
 

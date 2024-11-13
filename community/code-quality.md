@@ -5,7 +5,7 @@ Thank you for your interest in contributing to Slang! We welcome contributions f
 
 **Follow Project Standards:** Adhere to the code style and conventions currently used in Slang. This includes formatting, naming conventions, and structural patterns.
 
-**Consistent Formatting:** Use spaces/tabs, line lengths, and other formatting elements as defined by the existing code. All code must be formatted with `clang-format` using the configuration in root directory.
+**Consistent Formatting:** Use spaces/tabs, line lengths, and other formatting elements as defined by the existing code. All code must be formatted with `clang-format` using the configuration in the root source directory.
 
 **Comments and Documentation:** Document all public methods, significant logic blocks, and any complex code in a clear, concise manner. Each comment should add value to the code and explain why something is done, not just what it does.
 
