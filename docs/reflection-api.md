@@ -30,7 +30,6 @@ You can get data for:
  - [Serialization](#shaderreflection-serialization)
 
 
-### How to access to `ShaderReflection` object
 After calling `createCompositeComponentType()`, you will get a "program" whose type is `IComponentType`.
 You can call `IComponentType::getLayout()` to access the reflection object.
 ```
@@ -92,7 +91,7 @@ slang::ISession* ShaderReflection::getSession();
 ### ShaderReflection Parameter and Type parameter
 
 #### ShaderReflection::getParameterByIndex()
-TODO: Describe the function with an example.
+Returns [`VariableLayoutReflection`](#variablelayoutreflection) object reflecting a parameter for the given `index`.
 ```
 VariableLayoutReflection* ShaderReflection::getParameterByIndex(unsigned index);
 ```
@@ -152,7 +151,7 @@ TypeLayoutReflection* ShaderReflection::getGlobalParamsTypeLayout();
 ```
 
 #### ShaderReflection::getGlobalParamsVarLayout()
-TODO: Describe the function with an example.
+Returns [`VariableLayoutReflection`](#variablelayoutreflection) object reflecting a global parameter variable layout.
 ```
 VariableLayoutReflection* ShaderReflection::getGlobalParamsVarLayout();
 ```
@@ -251,8 +250,8 @@ You can get data for:
  - [Binding](variablelayoutreflection-binding)
  - [Semantics](variablelayoutreflection-semantics)
 
-### How to access to `VariableLayoutReflection` object
-TODO:
+TODO: Need to describe how to get the object of `VariableLayoutReflection` with an example.
+
 
 ### VariableLayoutReflection Basic information
 
