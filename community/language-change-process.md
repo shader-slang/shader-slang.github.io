@@ -2,26 +2,37 @@
 
 Changes that touch Slang's language and user-facing interfaces, including syntax, core module and public APIs need to follow the feature change process described in this document.
 
-## File a Feature Tracker
-The first step of doing a feature change is to file an "Feature Tracker" issue on our github with associated FeatureTracker label to begin including all template fields included. You will need to be a committer, or ask a committer or community member with greater access to the repo to do this, see [community structure](/community/index#community-structure) for how to do so.
+Before undertaking the rest of the process, you are encouraged to “pitch” your idea on the Slang GitHub forum, in order to solicit informal feedback from the community. Feedback at this stage can help refine an idea, suggest directions, and identify potential collaborators.
 
-This will be your "Feature tracker" and you'll need to keep it updated.
+## File a Feature Tracker
+The first step of doing a feature change is to file a "Feature Tracker" issue on our github with associated FeatureTracker label to begin including all template fields included. You will need to be a committer, or ask a committer or community member with greater access to the repo to do this, see [community structure](/community/index#community-structure) for how to do so.
+
+This will be your "Feature Tracker" and you'll need to keep it updated.
 
 ## Feature Proposal
 In the feature tracker issue, include in the proposal a link to your design — a link to a PR, google doc, your choice.
 The proposal document should include the detailed design and proposed changes in the Slang compiler implementation.
 
-## Annouce the Experimental Feature
+## Announce the Experimental Feature
 
-Announce the intent to experiment feature in the [Announcement Channel in GitHub Discussions](https://github.com/shader-slang/slang/discussions/categories/announcements). Assuming positive community support for your proposal, move your tracking issue’s status to “Implementation” and begin putting up PRs for reviews by relevant code OWNERs.
+Announce your intent to implement the feature in the [Announcement Channel in GitHub Discussions](https://github.com/shader-slang/slang/discussions/categories/announcements).
 
-## Submit Pull Requests
+## Iterate on design and implementation
 
-Once announced, you can begin the work to implement the proposed feature, and iterate on implementation, design documentation and user reference documentation at the same time. The implementation can be merged to main branch at any frequency agreed by the dev team and the owner of the feature.
+The OWNERs of docs/proposals (aka the “language OWNERs”) may weigh in on feature proposal issues to give guidance on what they expect will or will not be accepted as changes to the language.
 
-Reference docs (language ref, library ref) should be updated regularly during this process along with implementation pull requests to allow the community to try your feature out.
+If it is clear to the language OWNERs that a proposed feature will not be accepted, they may close out the issue with an explanation of the reasoning.
+Ideally, you should wait to get positive feedback from at least one language OWNER before moving forward with implementation, to avoid the possibility of wasted effort.
 
-Note that the implementation of a new feature is being made as commits to top-of-tree, albeit marked as experimental (and thus requiring an opt-in by users). The usual process for reviewing and merging pull requests will apply; there is not a separate, lower, quality bar for code changes related to experimental features.
+Assuming positive community support for your proposal, move your tracking issue's status to "experimental" and begin putting up PRs for reviews by relevant code OWNERs.
+
+During the implementation period, you are expected to:
+
+- Keep reference docs (language ref, library ref) updated regularly along with implementation pull requests to allow the community to try your feature out.
+
+- Commit the implementation of a new feature to top-of-tree, and marked the feature as experimental (and thus requiring an opt-in by users).
+
+- Maintain the same level of code quality as other changes to the codebase. Note that the usual process for reviewing and merging pull requests will apply to your experimental feature implemnetation; there is not a separate, lower, quality bar for code changes related to experimental features.
 
 ## Transition to Stable Status
 
@@ -35,4 +46,4 @@ At decision time, the owners listed in `docs/proposals/OWNERS.txt` will discuss 
 
 We expect that between 3-7 days will be given for community feedback in typical cases. Some lived experience is needed before we can make a policy about how long review periods need to last.
 
-The total time spent from creation of the tracking issue to when a feature is marked stable may vary with the complexity of a feature, but we expect that it will typically fall in the 1-3 month range. Even if a small feature might be proposed and implemented in a matter of days, it would need to be given sufficient time in the experimental state for community engagement and feedback before being considered for stabilization.
+The total time spent from creation of the tracking issue to when a feature is marked "stable" may vary with the complexity of a feature, but we expect that it will typically fall in the 1-3 month range. Even if a small feature might be proposed and implemented in a matter of days, it would need to be given sufficient time in the experimental state for community engagement and feedback before being considered for stabilization.
