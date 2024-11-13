@@ -77,6 +77,9 @@ void main()
     return;
 }
 ```
+> #### Note ####
+> You can check out how this hello world shader compiles to different targets on [Slang Playground](/slang-playground/?target=SPIRV&code=eJyFjz0LwjAQhvf7FUenih9V3Iw6SBcHFxUdSpHYpDYQE8mHFsT_bu2Hm3g33fM-B3dRhAWXUg8f2kg2spKqC-yc8ZnzhrOVz3Nu5rnU1C3xXE9j8keYENgefymGWy8dAUhsQRk3YZDp6807HvRSSJS_usJwymw4GVRdsbsWDFtnQ4UKvVBuio22ZjjD3eEUC3ujLiv2DY178ASs6uOiUIyXuPiujEpSh80pSR2nVd6-14F-904LCLzedkNpAg).
+
 
 As you can see, things are being translated just as expected to GLSL: the HLSL `StructuredBuffer` and `RWStructuredBuffer` types are mapped to shader storage objects and the `[numthreads]` attribute are translated into proper `layout(...) in` qualifier on the `main` entry-point.
 
@@ -85,3 +88,8 @@ Note that in the generated GLSL code, all shader parameters are qualified with e
 ## The full example
 
 The full Vulkan example that sets up and runs the `hello-world.slang` shader in located in the [/examples/hello-world](https://github.com/shader-slang/slang/tree/master/examples/hello-world) directory of the Slang repository. The example code initializes a Vulkan context and runs the compiled SPIR-V code. The example code demonstrates how to use the Slang API to load and compile shaders.
+
+## Further Reading
+
+Checkout how to write vertex and fragment shaders in this [Slang Playground Demo](/slang-playground/?target=SPIRV&code=eJyVU01r20AQvetXDD7Z4MqJm0OJUh_iXHoIDdgEijFlI41tkdWu2J11bUr_e2c_vJHpqUKg1czozXszT7MZrA-tBTyJrpcIDXZaWTKC0MJB_wLSHNu1CuGIhvAEQjWwM2LfoSKwB9GgAT6ac69bRbYsZgmSbwG17vpW4iet5PnSZApWAx3QoK9RGrSj3hGj6s7HoZfivDfaqSag_dAOaqHAWQzp0TKCjuDNEWnlOaY-nB-I8dzb3Y4bMVUSZo-eX8HyXE3wGvQUvwvgaye1oM_Qa9tSq1U1DCptOiEHoTm4Y1X8yUjPPC3TCpmweAwg5Bs2eo0ncga_qQZPVc5FvOvcB9iqRoUJaRVCXNU8Oq_j4dJpAV062Yib0OZPQPFkN7fzL9sh8FJ0aMRQ793pDrpjH4pehOE8Yz5KXb8_BBYLsP5RFUvvCaEosYhIC16Kf1bFKozbrIg5gR28VB_D_u7oqnUeNdzD6vXny_8NfhONNx5FU44m28J3SB59Fq0ax_XywNlak9Q61ES3RdR4LjOXr9A5OY66Sh7NNLEdB5hcN4Xb8mYyucKIZBkhlg65pwp3zFkvw2cM8q5UpjRUdvnHvLY0skso6vNaoro4wnUweFIqkS5O4KZhjWV2RnzNDtrcbMt__bqtMlCtpTYMkwDKuO_xcNPTLGxypSx86oX9Be1nf3g).
+
