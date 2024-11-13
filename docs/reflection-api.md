@@ -95,6 +95,8 @@ Returns [`VariableLayoutReflection`](#variablelayoutreflection) object reflectin
 ```
 VariableLayoutReflection* ShaderReflection::getParameterByIndex(unsigned index);
 ```
+TODO: Need an example.
+
 
 #### ShaderReflection::getTypeParameterByIndex()
 TODO: Describe the function with an example.
@@ -155,6 +157,7 @@ Returns [`VariableLayoutReflection`](#variablelayoutreflection) object reflectin
 ```
 VariableLayoutReflection* ShaderReflection::getGlobalParamsVarLayout();
 ```
+TODO: Need an example.
 
 
 ### ShaderReflection Type and function reflection
