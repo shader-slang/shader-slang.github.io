@@ -1,20 +1,20 @@
 # Using the Slang Reflection API
 
 There are a few classes for Slang reflection.
- - [ShaderReflection](#shaderreflection)
- - [VariableLayoutReflection](#variablelayoutreflection)
- - [VariableReflection](#variablereflection)
- - [TypeParameterReflection](#typeparameterreflection)
- - [EntryPointReflection](#entryPointreflection)
- - [TypeLayoutReflection](#typeLayoutreflection)
- - [TypeReflection](#typereflection)
- - [FunctionReflection](#functionreflection)
- - [GenericReflection](#genericreflection)
+ - [ShaderReflection](#shaderreflection) : access the reflection data from a given program.
+ - [VariableLayoutReflection](#variablelayoutreflection) : access the reflection data for a variable layout.
+ - [VariableReflection](#variablereflection) : access the reflection data for a variable.
+ - [TypeParameterReflection](#typeparameterreflection) : access the reflection data for a type parameter.
+ - [EntryPointReflection](#entryPointreflection) : access the reflection data for an entry point.
+ - [TypeLayoutReflection](#typeLayoutreflection) : access the reflection data for a type layout.
+ - [TypeReflection](#typereflection) : access the reflection data for a type.
+ - [FunctionReflection](#functionreflection) : access the reflection data for a function.
+ - [GenericReflection](#genericreflection) : access the reflection data for a generic.
 
 There are a few enum definitions for Slang reflection.
- - [SlangStage](#slangstage)
- - [Modifier](#modifier)
- - [ParameterCategory](#parametercategory)
+ - [SlangStage](#slangstage) : enum for shader stages such as vertex, fragment and compute stages.
+ - [Modifier](#modifier) : enum for various modifiers.
+ - [ParameterCategory](#parametercategory) : enum for various parameter categories.
 
 ## ShaderReflection
 `ShaderReflection` allows Slang users to access the reflection data from the composited program object.
