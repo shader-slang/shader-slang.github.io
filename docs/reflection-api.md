@@ -19,7 +19,7 @@ There are a few enum definitions for Slang reflection.
 ## ShaderReflection
 `ShaderReflection` allows Slang users to access the reflection data from the composited program object.
 You can get data for:
- - [Basic information](#shaderreflection-basic-information)
+ - [Access to parameters](#shaderreflection-access-to-parameters)
  - [Parameter and type parameter](#shaderreflection-parameter-and-type-parameter)
  - [Entry points](#shaderreflection-entry-points)
  - [Global constants and layouts](#shaderreflection-global-constants-and-layouts)
@@ -48,12 +48,14 @@ static ProgramLayout* ShaderReflection::get(SlangCompileRequest* request);
 TODO: Need an example.
 
 
-### ShaderReflection Basic information
+### ShaderReflection access to parameters
+You can iterate the parameters with `getParameterCount()` and `getParameterByIndex()`.
 
-#### ShaderReflection::getParameterCount()
-Returns the number of parameters.
+`getParameterCount()` returns the number of parameters for the given `ShaderReflection` object.
+`getParameterByIndex` returns [`VariableLayoutReflection`](#variablelayoutreflection) object reflecting a parameter for the given `index`.
 ```
 unsigned ShaderReflection::getParameterCount();
+VariableLayoutReflection* ShaderReflection::getParameterByIndex(unsigned index);
 ```
 
 Example,
@@ -76,9 +78,31 @@ for (unsigned int i = 0; i < parameterCount; ++i)
 ```
 
 #### ShaderReflection::getTypeParameterCount()
-TODO: Describe the function with an example.
+Returns the number of type-parameters.
 ```
 unsigned ShaderReflection::getTypeParameterCount();
+```
+
+Example,
+```
+#include "slang.h"
+
+// Assume we have a valid reflection object
+slang::ShaderReflection* reflection = /* obtain a reflection object */;
+
+// Get the number of type parameters
+unsigned int typeParameterCount = reflection->getTypeParameterCount();
+
+// Output the number of type parameters
+printf("Number of type parameters: %u\n", typeParameterCount);
+
+// Iterate over the type parameters
+for (unsigned int i = 0; i < typeParameterCount; ++i)
+{
+    slang::TypeParameterReflection* typeParameter = reflection->getTypeParameterByIndex(i);
+    const char* paramName = typeParameter->getName();
+    printf("Type parameter %u: %s\n", i, paramName);
+}
 ```
 
 #### slang::ISession* ShaderReflection::getSession()
@@ -89,14 +113,6 @@ slang::ISession* ShaderReflection::getSession();
 
 
 ### ShaderReflection Parameter and Type parameter
-
-#### ShaderReflection::getParameterByIndex()
-Returns [`VariableLayoutReflection`](#variablelayoutreflection) object reflecting a parameter for the given `index`.
-```
-VariableLayoutReflection* ShaderReflection::getParameterByIndex(unsigned index);
-```
-TODO: Need an example.
-
 
 #### ShaderReflection::getTypeParameterByIndex()
 TODO: Describe the function with an example.
