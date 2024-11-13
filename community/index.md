@@ -19,7 +19,7 @@ report issues, start discussion threads, or submit pull requests.
 
 #### Committer
 
-A committer is a community member who has write access to the Slang repository and can approve pull requests. This is a status that can be earned by maintaining a track record of submitting and landing code changes to the Slang project (see more details on [the process of becoming a committer](/community/become-a-committer).) All community members can review code submitted by other community members, but for a pull request to be considered approved and ready for merging, at least one **owner** (more info below) of each file you are touching must provide an approving review. Ideally a committer should choose reviewers who are familiar with the area of code you are touching. If you have doubts, look at the git blame for the file and the OWNERS files.
+A committer is a community member who has write access to the Slang repository and can approve pull requests. This is a status that can be earned by maintaining a track record of submitting and landing code changes to the Slang project (see more details on [the process of becoming a committer](/community/become-a-committer).) All community members can review code submitted by other community members, but for a pull request to be considered approved and ready for merging, at least one **owner** (more info below) of each file you are touching must provide an approving review. Ideally a committer should choose reviewers who are familiar with the area of code you are touching. If you have doubts, look at the git blame for the file and the CODEOWNER file.
 
 Submissions to `docs/proposals` are considered **Slang Proposed Features (SPFs)**, and require two *Language Owners* (more info below) to approve the submission.
 
@@ -50,4 +50,8 @@ If you are ready to start contributing, please follow our [guide for creating a 
 
 If you think you might be ready to be a committer, ask one of the reviewers of your pull request or another committer familiar with your work to see if they will nominate you. They will discuss that in #slang-committers discord — two others in that will need to second the nomination. See [how to become a committer here](/community/become-a-committer).
 
-All committers are by-default the owner of all directories except the `docs/proposals` directory.
+## Request to Own More Directories
+
+When you are granted committer status, you will be assigned an initial set of directories that you will own based on your record of contribution. As you continue to contribute to the project, you will naturally become the owner for any new directories that you create.
+
+After landing several changes to a specific directory, you can request to be an owner of the directory by submitting a PR to modify the `./github/CODEOWNER` file adding yourself to the owners list. Your PR will go through the same review process and you will become an owner once the PR is approved and merged.
