@@ -1,9 +1,20 @@
 # Using the Slang Reflection API
 
 ## ShaderReflection
-TODO: overview of what `ShaderReflection` is.
+`ShaderReflection` allows Slang users to access the reflection data from the composited program object.
+You can get data for:
+ - [Basic information](shaderreflection-basic-information)
+ - [Parameter and type parameter](shaderreflection-parameter-and-type-parameter)
+ - [Entry points](shaderreflection-entry-points)
+ - [Global constants and layouts](shaderreflection-global-constants-and-layouts)
+ - [Type and function reflection](shaderreflection-type-and-function-reflection)
+ - [Specialization](shaderreflection-specialization)
+ - [Subtype checking](shaderreflection-subtype-checking)
+ - [Hashed strings](shaderreflection-hashed-strings)
+ - [Serialization](shaderreflection-serialization)
 
-### How to access the reflection data
+
+### How to access to `ShaderReflection` object
 After calling `createCompositeComponentType()`, you will get a "program" whose type is `IComponentType`.
 You can call `IComponentType::getLayout()` to access the reflection object.
 ```
@@ -15,7 +26,6 @@ session->createCompositeComponentType(components, 2, program.writeRef());
 slang::ProgramLayout* layout = program->getLayout();
 ```
 
-#### ShaderReflection::get()
 Alternatively, you can get the reflection object from a static method, `ShaderReflection::get()` with `SlangCompileRequest` parameter.
 ```
 static ProgramLayout* ShaderReflection::get(SlangCompileRequest* request);
@@ -23,7 +33,7 @@ static ProgramLayout* ShaderReflection::get(SlangCompileRequest* request);
 TODO: Need an example.
 
 
-### Basic information retrieval
+### ShaderReflection Basic information
 
 #### ShaderReflection::getParameterCount()
 Returns the number of parameters.
@@ -63,7 +73,7 @@ slang::ISession* ShaderReflection::getSession();
 ```
 
 
-### Parameter and Type parameter Access
+### ShaderReflection Parameter and Type parameter
 
 #### ShaderReflection::getParameterByIndex()
 TODO: Describe the function with an example.
@@ -84,7 +94,7 @@ TypeParameterReflection* ShaderReflection::findTypeParameter(char const* name);
 ```
 
 
-### Entry Points
+### ShaderReflection Entry Points
 
 #### ShaderReflection::getEntryPointCount()
 TODO: Describe the function with an example.
@@ -105,7 +115,7 @@ EntryPointReflection* ShaderReflection::findEntryPointByName(const char* name);
 ```
 
 
-### Global constants and layouts
+### ShaderReflection Global constants and layouts
 
 #### ShaderReflection::getGlobalConstantBufferBinding()
 TODO: Describe the function with an example.
@@ -132,7 +142,7 @@ VariableLayoutReflection* ShaderReflection::getGlobalParamsVarLayout();
 ```
 
 
-### Type and function reflection
+### ShaderReflection Type and function reflection
 
 #### ShaderReflection::findTypeByName()
 TODO: Describe the function with an example.
@@ -159,7 +169,7 @@ TypeLayoutReflection* ShaderReflection::getTypeLayout(TypeReflection* type, Layo
 ```
 
 
-### Specialization
+### ShaderReflection Specialization
 
 #### ShaderReflection::specializeType()
 TODO: Describe the function with an example.
@@ -183,7 +193,7 @@ GenericReflection* ShaderReflection::specializeGeneric(
 ```
 
 
-### Subtype checking
+### ShaderReflection Subtype checking
 
 #### ShaderReflection::isSubType()
 TODO: Describe the function with an example.
@@ -191,7 +201,7 @@ TODO: Describe the function with an example.
 bool ShaderReflection::isSubType(TypeReflection* subType, TypeReflection* superType);
 ```
 
-### Hashed strings
+### ShaderReflection Hashed strings
 
 #### ShaderReflection::getHashedStringCount()
 TODO: Describe the function with an example.
@@ -206,7 +216,7 @@ const char* ShaderReflection::getHashedString(SlangUInt index, size_t* outCount)
 ```
 
 
-### Serialization
+### ShaderReflection Serialization
 
 #### ShaderReflection::toJson()
 TODO: Describe the function with an example.
@@ -217,8 +227,18 @@ SlangResult ShaderReflection::toJson(ISlangBlob** outBlob);
 
 ## VariableLayoutReflection
 `VariableLayoutReflection` provides methods to retrieve detailed information about variables in a shader program, including their types, categories, and binding information.
+You can get data for:
+ - [Basic information](variablelayoutreflection-basic-information)
+ - [Type and type layout](variablelayoutreflection-type-and-type-layout)
+ - [Category](variablelayoutreflection-category)
+ - [Offset](variablelayoutreflection-offset)
+ - [Binding](variablelayoutreflection-binding)
+ - [Semantics](variablelayoutreflection-semantics)
 
-### Basic information
+### How to access to `VariableLayoutReflection` object
+TODO:
+
+### VariableLayoutReflection Basic information
 
 #### VariableLayoutReflection::getVariable()
 TODO: Describe the function with an example.
@@ -250,7 +270,7 @@ TODO: Describe the function with an example.
 VariableLayoutReflection* VariableLayoutReflection::getPendingDataLayout();
 ```
 
-### Type and Type layout
+### VariableLayoutReflection Type and Type layout
 
 #### VariableLayoutReflection::getType()
 TODO: Describe the function with an example.
@@ -264,7 +284,7 @@ TODO: Describe the function with an example.
 TypeLayoutReflection* VariableLayoutReflection::getTypeLayout();
 ```
 
-### Category
+### VariableLayoutReflection Category
 TODO: Describe the function with an example.
 ```
 ParameterCategory VariableLayoutReflection::getCategory();
@@ -282,13 +302,13 @@ TODO: Describe the function with an example.
 ParameterCategory VariableLayoutReflection::getCategoryByIndex(unsigned int index);
 ```
 
-### Offset
+### VariableLayoutReflection Offset
 TODO: Describe the function with an example.
 ```
 size_t VariableLayoutReflection::getOffset(SlangParameterCategory category = SLANG_PARAMETER_CATEGORY_UNIFORM);
 ```
 
-### Binding
+### VariableLayoutReflection Binding
 
 #### VariableLayoutReflection::getBindingIndex()
 TODO: Describe the function with an example.
@@ -308,7 +328,7 @@ TODO: Describe the function with an example.
 size_t VariableLayoutReflection::getBindingSpace(SlangParameterCategory category);
 ```
 
-### Semantics
+### VariableLayoutReflection Semantics
 
 #### VariableLayoutReflection::getSemanticName()
 TODO: Describe the function with an example.
