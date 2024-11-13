@@ -285,6 +285,9 @@ Slang demands more strict type casting, but you can add your own casting functio
 Due to this difference, some casting issues may appear as errors while migrating your HLSL shaders to Slang.
 
 
+### SPIR-V target specific functionalities
+When you target SPIR-V, there are a few things that the user may want to know. Please check the [Slang User's Guide](https://shader-slang.com/slang/user-guide/spirv-target-specific.html) for more details.
+
 
 ## Debugging and Performance Tips
 
