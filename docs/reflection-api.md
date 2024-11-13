@@ -1,17 +1,33 @@
 # Using the Slang Reflection API
 
+There are a few classes for Slang reflection.
+ - [ShaderReflection](#shaderreflection)
+ - [VariableLayoutReflection](#variablelayoutreflection)
+ - [VariableReflection](#variablereflection)
+ - [TypeParameterReflection](#typeparameterreflection)
+ - [EntryPointReflection](#entryPointreflection)
+ - [TypeLayoutReflection](#typeLayoutreflection)
+ - [TypeReflection](#typereflection)
+ - [FunctionReflection](#functionreflection)
+ - [GenericReflection](#genericreflection)
+
+There are a few enum definitions for Slang reflection.
+ - [SlangStage](#slangstage)
+ - [Modifier](#modifier)
+ - [ParameterCategory](#parametercategory)
+
 ## ShaderReflection
 `ShaderReflection` allows Slang users to access the reflection data from the composited program object.
 You can get data for:
- - [Basic information](shaderreflection-basic-information)
- - [Parameter and type parameter](shaderreflection-parameter-and-type-parameter)
- - [Entry points](shaderreflection-entry-points)
- - [Global constants and layouts](shaderreflection-global-constants-and-layouts)
- - [Type and function reflection](shaderreflection-type-and-function-reflection)
- - [Specialization](shaderreflection-specialization)
- - [Subtype checking](shaderreflection-subtype-checking)
- - [Hashed strings](shaderreflection-hashed-strings)
- - [Serialization](shaderreflection-serialization)
+ - [Basic information](#shaderreflection-basic-information)
+ - [Parameter and type parameter](#shaderreflection-parameter-and-type-parameter)
+ - [Entry points](#shaderreflection-entry-points)
+ - [Global constants and layouts](#shaderreflection-global-constants-and-layouts)
+ - [Type and function reflection](#shaderreflection-type-and-function-reflection)
+ - [Specialization](#shaderreflection-specialization)
+ - [Subtype checking](#shaderreflection-subtype-checking)
+ - [Hashed strings](#shaderreflection-hashed-strings)
+ - [Serialization](#shaderreflection-serialization)
 
 
 ### How to access to `ShaderReflection` object
