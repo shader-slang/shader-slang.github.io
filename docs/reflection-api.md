@@ -16,7 +16,7 @@ The shader parameters in D3D11 are bound in one of four ways.
 4. When the resource type is Unordered Access View, it is bound to a register starting with a letter `u`.
 
 Consider the following example,
-```
+```hlsl
 // D3D11 HLSL Compute Shader Example
 
 Texture2D myTexture : register(t0); // Texture bound to t0
@@ -55,7 +55,7 @@ The shader parameters in D3D12 introduced two new concepts for the binding.
 2. "array of descriptors" can be specified.
 
 Consider the following example,
-```
+```hlsl
 // D3D12 HLSL Compute Shader Example with Register Spaces
 
 Texture2D myTexture1 : register(t0); // Texture bound to t0 in a default space, which is space0
