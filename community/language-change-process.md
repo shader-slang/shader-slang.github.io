@@ -22,8 +22,8 @@ Announce your intent to implement the feature in the [Announcement Channel in Gi
 The Owners of docs/proposals (aka the "Language Owners") may weigh in on feature proposal issues to give guidance on what they expect will or will not be accepted as changes to the language.
 
 If it is clear to the Language Owners that a proposed feature will not be accepted, they may close out the issue with an explanation of the reasoning.
-Ideally, you should wait to get positive feedback from at least one language OWNER before moving forward with implementation, to avoid the possibility of wasted effort.
-If the community feedback is mixed or insufficient, the Language Owners should make a decision on whether or not to proceed with implementation.
+Ideally, you should wait to get positive feedback from at least one Language Owner before moving forward with implementation, to avoid the possibility of wasted effort.
+The Language Owners are responsible for making a decision on whether or not to proceed with implementation for all proposals to remove the ambiguity in the case of insufficient or mixed community feedback.
 
 With positive support for your proposal from the Language Owners, move your tracking issue's status to "experimental" and begin putting up PRs for reviews by relevant code Owners.
 
