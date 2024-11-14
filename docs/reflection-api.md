@@ -6,14 +6,80 @@ Slang's reflection API is designed to provide the parameter binding locations fo
 
 We will go over how the resource binding is done for a few grpahics APIs in order to understand the problem more. And you will learn how Slang solves the problem with the reflection APIs.
 
-## How parameter binding works for D3D12 and Vulkan
+## How parameter binding works for different graphics APIs
 
-TODO: the content below describes a rough idea of what needs to be written.
-- Traditional D3D11:  parameters are given a binding index based on its type. Textures has t0,t1,... bindings, and samplers are allocated in the “s” registers as in s0, s1,... same for UAVs (in u registers) and constant buffers (in c registers).
+### Direct3D 11
+The shader parameters in D3D11 are bound in one of four ways.
+1. When the resource type is texture, it is bound to a register starting with a letter `t`.
+2. When the resource type is sampler, it is bound to a register starting with a letter `s`.
+3. When the resource type is constant, it is bound to a register starting with a letter `b`.
+4. When the resource type is Unordered Access View, it is bound to a register starting with a letter `u`.
+
+Consider the following example,
+```
+// D3D11 HLSL Compute Shader Example
+
+Texture2D myTexture : register(t0); // Texture bound to t0
+SamplerState mySampler : register(s0); // Sampler bound to s0
+
+cbuffer ConstantBuffer : register(b0) // Constant buffer bound to b0
+{
+    float4x4 transformationMatrix;
+    uint textureWidth;
+    uint textureHeight;
+};
+
+RWTexture2D<float4> outputTexture : register(u0); // UAV bound to u0
+
+[numthreads(16, 16, 1)]
+void computeMain(uint3 DTid : SV_DispatchThreadID)
+{
+    if (DTid.x < textureWidth && DTid.y < textureHeight)
+    {
+        float2 texCoord = float2(DTid.x / (float)textureWidth, DTid.y / (float)textureHeight);
+        float4 color = myTexture.Sample(mySampler, texCoord);
+        float4 transformedColor = mul(transformationMatrix, color);
+        outputTexture[DTid.xy] = transformedColor;
+    }
+}
+```
+The example above shows four shader parameters.
+`myTexture` is bound to a register `t0`, because it is a `Texture2D` type.
+`mySampler` is bound to a register `s0`, because it is a `SamplerState` type.
+`ConstantBuffer` is bound to a register `b0`, becuase it is a `cbuffer` type.
+`outputTexture` is bound to a register `u0`, because it is a `RWTexture2D` or also known as UAV type.
+
+### Direct3D 12
+The shader parameters in D3D12 introduced two new concepts for the binding.
+1. register `space` can be specified.
+2. "array of descriptors" can be specified.
+
+Consider the following example,
+```
+// D3D12 HLSL Compute Shader Example with Register Spaces
+
+Texture2D myTexture1 : register(t0); // Texture bound to t0 in a default space, which is space0
+Texture2D myTexture2 : register(t0, space1); // Texture bound to t0 in space1 and doesn't conflict with t0 in space0
+Texture2D myTexture3[10] : register(t0, space2); // bound from t0 to t9 registers in space2
+```
+`myTexture1` and `myTexture2` uses the same register index, `t0`, but they don't conflict because `myTexture2` uses a slot from a different space.
+`myTexture3` is bound to multiple slots from `t0` to `t9` in `space2`.
+
+### OpenGL
+TODO: Need a better description with an example
+
 - Traditional OpenGL api: everything is in the same binding space, specified by the layout(binding =...)
-- D3D12: introduces the concept of register spaces and descriptor tables. Developers can group parameter bindings into spaces, and can allocate descriptor tables to store the actual bindings.
+
+### Vulkan
+TODO: Need a better description with an example
+
 - Vulkan: there is descriptor set index, and binding index within a descriptor set. All resource parameters must be allocated a (descriptor set index, binding index) as its location.
+
+### Metal
+TODO: Need a better description with an example
+
 - Metal: has argument buffer that behaves like a descriptor set in Vulkan, that is capable of holding different types of parameter bindings and can be populated beforehand.
+
 
 ## How Slang binds the resources
 
