@@ -1,69 +1,72 @@
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: "en-US" }}">
-  <head>
-    <meta charset='utf-8'>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
-    <link rel="stylesheet" href="{{ '/assets/style.css?v=' | append: site.github.build_revision | relative_url }}">
-    <link rel="stylesheet" type="text/css" href="{{ '/assets/css/print.css' | relative_url }}" media="print">
-    <!--[if lt IE 9]>
+<html lang="{{ site.lang | default: " en-US" }}">
+
+<head>
+  <meta charset='utf-8'>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
+  <link rel="stylesheet" href="{{ '/assets/style.css?v=' | append: site.github.build_revision | relative_url }}">
+  <link rel="stylesheet" type="text/css" href="{{ '/assets/css/print.css' | relative_url }}" media="print">
+  <!--[if lt IE 9]>
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TMTZVLLMBP"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-TMTZVLLMBP');
-    </script>
-{% seo %}
-  </head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TMTZVLLMBP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-TMTZVLLMBP');
+  </script>
+  {% seo %}
+</head>
 
-  <body>
-    <div id="container">
-      <header>
-        <div id="innerHeader">
-          <img id="logoContainer" src="/assets/slang-logo-1.png">
-          <div class="main_nav">
-            <span class="mainNavItem"><a href="/">Home</a></li></span>
-            <span class="mainNavItem"><a href="/docs/getting-started">Getting Started</a></li></span>
-            <span class="mainNavItem"><a href="/slang-playground">Playground</a></li></span>
-            <span class="mainNavItem"><a href="/docs/">Documentation</a></li></span>
-            <span class="mainNavItem"><a href="/tools">Tools</a></li></span>
-            <span class="mainNavItem"><a href="/community">Community</a></li></span>
-          </div>
+<body>
+  <div id="container">
+    <header>
+      <div id="innerHeader">
+        <img id="logoContainer" src="/assets/slang-logo.svg">
+        <div class="main_nav">
+          <span class="mainNavItem"><a href="/">Home</a></li></span>
+          <span class="mainNavItem"><a href="/docs/getting-started">Getting Started</a></li></span>
+          <span class="mainNavItem"><a href="/slang-playground">Playground</a></li></span>
+          <span class="mainNavItem"><a href="/docs/">Documentation</a></li></span>
+          <span class="mainNavItem"><a href="/tools">Tools</a></li></span>
+          <span class="mainNavItem"><a href="/community">Community</a></li></span>
         </div>
-      </header>
-
-      <div id="bodyInner">
-       
-        <section id="downloads" class="clearfix">
-          {% if site.show_downloads %}
-          <a href="{{ site.github.zip_url }}" id="download-zip" class="button"><span>Download .zip</span></a>
-          <a href="{{ site.github.tar_url }}" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
-          {% endif %}
-	{% if site.github.public %}
-	  {% if site.github.is_project_page %}
-          <a href="{{ site.github.repository_url }}" id="view-on-github" class="button"><span>View on GitHub</span></a>
-	  {% else %}
-          <a href="{{ site.github.owner_url }}" id="view-on-github" class="button"><span>View on GitHub</span></a>
-	  {% endif %}
-	{% endif %}
-        </section>
-        <hr>
-        <section id="main_content">
-          {{ content }}
-        </section>
-
-        <footer>
-        {% if site.github.is_project_page %}
-          {{ site.title | default: site.github.repository_name }} is maintained by <a href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a><br>
-        {% endif %}
-        </footer>
-
       </div>
+    </header>
+
+    <div id="bodyInner">
+
+      <section id="downloads" class="clearfix">
+        {% if site.show_downloads %}
+        <a href="{{ site.github.zip_url }}" id="download-zip" class="button"><span>Download .zip</span></a>
+        <a href="{{ site.github.tar_url }}" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+        {% endif %}
+        {% if site.github.public %}
+        {% if site.github.is_project_page %}
+        <a href="{{ site.github.repository_url }}" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        {% else %}
+        <a href="{{ site.github.owner_url }}" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        {% endif %}
+        {% endif %}
+      </section>
+      <hr>
+      <section id="main_content">
+        {{ content }}
+      </section>
+
+      <footer>
+        {% if site.github.is_project_page %}
+        {{ site.title | default: site.github.repository_name }} is maintained by <a
+          href="{{ site.github.owner_url }}">{{ site.github.owner_name }}</a><br>
+        {% endif %}
+      </footer>
+
     </div>
-  </body>
+  </div>
+</body>
+
 </html>
