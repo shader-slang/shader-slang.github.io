@@ -42,6 +42,10 @@ Pull requests are expected to be reviewed by the committers within 24 hours afte
 
 Changes that add or modify syntax, language features, Slang's core module, or the compilation and reflection API must go through our process for language changes. The full process is [documented here](/community/language-change-process).
 
+#### Updates for the Processes
+
+The above processes can be updated to meet the changing needs of the Slang project. Updates to these processes can be made via pull request to the [Slang website repository](https://github.com/shader-slang/shader-slang.github.io) after community discussion and with PR approval by at least two Language Owners.
+
 ## Submitting a Pull Request
 
 If you are ready to start contributing, please follow our [guide for creating a pull request](https://github.com/shader-slang/slang/blob/master/CONTRIBUTION.md). All pull requests are expected to meet our [bar of code quality](/community/code-quality).
