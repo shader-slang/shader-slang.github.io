@@ -2,7 +2,7 @@
 
 Changes that touch Slang's language and user-facing interfaces, including syntax, core module and public APIs need to follow the feature change process described in this document.
 
-Before undertaking the rest of the process, you are encouraged to “pitch” your idea on the Slang GitHub forum, in order to solicit informal feedback from the community. Feedback at this stage can help refine an idea, suggest directions, and identify potential collaborators.
+Before undertaking the rest of the process, you are encouraged to "pitch" your idea on the Slang GitHub forum, in order to solicit informal feedback from the community. Feedback at this stage can help refine an idea, suggest directions, and identify potential collaborators.
 
 ## File a Feature Tracker
 The first step of doing a feature change is to file a "Feature Tracker" issue on our github with associated FeatureTracker label to begin including all template fields included. You will need to be a committer, or ask a committer or community member with greater access to the repo to do this, see [community structure](/community/index#community-structure) for how to do so.
@@ -21,10 +21,11 @@ Announce your intent to implement the feature in the [Announcement Channel in Gi
 
 The Owners of docs/proposals (aka the "Language Owners") may weigh in on feature proposal issues to give guidance on what they expect will or will not be accepted as changes to the language.
 
-If it is clear to the language Owners that a proposed feature will not be accepted, they may close out the issue with an explanation of the reasoning.
-Ideally, you should wait to get positive feedback from at least one language OWNER before moving forward with implementation, to avoid the possibility of wasted effort.
+If it is clear to the Language Owners that a proposed feature will not be accepted, they may close out the issue with an explanation of the reasoning.
+Ideally, you should wait to get positive feedback from at least one Language Owner before moving forward with implementation, to avoid the possibility of wasted effort.
+The Language Owners are responsible for making a decision on whether or not to proceed with implementation for all proposals to remove the ambiguity in the case of insufficient or mixed community feedback.
 
-Assuming positive community support for your proposal, move your tracking issue's status to "experimental" and begin putting up PRs for reviews by relevant code Owners.
+With positive support for your proposal from the Language Owners, move your tracking issue's status to "experimental" and begin putting up PRs for reviews by relevant code Owners.
 
 During the implementation period, you are expected to:
 
@@ -47,3 +48,4 @@ At decision time, the Owners listed in `.github/CODEOWNERS` will discuss private
 We expect that between 3-7 days will be given for community feedback in typical cases. Some lived experience is needed before we can make a policy about how long review periods need to last.
 
 The total time spent from creation of the tracking issue to when a feature is marked "stable" may vary with the complexity of a feature, but we expect that it will typically fall in the 1-3 month range. Even if a small feature might be proposed and implemented in a matter of days, it would need to be given sufficient time in the experimental state for community engagement and feedback before being considered for stabilization.
+
