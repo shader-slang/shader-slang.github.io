@@ -49,6 +49,8 @@ The example above shows four shader parameters.
  - `ConstantBuffer` is bound to a register `b0`, becuase it is a `cbuffer` type.
  - `outputTexture` is bound to a register `u0`, because it is a `RWTexture2D` or also known as UAV type.
 
+TODO: Need a HLSL example to describe the offset and size information for a constant buffer.
+
 ### Direct3D 12
 The shader parameters in D3D12 introduced two new concepts for the binding.
 1. register `space` can be specified.
@@ -65,25 +67,34 @@ Texture2D myTexture3[10] : register(t0, space2); // bound from t0 to t9 register
  - `myTexture1` and `myTexture2` uses the same register index, `t0`, but they don't conflict because `myTexture2` uses a slot from a different space.
  - `myTexture3` is bound to multiple slots from `t0` to `t9` in `space2`.
 
+TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and D3D12.
+
 ### OpenGL
 TODO: Need a better description with an example
 
 - Traditional OpenGL api: everything is in the same binding space, specified by the layout(binding =...)
+
+TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and OpenGL.
 
 ### Vulkan
 TODO: Need a better description with an example
 
 - Vulkan: there is descriptor set index, and binding index within a descriptor set. All resource parameters must be allocated a (descriptor set index, binding index) as its location.
 
+TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and OpenGL.
+
 ### Metal
 TODO: Need a better description with an example
 
 - Metal: has argument buffer that behaves like a descriptor set in Vulkan, that is capable of holding different types of parameter bindings and can be populated beforehand.
 
+TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and Metal.
+
 
 ## How Slang binds the resources
 
 TODO: the content below describes a rough idea of what needs to be written.
+
 - Fundamental Idea: a type can have multi-dimensional size. Examples
 ```
 Struct {Texture2D t1; StructuredBuffer<int> b2; Sampler2D s3; int4 data; }
@@ -97,6 +108,7 @@ Show the same figure but this time for a different API (e.g. D3D11 vs Vulkan).
 ## `ParameterBlock` provides consistent binding locations in a separated space
 
 TODO: the content below describes a rough idea of what needs to be written.
+
 The main difference is whether or not the enclosing resources bleeds into the outer environment. ConstantBuffer: no indirection, everything bleeds out. ParameterBlock: uses a separate space to hold all child elements, only the “space” binding will bleed out.
 
 Best practices to use parameter blocks to reuse parameter binding logic by creating descriptor set/ descriptor tables once and reuse them in different frames. ParameterBlocks allows developers to group parameters in a stable set, where the relative binding locations within the block is not affected by where the parameter block is defined, this enables developers to create descriptor set and populate them once, and reuse them over and over. For example: Scene often doesn’t change between frames, so we should be able to create descriptor table for all the scene resources without having to rebind every single parameter in every frame.
@@ -105,6 +117,7 @@ Best practices to use parameter blocks to reuse parameter binding logic by creat
 ## How to figure out which binding slots are unused
 
 TODO: the content below describes a rough idea of what needs to be written.
+
 Querying if a parameter location is actually used by the shader after DCE.
 Done through the IMetadata interface:
 1. IComponentType::getEntryPointMetadata() or IComponentType::getTargetMetadata() returns IMetadata*
