@@ -12,8 +12,8 @@ We will go over how the resource binding is done for a few grpahics APIs in orde
 The shader parameters in D3D11 are bound in one of four ways.
 1. When the resource type is texture, it is bound to a register starting with a letter `t`.
 2. When the resource type is sampler, it is bound to a register starting with a letter `s`.
-3. When the resource type is constant, it is bound to a register starting with a letter `b`.
-4. When the resource type is Unordered Access View, it is bound to a register starting with a letter `u`.
+3. When the resource type is Unordered Access View, it is bound to a register starting with a letter `u`.
+4. When the resource type is constant buffer, multiple values are stored in a buffer and it is bound to a register starting with a letter `b`.
 
 Consider the following example,
 ```hlsl
