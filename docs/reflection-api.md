@@ -44,10 +44,10 @@ void computeMain(uint3 DTid : SV_DispatchThreadID)
 }
 ```
 The example above shows four shader parameters.
-`myTexture` is bound to a register `t0`, because it is a `Texture2D` type.
-`mySampler` is bound to a register `s0`, because it is a `SamplerState` type.
-`ConstantBuffer` is bound to a register `b0`, becuase it is a `cbuffer` type.
-`outputTexture` is bound to a register `u0`, because it is a `RWTexture2D` or also known as UAV type.
+ - `myTexture` is bound to a register `t0`, because it is a `Texture2D` type.
+ - `mySampler` is bound to a register `s0`, because it is a `SamplerState` type.
+ - `ConstantBuffer` is bound to a register `b0`, becuase it is a `cbuffer` type.
+ - `outputTexture` is bound to a register `u0`, because it is a `RWTexture2D` or also known as UAV type.
 
 ### Direct3D 12
 The shader parameters in D3D12 introduced two new concepts for the binding.
@@ -62,8 +62,8 @@ Texture2D myTexture1 : register(t0); // Texture bound to t0 in a default space, 
 Texture2D myTexture2 : register(t0, space1); // Texture bound to t0 in space1 and doesn't conflict with t0 in space0
 Texture2D myTexture3[10] : register(t0, space2); // bound from t0 to t9 registers in space2
 ```
-`myTexture1` and `myTexture2` uses the same register index, `t0`, but they don't conflict because `myTexture2` uses a slot from a different space.
-`myTexture3` is bound to multiple slots from `t0` to `t9` in `space2`.
+ - `myTexture1` and `myTexture2` uses the same register index, `t0`, but they don't conflict because `myTexture2` uses a slot from a different space.
+ - `myTexture3` is bound to multiple slots from `t0` to `t9` in `space2`.
 
 ### OpenGL
 TODO: Need a better description with an example
