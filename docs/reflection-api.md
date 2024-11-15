@@ -177,7 +177,7 @@ struct MyArgumentBuffer {
 }
 ```
 
-### Size and offset differences
+### Size and offset differences for different graphics APIs
 Different graphics APIs use different structures to store the shader parameters.
  - Direct3D 11 (D3D11): Uses HLSL packing rules, where variables are packed into 16-byte boundaries (4-component vectors). Scalars and smaller vectors can share space within these boundaries if they fit.
  - Direct3D 12 (D3D12): Packs variables more tightly based on their natural alignment, without the 16-byte boundary restrictions. This results in more compact offsets.
@@ -213,15 +213,17 @@ As you can see, the offset calculation differs based on which graphics API is us
 Slang provides a consistent way to get the offset values for any given graphics API and it allows the application to avoid manual offset calculations for any graphics APIs it may support.
 
 
-## How Slang binds the resources
+## How to get the binding information with Slang reflection APIs
 
 ### Visualizing Reflection data on playground
-[Slang Playground](https://shader-slang.com/slang-playground/) prvoides a feature to visualize the reflection data.
+[Slang Playground](https://shader-slang.com/slang-playground/) prvoides a feature to visualize the reflection data. You can also dump a JSON file with slangc.exe,
+```
+slangc.exe -reflection-json myShader.json -preserve-params -target hlsl myShader.hlsl
+```
 
 For the given example above, you can see a JSON output from the slang-playground. The screenshot below shows the reflection data when targeting HLSL.
 
 ![image](https://github.com/user-attachments/assets/225281f6-c7d6-49bf-a49f-f557c4b17897)
-
 
 Note that the reflection tree on the right side shows the offset for each member variables.
 
@@ -230,24 +232,20 @@ Also note that these offset values will differ when you change the target API. T
 ![image](https://github.com/user-attachments/assets/de7d57ff-9087-4487-a2c5-8a9ce5df15af)
 
 
-TODO: The content below describes a rough idea of what needs to be written.
-
-- Fundamental Idea: A type can have multi-dimensional size. Examples
-
-    ```
-    Struct { Texture2D t1; StructuredBuffer<int> b2; Sampler2D s3; int4 data; }
-    ```
-    
-    What's the size of this type on different target APIs? The size is not a single number, but a vector whose dimensions are determined by the target API.
-
-- `TypeLayout`: Stores the multi-dimensional size of a type
+### API examples in C++
+TODO: Need to explain some of Slang terminologies
 - `VarLayout`: Stores the offset of a variable or a struct field.
+- `TypeLayout`: Stores the multi-dimensional size of a type
 
-(Use a figure to explain type layout and var layout, left-hand side of the figure: a struct definition, use arrows to point to the type layout and var layout of the struct and each field).
+TODO: Need to show C++ example that retrieves the offset and size information for each shader parameter.
+```
+TODO: C++ code goes here
+```
 
-Show the same figure but this time for a different API (e.g. D3D11 vs Vulkan).
 
-## `ParameterBlock` provides consistent binding locations in a separate space
+## `ParameterBlock`
+
+`ParameterBlock` provides consistent binding locations in separate spaces.
 
 TODO: The content below describes a rough idea of what needs to be written.
 
