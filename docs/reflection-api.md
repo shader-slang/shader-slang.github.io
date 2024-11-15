@@ -186,28 +186,27 @@ Different graphics APIs use different structures to store the shader parameters.
  - Metal: Aligns data according to its natural alignment but with considerations for efficient GPU access. It often results in offsets similar to those in OpenGL and Vulkan.
 
 Consider the following example,
-```
-cbuffer MyConstants : register(b0)
+```hlsl
+struct MyConstants
 {
-    float      myFloat;
-    float2     myFloat2;
-    float3     myFloat3;
-    float4     myFloat4;
     int        myInt;
-    bool       myBool;
-    float4x4   myMatrix;
+    float2     myFloat2;
+    struct
+    {
+        float3 innerFloat3;
+    } myStruct;
+    float      myFloat;
 };
 ```
 Offsets for each variable is,
-| Variable | D3D11 | D3D12 | OpenGL (std140) | Vulkan (std140) | Vulkan (std430) | Metal |
-|--------------|-----------|-----------|---------------------|---------------------|---------------------|-----------|
-| myFloat | 0 | 0 | 0 | 0 | 0 | 0 |
-| myFloat2 | 4 | 4 | 8 | 8 | 8 | 8 |
-| myFloat3 | 16 | 12 | 16 | 16 | 16 | 16 |
-| myFloat4 | 32 | 28 | 32 | 32 | 32 | 32 |
-| myInt | 48 | 44 | 48 | 48 | 48 | 48 |
-| myBool | 52 | 48 | 52 | 52 | 52 | 52 |
-| myMatrix | 64 | 64 | 64 | 64 | 64 | 64 |
+| Variable | D3D11 Offset | D3D12 Offset | std140 Offset (OpenGL, Vulkan) | std430 Offset (Vulkan) | Metal Offset |
+|---------------------------|--------------------------|--------------------------|---------------------------|---------------------------|--------------------------|
+| myInt | 0 | 0 | 0 | 0 | 0 |
+| myFloat2 | 4 | 8 | 8 | 8 | 8 |
+| myStruct.innerFloat3 | 16 | 16 | 16 | 16 | 16 |
+| myFloat | 28 | 28 | 32 | 28 | 32 |
+| Total Size | 32 bytes | 32 bytes | 48 bytes | 32 bytes | 48 bytes |
+
 
 As you can see, the offset calculation differs based on which graphics API is used. And the applicatoin will need to handle them properly when supporting multiple graphics APIS. Manually calculating the offset or hard-coding the offset values may lead to a high cost of the maintainance over the lifespan of the application.
 
@@ -215,6 +214,21 @@ Slang provides a consistent way to get the offset values for any given graphics 
 
 
 ## How Slang binds the resources
+
+### Visualizing Reflection data on playground
+[Slang Playground](https://shader-slang.com/slang-playground/) prvoides a feature to visualize the reflection data.
+
+For the given example above, you can see a JSON output from the slang-playground. The screenshot below shows the reflection data when targeting HLSL.
+
+![image](https://github.com/user-attachments/assets/225281f6-c7d6-49bf-a49f-f557c4b17897)
+
+
+Note that the reflection tree on the right side shows the offset for each member variables.
+
+Also note that these offset values will differ when you change the target API. The screenshot below shows a different offset value when targeting GLSL.
+
+![image](https://github.com/user-attachments/assets/de7d57ff-9087-4487-a2c5-8a9ce5df15af)
+
 
 TODO: The content below describes a rough idea of what needs to be written.
 
