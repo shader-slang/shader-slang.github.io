@@ -209,6 +209,10 @@ Offsets for each variable is,
 | myBool | 52 | 48 | 52 | 52 | 52 | 52 |
 | myMatrix | 64 | 64 | 64 | 64 | 64 | 64 |
 
+As you can see, the offset calculation differs based on which graphics API is used. And the applicatoin will need to handle them properly when supporting multiple graphics APIS. Manually calculating the offset or hard-coding the offset values may lead to a high cost of the maintainance over the lifespan of the application.
+
+Slang provides a consistent way to get the offset values for any given graphics API and it allows the application to avoid manual offset calculations for any graphics APIs it may support.
+
 
 ## How Slang binds the resources
 
