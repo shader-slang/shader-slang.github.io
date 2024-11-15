@@ -177,7 +177,9 @@ struct MyArgumentBuffer {
 }
 ```
 
-### Size and offset differences for different graphics APIs
+## Binding offset
+
+### Binding offset differences for different graphics APIs
 Different graphics APIs use different structures to store the shader parameters.
  - Direct3D 11 (D3D11): Uses HLSL packing rules, where variables are packed into 16-byte boundaries (4-component vectors). Scalars and smaller vectors can share space within these boundaries if they fit.
  - Direct3D 12 (D3D12): Packs variables more tightly based on their natural alignment, without the 16-byte boundary restrictions. This results in more compact offsets.
@@ -212,10 +214,7 @@ As you can see, the offset calculation differs based on which graphics API is us
 
 Slang provides a consistent way to get the offset values for any given graphics API and it allows the application to avoid manual offset calculations for any graphics APIs it may support.
 
-
-## How to get the binding information with Slang reflection APIs
-
-### Visualizing Reflection data on playground
+### Visualizing offset data on playground
 [Slang Playground](https://shader-slang.com/slang-playground/) prvoides a feature to visualize the reflection data. You can also dump a JSON file with slangc.exe,
 ```
 slangc.exe -reflection-json myShader.json -preserve-params -target hlsl myShader.hlsl
@@ -232,7 +231,8 @@ Also note that these offset values will differ when you change the target API. T
 ![image](https://github.com/user-attachments/assets/de7d57ff-9087-4487-a2c5-8a9ce5df15af)
 
 
-### API examples in C++
+## How to get the binding information with Slang reflection APIs
+
 TODO: Need to explain some of Slang terminologies
 - `VarLayout`: Stores the offset of a variable or a struct field.
 - `TypeLayout`: Stores the multi-dimensional size of a type
