@@ -53,8 +53,6 @@ The example above shows four shader parameters.
 - `ConstantBuffer` is bound to register `b0`, because it is a `cbuffer` type.
 - `outputTexture` is bound to register `u0`, because it is an `RWTexture2D` or also known as UAV type.
 
-TODO: Need an HLSL example to describe the offset and size information for a constant buffer.
-
 ### Direct3D 12
 
 The shader parameters in D3D12 support all the binding methods in D3D11. Additionally, it introduces two new concepts for binding.
@@ -74,8 +72,6 @@ Texture2D myTexture3[10] : register(t0, space2); // Bound from t0 to t9 register
 
 - `myTexture1` and `myTexture2` use the same register index `t0`, but they don't conflict because `myTexture2` uses a slot from a different space.
 - `myTexture3` is bound to multiple slots from `t0` to `t9` in `space2`.
-
-TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and D3D12.
 
 ### OpenGL
 
@@ -117,8 +113,6 @@ void main()
 - `outputTexture` is bound to binding index `2`.
 - `ConstantBuffer` is bound to binding index `3`.
 
-TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and OpenGL.
-
 ### Vulkan
 
 The shader parameters in Vulkan support all the binding syntax of OpenGL, but support additional concepts like D3D12 does.
@@ -139,8 +133,6 @@ layout(binding = 0, set = 2) uniform texture2D myTexture3[10]; // Bound from bin
 - `myTexture1` and `myTexture2` use the same binding index `0`, but they don't conflict because `myTexture2` uses a slot from a different descriptor set.
 - `myTexture3` is bound to multiple binding slots from `0` to `9` in descriptor set 2.
 
-TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and Vulkan.
-
 ### Metal
 
 The shader parameters in Metal follow a similar rule as D3D11. A resource can be bound in one of three ways:
@@ -151,7 +143,7 @@ The shader parameters in Metal follow a similar rule as D3D11. A resource can be
 
 > TODO: Yong said, "Metal has argument buffer that behaves like a descriptor set in Vulkan, that is capable of holding different types of parameter bindings and can be populated beforehand", but I cannot figure out how to use it.
 
-> TODO: It is unclear if Metal supports "Array of descriptor" like HLSL does. When tried, I am getting compile errors.
+> TODO: It is unclear if Metal supports "Array of descriptor" like HLSL does. When tried, I am getting compile errors. Maybe Shader-playground is using an older version of Metal compiler?
 
 ```metal
 #include <metal_stdlib>
@@ -185,7 +177,38 @@ struct MyArgumentBuffer {
 }
 ```
 
-TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and Metal.
+### Size and offset differences
+Different graphics APIs use different structures to store the shader parameters.
+ - Direct3D 11 (D3D11): Uses HLSL packing rules, where variables are packed into 16-byte boundaries (4-component vectors). Scalars and smaller vectors can share space within these boundaries if they fit.
+ - Direct3D 12 (D3D12): Packs variables more tightly based on their natural alignment, without the 16-byte boundary restrictions. This results in more compact offsets.
+ - OpenGL: Follows the std140 layout, which imposes stricter alignment rules. Vectors like float3 are aligned to 16 bytes, and padding is added as necessary.
+ - Vulkan: Uses std140 or std430 layouts. In the std140 layout (commonly used for uniform buffers), the alignment rules are similar to OpenGL's std140.
+ - Metal: Aligns data according to its natural alignment but with considerations for efficient GPU access. It often results in offsets similar to those in OpenGL and Vulkan.
+
+Consider the following example,
+```
+cbuffer MyConstants : register(b0)
+{
+    float      myFloat;       // Offset: 0
+    float2     myFloat2;      // Offset: 4
+    float3     myFloat3;      // Offset: 16
+    float4     myFloat4;      // Offset: 32
+    int        myInt;         // Offset: 48
+    bool       myBool;        // Offset: 52
+    float4x4   myMatrix;      // Offset: 64
+};
+```
+Offsets for each variable is,
+| Variable | D3D11 | D3D12 | OpenGL (std140) | Vulkan (std140) | Vulkan (std430) | Metal |
+|--------------|-----------|-----------|---------------------|---------------------|---------------------|-----------|
+| myFloat | 0 | 0 | 0 | 0 | 0 | 0 |
+| myFloat2 | 4 | 4 | 8 | 8 | 8 | 8 |
+| myFloat3 | 16 | 12 | 16 | 16 | 16 | 16 |
+| myFloat4 | 32 | 28 | 32 | 32 | 32 | 32 |
+| myInt | 48 | 44 | 48 | 48 | 48 | 48 |
+| myBool | 52 | 48 | 52 | 52 | 52 | 52 |
+| myMatrix | 64 | 64 | 64 | 64 | 64 | 64 |
+
 
 ## How Slang binds the resources
 
