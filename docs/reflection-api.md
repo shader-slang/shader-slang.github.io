@@ -133,6 +133,8 @@ The shader parameters in Metal follows a similar rule as D3D11. A resouce can be
 
 > TODO: Yong said, "Metal has argument buffer that behaves like a descriptor set in Vulkan, that is capable of holding different types of parameter bindings and can be populated beforehand", but I cannot figure out how to use it.
 
+> TODO: It is unclear of Metal supports "Array of descriptor" like HLSL does. When tried, I am getting compile errors.
+
 ```metal
 #include <metal_stdlib>
 using namespace metal;
