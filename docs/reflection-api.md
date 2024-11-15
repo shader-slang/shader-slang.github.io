@@ -114,6 +114,8 @@ The shader parameters in Vulkan supports all the binding syntax for OpenGL, but 
 
 Consider the following example,
 ```glsl
+// Vulkan GLSL Compute Shader Example with descriptor set
+
 layout(binding = 0) uniform texture2D myTexture1; // Bound to binding index 0 and descriptor set 0.
 layout(binding = 0, set = 1) uniform texture2D myTexture2; // Bound to binding index 0 and descriptor set 1
 layout(binding = 0, set = 2) uniform texture2D myTexture3[10]; // bound from binding index 0 to 9 descriptors in descriptor set 2.
@@ -124,9 +126,44 @@ layout(binding = 0, set = 2) uniform texture2D myTexture3[10]; // bound from bin
 TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and OpenGL.
 
 ### Metal
-TODO: Need a better description with an example
+The shader parameters in Metal follows a similar rule as D3D11. A resouce can be bound in one of three ways:
+1. When the resource type is texture, the parameter is annotated with `[[texture(X)]]` where `X` is a slot index.
+2. When the resource type is sampler, the parameter is annotated with `[[sampler(X)]]` where `X` is a slot index.
+4. When the resource type is constant buffer, multiple values can be stored in a buffer and it is annotated with `[[buffer(X)]]` where `X` is a slot index.
 
-- Metal: has argument buffer that behaves like a descriptor set in Vulkan, that is capable of holding different types of parameter bindings and can be populated beforehand.
+> TODO: Yong said, "Metal has argument buffer that behaves like a descriptor set in Vulkan, that is capable of holding different types of parameter bindings and can be populated beforehand", but I cannot figure out how to use it.
+
+```metal
+#include <metal_stdlib>
+using namespace metal;
+
+struct MyArgumentBuffer {
+    array<float4, int(4)> transformationMatrix;
+    uint textureWidth;
+    uint textureHeight;
+};
+
+[[kernel]] void computeMain(
+    uint3 DTid [[thread_position_in_grid]],
+    texture2d<float, access::sample> myTexture [[texture(0)]],
+    sampler mySampler [[sampler(0)]],
+    texture2d<float, access::read_write> outputTexture [[texture(1)]],
+    MyArgumentBuffer constant* args [[buffer(0)]]
+)
+{
+    if (DTid.x < args->textureWidth && DTid.y < args->textureHeight)
+    {
+        float2 texCoord = float2(DTid.x / float(args->textureWidth), DTid.y / float(args->textureHeight));
+        float4 color = myTexture.sample(mySampler, texCoord);
+        float4 transformedColor = float4(0.0, 0.0, 0.0, 0.0);
+        for (int i = 0; i < 4; ++i)
+        {
+            transformedColor += args->transformationMatrix[i] * color[i];
+        }
+        outputTexture.write(transformedColor, uint2(DTid.xy));
+    }
+}
+```
 
 TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and Metal.
 
