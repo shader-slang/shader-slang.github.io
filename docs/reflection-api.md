@@ -189,13 +189,13 @@ Consider the following example,
 ```
 cbuffer MyConstants : register(b0)
 {
-    float      myFloat;       // Offset: 0
-    float2     myFloat2;      // Offset: 4
-    float3     myFloat3;      // Offset: 16
-    float4     myFloat4;      // Offset: 32
-    int        myInt;         // Offset: 48
-    bool       myBool;        // Offset: 52
-    float4x4   myMatrix;      // Offset: 64
+    float      myFloat;
+    float2     myFloat2;
+    float3     myFloat3;
+    float4     myFloat4;
+    int        myInt;
+    bool       myBool;
+    float4x4   myMatrix;
 };
 ```
 Offsets for each variable is,
