@@ -21,6 +21,7 @@ Consider the following example,
 
 Texture2D myTexture : register(t0); // Texture bound to t0
 SamplerState mySampler : register(s0); // Sampler bound to s0
+RWTexture2D<float4> outputTexture : register(u0); // UAV bound to u0
 
 cbuffer ConstantBuffer : register(b0) // Constant buffer bound to b0
 {
@@ -28,8 +29,6 @@ cbuffer ConstantBuffer : register(b0) // Constant buffer bound to b0
     uint textureWidth;
     uint textureHeight;
 };
-
-RWTexture2D<float4> outputTexture : register(u0); // UAV bound to u0
 
 [numthreads(16, 16, 1)]
 void computeMain(uint3 DTid : SV_DispatchThreadID)
@@ -52,7 +51,7 @@ The example above shows four shader parameters.
 TODO: Need a HLSL example to describe the offset and size information for a constant buffer.
 
 ### Direct3D 12
-The shader parameters in D3D12 introduced two new concepts for the binding.
+The shader parameters in D3D12 supports all the binding methods in D3D11. And additionally it introduced two new concepts for the binding.
 1. register `space` can be specified.
 2. "array of descriptors" can be specified.
 
@@ -70,16 +69,57 @@ Texture2D myTexture3[10] : register(t0, space2); // bound from t0 to t9 register
 TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and D3D12.
 
 ### OpenGL
-TODO: Need a better description with an example
+The shader parameters in OpenGL follows a similar rule as Direct3D, but the binding index is more monolitic in a way that the binding index is just a single number regardless their resource types.
 
-- Traditional OpenGL api: everything is in the same binding space, specified by the layout(binding =...)
+Consider the following example,
+```glsl
+// OpenGL GLSL Compute Shader Example
+
+#version 430
+layout(binding = 0) uniform texture2D myTexture;
+layout(binding = 1) uniform sampler mySampler;
+layout(binding = 2) writeonly uniform image2D outputTexture;
+
+layout(binding = 3) uniform ConstantBuffer
+{
+    mat4 transformationMatrix;
+    uint textureWidth;
+    uint textureHeight;
+};
+
+layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
+void main()
+{
+    uvec3 DTid = gl_GlobalInvocationID;
+    if (DTid.x < textureWidth && DTid.y < textureHeight)
+    {
+        vec2 texCoord = vec2(DTid.x, DTid.y) / vec2(textureWidth, textureHeight);
+        vec4 color = texture(sampler2D(myTexture, mySampler), texCoord);
+        vec4 transformedColor = transformationMatrix * color;
+        imageStore(outputTexture, ivec2(DTid.xy), transformedColor);
+    }
+}
+```
+ - `myTexture` is bound to a binding index `0`.
+ - `mySampler` is bound to a binding index `1`.
+ - `outputTexture` is bound to a binding index `2`.
+ - `ConstantBuffer` is bound to a binding index `3`.
 
 TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and OpenGL.
 
 ### Vulkan
-TODO: Need a better description with an example
+The shader parameters in Vulkan supports all the binding syntax for OpenGL, but it supports additional concepts like D3D12 does.
+1. GLSL with Vulkan backend can specify a descriptor set index with a `set` keyword which is similar to `space` in D3D12.
+2. GLSL with Vulkan backend can declare arraies of descriptors by using `[]` syntax, which is similar to "array of descriptors" in D3D12.
 
-- Vulkan: there is descriptor set index, and binding index within a descriptor set. All resource parameters must be allocated a (descriptor set index, binding index) as its location.
+Consider the following example,
+```glsl
+layout(binding = 0) uniform texture2D myTexture1; // Bound to binding index 0 and descriptor set 0.
+layout(binding = 0, set = 1) uniform texture2D myTexture2; // Bound to binding index 0 and descriptor set 1
+layout(binding = 0, set = 2) uniform texture2D myTexture3[10]; // bound from binding index 0 to 9 descriptors in descriptor set 2.
+```
+ - `myTexture1` and `myTexture2` uses the same binding index, `0`, but they don't conflict because `myTexture2` uses a slot from a different descriptor set.
+ - `myTexture3` is bound to multiple binding slots from `0` to `9` in descriptor set 2.
 
 TODO: Need to use the same example from D3D11 for offset and size information and demonstrate the difference between D3D11 and OpenGL.
 
