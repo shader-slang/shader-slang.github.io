@@ -51,7 +51,7 @@ The total time spent from creation of the tracking issue to when a feature is ma
 
 ## Feature Deprecation and Removal
 
-The process for the deprecation and removal of features follows a similar flow to that of feature additions: announce the deprecation, plan for backward compatibility, allow a waiting period for community and OWNER feedback, and then proceed with the removal. This process will be refined as we progress.
+The process for the deprecation and removal of features follows a similar flow to that of feature additions: announce the deprecation, plan for backward compatibility, allow a waiting period for community and Owner feedback, and then proceed with the removal. This process will be refined as we progress.
 
 In cases where an existing feature of the language (even one that was present from before this process, and that thus has no corresponding proposal) is found to be undesirable, a proposal can be made for deprecation and eventual removal of that feature.
 
