@@ -49,3 +49,15 @@ We expect that between 3-7 days will be given for community feedback in typical 
 
 The total time spent from creation of the tracking issue to when a feature is marked "stable" may vary with the complexity of a feature, but we expect that it will typically fall in the 1-3 month range. Even if a small feature might be proposed and implemented in a matter of days, it would need to be given sufficient time in the experimental state for community engagement and feedback before being considered for stabilization.
 
+## Feature Deprecation and Removal
+
+The process for the deprecation and removal of features follows a similar flow to that of feature additions: announce the deprecation, plan for backward compatibility, allow a waiting period for community and OWNER feedback, and then proceed with the removal. This process will be refined as we progress.
+
+In cases where an existing feature of the language (even one that was present from before this process, and that thus has no corresponding proposal) is found to be undesirable, a proposal can be made for deprecation and eventual removal of that feature.
+
+Superficially, proposals for deprecation and removal follow the same overall flow as feature additions. In particular, these proposals must be announced in the same channels, and sufficient time for community review must be given before a deprecation is "stabilized," so that it takes effect.
+
+Compared to purely additive features, deprecation and removal comes with a higher risk of breaking existing Slang codebases. As such, proposals for deprecation are expected to include detailed plans around the timeline for sunsetting a feature that is to be removed, potential impact of the removal on existing codebases, and strategies for migration of code using the feature to suitable alternatives.
+
+The Language Owners are expected to scrutinize proposals for deprecation with great care, and to engage with stakeholders including organizations with large Slang codebases.
+
