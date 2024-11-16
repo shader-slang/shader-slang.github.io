@@ -1,10 +1,23 @@
 # Using the Slang Reflection API
 
-The reflection APIs for the shader compilers are used mostly for parameter bindings. But different graphics APIs do the resource binding differently. This causes trouble when the application wants to support multiple graphics APIs.
+## Shader Parameter Binding
+Slang recommend the users to use "implicit binding" and this document will describe what it is and why Slang recommend it.
 
-Slang's reflection API is designed to provide the parameter binding locations for all different graphics APIs through a consistent interface. To abstract over the differences of all target APIs, Slang introduces several concepts.
+### Problems of the current binding methods
+When a shader is compiled, the application has two options for how to assign the binding indices for the shader parameters.
+1. Explicit binding : the shader developer assign unique numbers to each and every shader parameters manually.
+2. Binding data from reflection : when the binding indices are not explicitly specified, the compiler assigns binding indices just for the shader parameters that are actually used.
 
-We will go over how the resource binding is done for a few graphics APIs in order to understand the problem more. And you will learn how Slang solves the problem with the reflection APIs.
+When binding indices are explicitly assigned to each and every shader parameter, it has an advantage of what binding indices are assigned to which shader parameter prior to the shader compilation. The application doesn't need to use the reflection API to query the binding information from the compiled shader binary. Even when certain sets of shader parameters were unused and the compiler removed them from the final shader binary, the binding indicies stay same, which allows the application to reused a same data layout for multiple shader permutations. But it becomes a burden of the application developers to maintain the uniqueness of the indices. And it is often considered not scalable approach.
+
+Alternatively, when the shader parameters don't have any binding indices specified, the compiler will assign binding indices. The application can, then, query the binding information from the compiled shader binary with the reflection APIs. But in this approach, the binding information is based on the compiled shader binary and any unused shader parameters are not counted. This creates different sets of shader parameters for different sets of shader permutations even when they are all from a same shader source file. In other words, the binding indices will be assigned in an unpredictable manner when there are a lot of shader permutations. This prevents the application from reusing a same data layout that could be reused if the binding indices were explicitly assigned.
+
+### Slang addresses the problem with "implicit binding"
+Slang takes a little different approach to address the problem. The explicit binding is still supported but when the binding indices are unspecified, Slang will assign the binding indices in a consistent and predictable manner. The binding indices are assigned before the dead-code-elimination and the binding information remain until the final binary as if the binding information was explicitly specified to all shader parameters.
+
+This allows the applications using Slang to reuse the parameter data more efficiently. When the parameter layouts are consistent across multiple shaders, it allows a same data to be reused more often, and it can improve the overall efficiency of the application.
+ 
+Slang's reflection API is designed to provide the parameter binding locations for all different graphics APIs through a consistent interface. To abstract over the differences of all target APIs, Slang introduces several concepts. We will go over how the resource binding is done for a few graphics APIs in order to understand the problem more. And you will learn how Slang solves the problem with the reflection APIs.
 
 ## How parameter binding works for different graphics APIs
 
