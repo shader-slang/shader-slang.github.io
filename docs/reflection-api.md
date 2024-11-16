@@ -15,12 +15,37 @@ Alternatively, when the shader parameters don't have any binding indices specifi
 ### Slang addresses the problem with "implicit binding"
 Slang takes a little different approach to address the problem. The explicit binding is still supported but when the binding indices are unspecified, Slang will assign the binding indices in a consistent and predictable manner. The binding indices are assigned before the dead-code-elimination and the binding information remain until the final binary as if the binding information was explicitly specified to all shader parameters.
 
-This allows the applications using Slang to reuse the parameter data more efficiently. When the parameter layouts are consistent across multiple shaders, it allows a same data to be reused more often, and it can improve the overall efficiency of the application.
- 
+This allows "modules" of Slang to be used consistently on multiple shaders. Regardless of which shader parameters are used or unused, the assigned binding indices are same for a same Slang module.
+
+This also allows the applications using Slang to reuse the parameter data more efficiently. When the parameter layouts are consistent across multiple shaders, it allows a same data to be reused more often, and it can improve the overall efficiency of the application.
+
 Slang's reflection API is designed to provide the parameter binding locations for all different graphics APIs through a consistent interface. To abstract over the differences of all target APIs, Slang introduces several concepts. We will go over how the resource binding is done for a few graphics APIs in order to understand the problem more. And you will learn how Slang solves the problem with the reflection APIs.
 
 ### Examples of implicit binding
 TODO: We need examples to show how binding indices are assigned with DXC and compare it to Slang.
+
+
+## How to get the binding information with Slang reflection APIs
+
+TODO: Need to explain some of Slang terminologies
+- `VarLayout`: Stores the offset of a variable or a struct field.
+- `TypeLayout`: Stores the multi-dimensional size of a type
+
+TODO: Need to show C++ example that retrieves the offset and size information for each shader parameter.
+```
+TODO: C++ code goes here
+```
+
+
+## `ParameterBlock`
+
+`ParameterBlock` provides consistent binding locations in separate spaces.
+
+TODO: The content below describes a rough idea of what needs to be written.
+
+The main difference is whether or not the enclosing resources bleed into the outer environment. `ConstantBuffer`: No indirection, everything bleeds out. `ParameterBlock`: Uses a separate space to hold all child elements; only the “space” binding will bleed out.
+
+Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
 
 ## How parameter binding works for different graphics APIs
@@ -247,28 +272,6 @@ Also note that these offset values will differ when you change the target API. T
 
 ![image](https://github.com/user-attachments/assets/de7d57ff-9087-4487-a2c5-8a9ce5df15af)
 
-
-## How to get the binding information with Slang reflection APIs
-
-TODO: Need to explain some of Slang terminologies
-- `VarLayout`: Stores the offset of a variable or a struct field.
-- `TypeLayout`: Stores the multi-dimensional size of a type
-
-TODO: Need to show C++ example that retrieves the offset and size information for each shader parameter.
-```
-TODO: C++ code goes here
-```
-
-
-## `ParameterBlock`
-
-`ParameterBlock` provides consistent binding locations in separate spaces.
-
-TODO: The content below describes a rough idea of what needs to be written.
-
-The main difference is whether or not the enclosing resources bleed into the outer environment. `ConstantBuffer`: No indirection, everything bleeds out. `ParameterBlock`: Uses a separate space to hold all child elements; only the “space” binding will bleed out.
-
-Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
 ## How to figure out which binding slots are unused
 
