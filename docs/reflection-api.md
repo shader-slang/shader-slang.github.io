@@ -19,6 +19,10 @@ This allows the applications using Slang to reuse the parameter data more effici
  
 Slang's reflection API is designed to provide the parameter binding locations for all different graphics APIs through a consistent interface. To abstract over the differences of all target APIs, Slang introduces several concepts. We will go over how the resource binding is done for a few graphics APIs in order to understand the problem more. And you will learn how Slang solves the problem with the reflection APIs.
 
+### Examples of implicit binding
+TODO: We need examples to show how binding indices are assigned with DXC and compare it to Slang.
+
+
 ## How parameter binding works for different graphics APIs
 
 ### Direct3D 11
