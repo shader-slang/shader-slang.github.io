@@ -3,9 +3,22 @@
 This document is intended to explain the principle of how Slang Reflection APIs are designed.
 For the information of how to use the Slang Reflection API functions, please refer to [Slang User's Guide](https://shader-slang.com/slang/user-guide/reflection.html).
 
+Slang provides "Slang reflection API" that works for multiple targets. This allows the Slang users to write more cross platform applications that can unify the similar API funcitonalities for different APIs. However, since Slang supports multiple targets, there are difficulties to design the reflection API that works for all of them.
 
-## Shader Parameter Binding
-Slang recommend the users to use "implicit binding" and this document will describe what it is and why Slang recommend it.
+When a certain target comes with specific requirements, Slang Reflection APIs may need to comform to the requirements even when the other targets have no such requirements. As an example, when targeting CPP, the texture and sampler parameters in a single struct type can be serialized together. But when targeting HLSL, texture parameters are bound to `t` registers, and the sampler parameters are bound to `s` registers separately.
+
+When Slang provides advanced language features that a target doesn't support directly, Slang has to "de-sugar" it and this process must be deterministically well defined by the Slang Reflection APIs.
+
+The goals of the Slang Reflection APIs are:
+ - Reflect the program as how the user worte; not as how the target compiler generated.
+ - Support applications that is cross-platform and cross-APIs.
+ - Report the complete layout information for each platform.
+
+
+## Reflection based on the input program
+Most of shader compilers out there provides the reflection API that is based on the compiled shader binary. When a shader parameters is, as an example, unused, the reflection API provides no information about it, because they don't exist in the compiled shader binary.
+
+Slang Reflection API is based on the input program, and this is only way to provide a consistent binding across multiple platforms.
 
 ### Problems of the current binding methods
 When a shader is compiled, the application has two options for how to assign the binding indices for the shader parameters.
@@ -17,13 +30,11 @@ When binding indices are explicitly assigned to each and every shader parameter,
 Alternatively, when the shader parameters don't have any binding indices specified, the compiler will assign binding indices. The application can, then, query the binding information from the compiled shader binary with the reflection APIs. But in this approach, the binding information is based on the compiled shader binary and any unused shader parameters are not counted. This creates different sets of shader parameters for different sets of shader permutations even when they are all from a same shader source file. In other words, the binding indices will be assigned in an unpredictable manner when there are a lot of shader permutations. This prevents the application from reusing a same data layout that could be reused if the binding indices were explicitly assigned.
 
 ### Slang addresses the problem with "implicit binding"
-Slang takes a little different approach to address the problem. The explicit binding is still supported but when the binding indices are unspecified, Slang will assign the binding indices in a consistent and predictable manner. The binding indices are assigned before the dead-code-elimination and the binding information remain until the final binary as if the binding information was explicitly specified to all shader parameters.
+Slang takes a little different approach to address the problem. The explicit binding is still supported but when the binding indices are unspecified, Slang will automatically assign the binding indices deterministically. The binding indices are assigned before the dead-code-elimination and the binding information remains until the final binary as if the binding information was explicitly specified to all shader parameters.
 
-This allows "modules" of Slang to be used consistently on multiple shaders. Regardless of which shader parameters are used or unused, the assigned binding indices are same for a same Slang module.
+This allows "modules" of Slang to be used consistently on multiple shaders. Regardless of which shader parameters are used or unused, the assigned binding indices are same for a same Slang module. And it allows the applications using Slang to reuse the parameter data more efficiently. When the parameter layouts are consistent across multiple shaders, the same data can be reused more often, and it can improve the overall efficiency of the application.
 
-This also allows the applications using Slang to reuse the parameter data more efficiently. When the parameter layouts are consistent across multiple shaders, it allows a same data to be reused more often, and it can improve the overall efficiency of the application.
-
-Slang's reflection API is designed to provide the parameter binding locations for all different graphics APIs through a consistent interface. To abstract over the differences of all target APIs, Slang introduces several concepts. We will go over how the resource binding is done for a few graphics APIs in order to understand the problem more. And you will learn how Slang solves the problem with the reflection APIs.
+Because the binding information is independent from the target compiler, the binding information is identical for all targets. The information doesn't need to be queried for different targets.
 
 ### Examples of implicit binding
 TODO: We need examples to show how binding indices are assigned with DXC and compare it to Slang.
@@ -31,7 +42,7 @@ TODO: We need examples to show how binding indices are assigned with DXC and com
 TODO: We can have an example with modules like scene.hlsl/cpp, material.hlsl/cpp and/or lighting.hlsl/cpp.
 
 
-## `ConstantBuffer` vs `ParameterBlock`
+### `ConstantBuffer` vs `ParameterBlock`
 
 `ParameterBlock` is a unique feature in Slang. `ParameterBlock` provides consistent binding locations in separate spaces.
 
@@ -47,14 +58,12 @@ Best practices are to use parameter blocks to reuse parameter binding logic by c
 ### Direct3D 11
 
 The shader parameters in D3D11 are bound in one of four ways.
-
 1. When the resource type is texture, it is bound to a register starting with the letter `t`.
 2. When the resource type is sampler, it is bound to a register starting with the letter `s`.
 3. When the resource type is Unordered Access View, it is bound to a register starting with the letter `u`.
 4. When the resource type is constant buffer, multiple values are stored in a buffer, and it is bound to a register starting with the letter `b`.
 
 Consider the following example,
-
 ```hlsl
 // D3D11 HLSL Compute Shader Example
 
@@ -68,22 +77,9 @@ cbuffer ConstantBuffer : register(b0) // Constant buffer bound to b0
     uint textureWidth;
     uint textureHeight;
 };
-
-[numthreads(16, 16, 1)]
-void computeMain(uint3 DTid : SV_DispatchThreadID)
-{
-    if (DTid.x < textureWidth && DTid.y < textureHeight)
-    {
-        float2 texCoord = float2(DTid.x / (float)textureWidth, DTid.y / (float)textureHeight);
-        float4 color = myTexture.Sample(mySampler, texCoord);
-        float4 transformedColor = mul(transformationMatrix, color);
-        outputTexture[DTid.xy] = transformedColor;
-    }
-}
 ```
 
-The example above shows four shader parameters.
-
+The example above shows four shader parameters:
 - `myTexture` is bound to register `t0`, because it is a `Texture2D` type.
 - `mySampler` is bound to register `s0`, because it is a `SamplerState` type.
 - `ConstantBuffer` is bound to register `b0`, because it is a `cbuffer` type.
@@ -92,12 +88,10 @@ The example above shows four shader parameters.
 ### Direct3D 12
 
 The shader parameters in D3D12 support all the binding methods in D3D11. Additionally, it introduces two new concepts for binding.
-
 1. A register `space` can be specified.
 2. An "array of descriptors" can be specified.
 
 Consider the following example,
-
 ```hlsl
 // D3D12 HLSL Compute Shader Example with Register Spaces
 
@@ -106,6 +100,7 @@ Texture2D myTexture2 : register(t0, space1); // Texture bound to t0 in space1 an
 Texture2D myTexture3[10] : register(t0, space2); // Bound from t0 to t9 registers in space2
 ```
 
+The example above shows three shader parameters:
 - `myTexture1` and `myTexture2` use the same register index `t0`, but they don't conflict because `myTexture2` uses a slot from a different space.
 - `myTexture3` is bound to multiple slots from `t0` to `t9` in `space2`.
 
@@ -114,7 +109,6 @@ Texture2D myTexture3[10] : register(t0, space2); // Bound from t0 to t9 register
 The shader parameters in OpenGL follow a similar rule as Direct3D, but the binding index is more monolithic, in that the binding index is just a single number regardless of their resource types.
 
 Consider the following example,
-
 ```glsl
 // OpenGL GLSL Compute Shader Example
 
@@ -129,35 +123,21 @@ layout(binding = 3) uniform ConstantBuffer
     uint textureWidth;
     uint textureHeight;
 };
-
-layout(local_size_x = 16, local_size_y = 16, local_size_z = 1) in;
-void main()
-{
-    uvec3 DTid = gl_GlobalInvocationID;
-    if (DTid.x < textureWidth && DTid.y < textureHeight)
-    {
-        vec2 texCoord = vec2(DTid.x, DTid.y) / vec2(textureWidth, textureHeight);
-        vec4 color = texture(sampler2D(myTexture, mySampler), texCoord);
-        vec4 transformedColor = transformationMatrix * color;
-        imageStore(outputTexture, ivec2(DTid.xy), transformedColor);
-    }
-}
 ```
 
-- `myTexture` is bound to binding index `0`.
-- `mySampler` is bound to binding index `1`.
-- `outputTexture` is bound to binding index `2`.
-- `ConstantBuffer` is bound to binding index `3`.
+The example above shows four shader parameters:
+- `myTexture` is bound to a binding index `0`.
+- `mySampler` is bound to a binding index `1`.
+- `outputTexture` is bound to a binding index `2`.
+- `ConstantBuffer` is bound to a binding index `3`.
 
 ### Vulkan
 
-The shader parameters in Vulkan support all the binding syntax of OpenGL, but support additional concepts like D3D12 does.
-
+The shader parameters in Vulkan support all the binding syntax of OpenGL, but support additional concepts like D3D12 does:
 1. GLSL with Vulkan backend can specify a descriptor set index with a `set` keyword, which is similar to `space` in D3D12.
 2. GLSL with Vulkan backend can declare arrays of descriptors by using `[]` syntax, which is similar to "array of descriptors" in D3D12.
 
 Consider the following example,
-
 ```glsl
 // Vulkan GLSL Compute Shader Example with descriptor set
 
@@ -166,13 +146,13 @@ layout(binding = 0, set = 1) uniform texture2D myTexture2; // Bound to binding i
 layout(binding = 0, set = 2) uniform texture2D myTexture3[10]; // Bound from binding index 0 to 9 descriptors in descriptor set 2.
 ```
 
+The example above shows three shader parameters:
 - `myTexture1` and `myTexture2` use the same binding index `0`, but they don't conflict because `myTexture2` uses a slot from a different descriptor set.
 - `myTexture3` is bound to multiple binding slots from `0` to `9` in descriptor set 2.
 
 ### Metal
 
 The shader parameters in Metal follow a similar rule as D3D11. A resource can be bound in one of three ways:
-
 1. When the resource type is texture, the parameter is annotated with `[[texture(X)]]`, where `X` is a slot index.
 2. When the resource type is sampler, the parameter is annotated with `[[sampler(X)]]`, where `X` is a slot index.
 3. When the resource type is constant buffer, multiple values can be stored in a buffer, and it is annotated with `[[buffer(X)]]`, where `X` is a slot index.
@@ -182,9 +162,6 @@ The shader parameters in Metal follow a similar rule as D3D11. A resource can be
 > TODO: It is unclear if Metal supports "Array of descriptor" like HLSL does. When tried, I am getting compile errors. Maybe Shader-playground is using an older version of Metal compiler?
 
 ```metal
-#include <metal_stdlib>
-using namespace metal;
-
 struct MyArgumentBuffer {
     array<float4, int(4)> transformationMatrix;
     uint textureWidth;
@@ -199,21 +176,20 @@ struct MyArgumentBuffer {
     constant MyArgumentBuffer* args [[buffer(0)]]
 )
 {
-    if (DTid.x < args->textureWidth && DTid.y < args->textureHeight)
-    {
-        float2 texCoord = float2(DTid.x / float(args->textureWidth), DTid.y / float(args->textureHeight));
-        float4 color = myTexture.sample(mySampler, texCoord);
-        float4 transformedColor = float4(0.0, 0.0, 0.0, 0.0);
-        for (int i = 0; i < 4; ++i)
-        {
-            transformedColor += args->transformationMatrix[i] * color[i];
-        }
-        outputTexture.write(transformedColor, uint2(DTid.xy));
-    }
+    ...
 }
 ```
 
+The example above shows four shader parameters:
+- `myTexture` is bound to `texture(0)`, because it is a texture resource.
+- `mySampler` is bound to `sampler(0)`, because it is a texture sampler.
+- `outputTexture` is bound to `texture(1)`, because unlike HLSL, Metal doesn't differentiate UAV from SRV.
+- `ConstantBuffer` is bound to `buffer(0)`, because it is a buffer resoutce.
+
+
 ## Binding offset
+
+> TODO: This section needs to be rewritten with an example that has a struct with opaque types as member variables such as SamplerState or Texture2D.
 
 ### Binding offset differences for different graphics APIs
 Different graphics APIs use different structures to store the shader parameters.
