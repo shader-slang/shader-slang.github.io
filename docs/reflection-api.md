@@ -31,9 +31,9 @@ TODO: We need examples to show how binding indices are assigned with DXC and com
 TODO: We can have an example with modules like scene.hlsl/cpp, material.hlsl/cpp and/or lighting.hlsl/cpp.
 
 
-## `ParameterBlock`
+## `ConstantBuffer` vs `ParameterBlock`
 
-`ParameterBlock` provides consistent binding locations in separate spaces.
+`ParameterBlock` is a unique feature in Slang. `ParameterBlock` provides consistent binding locations in separate spaces.
 
 TODO: The content below describes a rough idea of what needs to be written.
 
