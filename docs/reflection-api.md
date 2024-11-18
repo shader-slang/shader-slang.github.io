@@ -27,6 +27,7 @@ Slang's reflection API is designed to provide the parameter binding locations fo
 
 ### Examples of implicit binding
 TODO: We need examples to show how binding indices are assigned with DXC and compare it to Slang.
+
 TODO: We can have an example with modules like scene.hlsl/cpp, material.hlsl/cpp and/or lighting.hlsl/cpp.
 
 
