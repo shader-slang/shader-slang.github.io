@@ -1,5 +1,9 @@
 # Using the Slang Reflection API
 
+This document is intended to explain the principle of how Slang Reflection APIs are designed.
+For the information of how to use the Slang Reflection API functions, please refer to [Slang User's Guide](https://shader-slang.com/slang/user-guide/reflection.html).
+
+
 ## Shader Parameter Binding
 Slang recommend the users to use "implicit binding" and this document will describe what it is and why Slang recommend it.
 
@@ -24,18 +28,6 @@ Slang's reflection API is designed to provide the parameter binding locations fo
 ### Examples of implicit binding
 TODO: We need examples to show how binding indices are assigned with DXC and compare it to Slang.
 TODO: We can have an example with modules like scene.hlsl/cpp, material.hlsl/cpp and/or lighting.hlsl/cpp.
-
-
-## How to get the binding information with Slang reflection APIs
-
-TODO: Need to explain some of Slang terminologies
-- `VarLayout`: Stores the offset of a variable or a struct field.
-- `TypeLayout`: Stores the multi-dimensional size of a type
-
-TODO: Need to show C++ example that retrieves the offset and size information for each shader parameter.
-```
-TODO: C++ code goes here
-```
 
 
 ## `ParameterBlock`
@@ -276,12 +268,31 @@ Also note that these offset values will differ when you change the target API. T
 
 ## How to figure out which binding slots are unused
 
-TODO: The content below describes a rough idea of what needs to be written.
-
-Querying if a parameter location is actually used by the shader after DCE.
-
-Done through the `IMetadata` interface:
+Slang allows the application to query if a parameter location is used after Dead-Code-Elimination. This is done through the `IMetadata` interface:
 
 1. `IComponentType::getEntryPointMetadata()` or `IComponentType::getTargetMetadata()` returns `IMetadata*`
 2. `IMetadata::isParameterLocationUsed(int set, int binding)` tells you whether or not the parameter binding at the specific location is being used.
-3. Combine this with the reflection API, you can know if a parameter is used or not.
+
+Here is an example of how to check if a slot is being used in the shader binary.
+```
+ComPtr<slang::IComponentType> compositeProgram;
+slang::IComponentType* components[] = {module, entryPoint.get()};
+session->createCompositeComponentType(
+    components,
+    2,
+    compositeProgram.writeRef(),
+    diagnosticBlob.writeRef());
+SLANG_CHECK(compositeProgram != nullptr);
+
+ComPtr<slang::IComponentType> linkedProgram;
+compositeProgram->link(linkedProgram.writeRef(), nullptr);
+
+ComPtr<slang::IMetadata> metadata;
+linkedProgram->getTargetMetadata(0, metadata.writeRef(), nullptr);
+
+bool isUsed = false;
+int spaceIndex = 0;
+int registerIndex = ;
+metadata->isParameterLocationUsed(SLANG_PARAMETER_CATEGORY_SHADER_RESOURCE, spaceIndex, registerIndex, isUsed);
+metadata->isParameterLocationUsed(SLANG_PARAMETER_CATEGORY_VARYING_INPUT, spaceIndex, registerIndex, isUsed);
+```
