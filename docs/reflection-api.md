@@ -43,9 +43,51 @@ Because the binding information is independent from the target compiler, the bin
 
 ### Parameter Binding for Modules by Example
 
-> TODO: We need an example that shows why the input program-based binding is required for modules in Slang.
+The following examples shows a typical shader source code that gets compiled with the macro permutation.
+```hlsl
+struct Scene
+{
+    float4 eyePosition;
+    float4 eyeDirection;
+};
 
-> TODO: We can use `scene.cpp/hlsl`, `material.cpp/hlsl`, and `lighting.cpp/hlsl`.
+struct Light
+{
+    uint type; // directional, spot, point
+    float4 position;
+    float4 color;
+    float intensity;
+    uint castShadow;
+    uint flags;
+
+#if LIGHT_TYPE_DIRECTIONAL || LIGHT_TYPE_SPOT
+    // only for directional and spot types
+    float4 direction;
+#endif
+
+#if LIGHT_TYPE_POINT || LIGHT_TYPE_SPOT
+    // only for spot and point types
+    float radius;
+#endif
+};
+
+struct Material
+{
+    uint type;
+    Texture2D diffuse;
+
+#if MATERIAL_TYPE_EMISSIVE
+    Texture2D emissive;
+#else
+    Texture2D normal;
+#endif
+};
+```
+Note that even when those member variables are not wrapped with the macro variables, the native compilers will remove them when they are unused.
+
+When there are variants of a struct based on the marco permutation, the CPP side implementation must match to what the shader expects. In other words, it requires the same permutation on CPP side as many as the shaders variants are generated.
+
+With Slang, those unused member variables will be still removed from the final shader binary, but the binding information stays same for a given type. It allows CPP side to have a same implementation regardless of the shader variants.
 
 ## How Shader Binding Works for Target Platforms
 
@@ -243,9 +285,9 @@ The example above shows that the application using HLSL will get the resource ty
 Note that `getOffset()` is called with `category`. It is important to understand that the "offset" and "size" information is not a single value but an array of values, each of which is for each category. When `getOffset()` or `getSize` is called with a category the parameter doesn't belong to, it will return a zero value.
 
 ### Offset of `Mixed` category
-As an example, there is an old resource type called, `sampler2D`, `sampler3D` and so on. It combined a texture resource type and a sampler resource type. Slang treats it as a `Mixed` category. Consider the following HLSL code,
+As an example, there is a resource type in GLSL called "texture-combined sampler" such as `sampler2D`, `sampler3D` and so on. It combines a texture resource type and a sampler resource type. Slang treats it as a `Mixed` category. Consider the following GLSL code,
 
-```hlsl
+```glsl
 sampler2D myOldTexture;
 ```
 
@@ -289,7 +331,7 @@ When a `struct` type has another `struct` type as its member variable, the appli
 
 One important note for recursively iterating a struct kind is that the "offset" values for each field are offset values counted from the beginning of the struct it belongs to. The application must sum up the offset values of the nesting structs to get the correct "binding index".
 
-### Size of array
+### Size of `array`
 Once you have the offset information, you will need to know the size information, because for some types, it may occupy more than one binding slots. For that reason, you need to first query what "kind" of parameter it is. It could be `Scalar`, `Matrix`, `Array`, and so on.
 
 ```cpp
@@ -324,7 +366,7 @@ Note that similarly to how we get the "offset" information, you need to query "s
 
 `ParameterBlock` is a unique feature in Slang. Parameter blocks (exposed as ParameterBlock<T>) provide a first-class language feature for grouping related shader parameters and specifying that they should be passed to the GPU as a coherent block. Parameter blocks make it easy for applications to use the most efficient parameter-binding model of each API, such as descriptor tables/sets in D3D12/Vulkan.
 
-> TODO: We need an example code for ParameterBlock
+> TODO: We need an example code for ParameterBlock. And the example should be able to show what ParameterBlock can do that is not possible with the native shading languages.
 
 Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
