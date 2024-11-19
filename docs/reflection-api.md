@@ -87,7 +87,7 @@ Note that even when those member variables are not wrapped with the macro variab
 
 When there are variants of a struct based on the macro permutation, the CPP side implementation must match what the shader expects. In other words, it requires the same permutation for the data layout on the CPP side as many as the shader variants are generated.
 
-With Slang, those unused member variables will still be removed from the final shader binary, but the binding information stays the same for a given type. It allows the CPP side to have the same data layout for the structs regardless of the shader variants.
+With Slang, those unused member variables will still be removed from the final shader binary, but the binding information stays the same for given types. It allows the CPP side to have the same data layout for the structs regardless of the shader variants.
 
 ## How Shader Binding Works for Target Platforms
 
@@ -224,7 +224,7 @@ struct MyArgumentBuffer {
     constant MyArgumentBuffer* args [[buffer(0)]]
 )
 {
-    ...
+    // ...
 }
 ```
 
@@ -406,11 +406,19 @@ compositeProgram->link(linkedProgram.writeRef(), nullptr);
 ComPtr<slang::IMetadata> metadata;
 linkedProgram->getTargetMetadata(0, metadata.writeRef(), nullptr);
 
-bool isUsed = false;
-int spaceIndex = 0;
-int registerIndex = ;
-metadata->isParameterLocationUsed(SLANG_PARAMETER_CATEGORY_SHADER_RESOURCE, spaceIndex, registerIndex, isUsed);
-metadata->isParameterLocationUsed(SLANG_PARAMETER_CATEGORY_VARYING_INPUT, spaceIndex, registerIndex, isUsed);
+for (int category = 0; category < SLANG_PARAMETER_CATEGORY_COUNT; category++)
+{
+    for (int spaceIndex = 0; spaceIndex < MAX_SPACE_COUNT; spaceIndex++)
+    {
+        for (int registerIndex = 0; registerIndex < MAX_REGISTER_COUNT; registerIndex++)
+        {
+            bool isUsed = false;
+            metadata->isParameterLocationUsed(category, spaceIndex, registerIndex, isUsed);
+
+            // ...
+        }
+    }
+}
 ```
 
 ## Report the Complete Layout Information
