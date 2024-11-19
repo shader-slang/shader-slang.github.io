@@ -3,7 +3,7 @@
 This document is intended to explain the principles of how the Slang Reflection APIs are designed.
 For information on how to use the Slang Reflection API functions, please refer to [Slang User's Guide](https://shader-slang.com/slang/user-guide/reflection.html).
 
-## Goal and Difficulties of Slang Reflection API
+## Goals and Difficulties of Slang Reflection API
 
 Slang provides the "Slang Reflection API" that works for multiple targets. This allows Slang users to write more cross-platform applications that can unify similar API functionalities for different APIs. However, since Slang supports multiple targets, there are difficulties in designing a reflection API that works for all of them.
 
@@ -190,24 +190,39 @@ The example above shows four shader parameters:
 
 ## Cross-Platform Reflection API
 
-Slang abstracts "Resource type". As an example, there are different types of registers in HLSL, each of which increments its binding index for its own resource type. Texture resources are bound to `t0`, `t1`, and so on, and sampler resources are bound to `s0`, `s1`, and so on. The register `t0` represents a different slot from a register `s0` in HLSL. However, in Vulkan, there is just a binding index number that doesn't differentiate the resource types. A texture can be bound to a binding index `0`, and it will conflict if a sampler is also bound to a binding index `0`.
+Slang abstracts "Resource type". As exampled above, HLSL has different types of registers, each of which starts with a letter like `t` for textures and `s` for samplers. The register `t0` represents a different slot from a register `s0` in HLSL. However, in Vulkan, there is just a binding index number that doesn't differentiate the resource types. A texture can be bound to a binding index `0`, and it will conflict if a sampler is also bound to a binding index `0`.
 
-Slang introduces new concepts to abstract the differences. The details of how Slang handles it are described in the later part of this section.
-
-Because the Slang Reflection API works for all the targets, all of the examples above for different targets should work in the same set of reflection APIs.
+As described earlier, Slang assigns the binding indices based on the input program, and the binding information is same for any targets, which allows Slang Reflection API to be cross-platform. But it comes with a cost that the Slang users need to learn a few new concepts that abstracts the differences.
 
 ### `VariableLayout` and `TypeLayout`
-For variables, Slang has the following concepts and relationships:
+For every variables, Slang has the following concepts and relationships:
  - **Variable**: `Variable` represents each variable declaration.
  - **Type**: every `Variable` has a `Type`.
- - **VariableLayout**: `VariableLayout` holds the offset information of a `Variable` for a given scope. And a `Variable` has one or more `VariableLayout`s.
- - **TypeLayout**: `TypeLayout` holds the size information of a `Type`. A `VariableLayout` has a `TypeLayout`.
 
-For the Slang Reflection API, you will be mostly dealing with `VariableLayout` and `TypeLayout`. Both of them reflect the layout information, but `VariableLayout` is more for the "offset" information from the beginning of the given scope, and `TypeLayout` is more for the "size" information of the type.
+To store the "layout" information, Slang has the following concepts and relationships:
+ - **VariableLayout**: `VariableLayout` holds the layout information for `Variable` for a given scope.
+ - **TypeLayout**: `TypeLayout` holds the layout information for `Type`.
 
-### Iterating Global-Scope Shader Uniform Parameters
-To start from a simple example, here is a simple example for getting the binding information of global-scope shader uniform parameters:
+For the Slang Reflection API, you will be mostly dealing with `VariableLayout` and the variants of `TypeLayout`. Both of them reflect the layout information, but `VariableLayout` is more for the "offset" information from the beginning of the given scope, and `TypeLayout` is more for the "size" information of the type. Since `VariableLayout` has the `TypeLayout`, you can access `TypeLayoutReflection` from `VariableLayoutReflection` in the reflection APIs.
 
+When the variable is `struct` type, Slang has the following concepts and relationships:
+ - **StructType**: every `Variable` whose type is `struct` has a `StructType`, and it has "fields" for its member `Variable`-s.
+ - **StructTypeLayout**: `StructTypeLayout` holds the layout information for `StructType`, and it has "fields" for the layout information of member variables.
+ 
+ `VariableLayout` has a `StructTypeLayout` if `Variable` is a struct type. Similarly to `StructType`, `StructTypeLayout` also has "fields" for its member variables, but each member is represented with `VariableLayout` to hold the layout information.
+
+ For `array` types, Slang has the following concepts and relationships:
+  - **ArrayType**: every `Variable` whose type is an array also has an `ArrayType`.
+  - **ArrayTypeLayout**: `ArrayTypeLayout` holds the layout information for `ArrayType`.
+
+### Iterating Global-Scope Shader Parameters
+To start from a simple example, consider the following simple shader parameters:
+```hlsl
+Texture2D myTexture;
+SamplerState mySampler;
+```
+
+The following code shows how to get the reflection data for the shader parameters above:
 ```cpp
 unsigned parameterCount = shaderReflection->getParameterCount();
 for(unsigned pp = 0; pp < parameterCount; pp++)
@@ -218,23 +233,23 @@ for(unsigned pp = 0; pp < parameterCount; pp++)
     slang::ParameterCategory category = parameter->getCategory();
     unsigned index = parameter->getOffset(category);
     unsigned space = parameter->getBindingSpace(category)
-                   + parameter->getOffset(SLANG_PARAMETER_CATEGORY_SUB_ELEMENT_REGISTER_SPACE);
+                   + parameter->getOffset(slang::ParameterCategory::SubElementRegisterSpace);
+    // ...
+}
 ```
 
 The example above shows that the application using HLSL will get the resource type information as `category`, the binding index as `index`, and the space index as `space`. For the application using Vulkan, `category` will always be `slang::ParameterCategory::DescriptorTableSlot`.
 
-### Iterating Mixed Category
-As for a more complex example, Slang can put multiple resource types in a single `struct` like the following:
+Note that `getOffset()` is called with `category`. It is important to understand that the "offset" and "size" information is not a single value but an array of values, each of which is for each category. When `getOffset()` or `getSize` is called with a category the parameter doesn't belong to, it will return a zero value.
+
+### Offset of `Mixed` category
+As an example, there is an old resource type called, `sampler2D`, `sampler3D` and so on. It combined a texture resource type and a sampler resource type. Slang treats it as a `Mixed` category. Consider the following HLSL code,
 
 ```hlsl
-struct SimpleMaterial
-{
-    int materialIndex;
-    Texture2D diffuse;
-};
+sampler2D myOldTexture;
 ```
 
-In this case, the type `SimpleMaterial` uses two `ParameterCategory`: `uniform` for `int` and `ShaderResource` for `Texture2D`. Because it has more than one `ParameterCategory`, its `ParameterCategory` is `Mixed`. You will need to iterate for each category as follows:
+The variable `myOldTexture` uses two `ParameterCategory`: `ShaderResource` and `SamplerState`. When a type has more than one `ParameterCategory`, its `ParameterCategory` is `Mixed`. You will need to iterate for each category as follows:
 
 ```cpp
 slang::ParameterCategory category = parameter->getCategory();
@@ -246,22 +261,36 @@ if (category == slang::ParameterCategory::Mixed)
         slang::ParameterCategory category = parameter->getCategoryByIndex(cc);
         size_t offsetForCategory = parameter->getOffset(category);
         size_t spaceForCategory = parameter->getBindingSpace(category)
-            + parameter->getOffset(SLANG_PARAMETER_CATEGORY_SUB_ELEMENT_REGISTER_SPACE);
+            + parameter->getOffset(slang::ParameterCategory::SubElementRegisterSpace);
         // ...
     }
 }
-else
+```
+
+Note that the `category` in this example plays an important role when querying with `getOffset()`. `myOldTexture` has two offset values: one is as `ShaderResource` and another is as `SamplerState`.
+
+## Offset of `struct`
+When a variable is a `struct` type, you need to iterate "fields" as follows:
+```cpp
+slang::TypeLayoutReflection* typeLayout = parameter->getTypeLayout();
+slang::TypeReflection::Kind kind = typeLayout->getKind();
+if (kind == slang::TypeReflection::Kind::Struct)
 {
-    // ...
+    unsigned fieldCount = typeLayout->getFieldCount();
+    for(unsigned ff = 0; ff < fieldCount; ff++)
+    {
+    	VariableLayoutReflection* field = typeLayout->getFieldByIndex(ff);
+    	// ...
+    }
 }
 ```
 
-Note that the code above returns the offset information for `SimpleMaterial`, not the offset information of its member variables. The `category` in this example plays an important role when querying with `getOffset`. As `uniform` resource type, `SimpleMaterial` has an offset of the value returned from the `getOffset` function call. And as `ShaderResource` resource type, `SimpleMaterial` has an offset of the value returned from the `getOffset` function call.
+When a `struct` type has another `struct` type as its member variable, the application needs to recursively iterate fields of each struct.
 
-### Size Information of a Parameter
-Once you have the offset information, you will need to know the size information, because for some types, it could be more than a single type such as `struct` or array. For that reason, you need to first query what "kind" of parameter it is. It could be `Scalar`, `Matrix`, `Array`, and so on.
+One important note for recursively iterating a struct kind is that the "offset" values for each field are offset values counted from the beginning of the struct it belongs to. The application must sum up the offset values of the nesting structs to get the correct "binding index".
 
-Similarly to how we get the "offset" information, you need to query "size" information for a specific `category` as shown in the example below:
+### Size of array
+Once you have the offset information, you will need to know the size information, because for some types, it may occupy more than one binding slots. For that reason, you need to first query what "kind" of parameter it is. It could be `Scalar`, `Matrix`, `Array`, and so on.
 
 ```cpp
 slang::TypeLayoutReflection* typeLayout = parameter->getTypeLayout();
@@ -277,35 +306,29 @@ switch (kind)
     case slang::TypeReflection::Kind::Array:
     {
         size_t arrayElementCount = typeLayout->getElementCount();
-        slang::TypeLayoutReflection* elementTypeLayout = typeLayout->getElementTypeLayout();
         size_t arrayElementStride = typeLayout->getElementStride(category);
+        size_t sizeOfArray = arrayElementCount * arrayElementStride;
+
         // ...
         break;
-    }
-    case slang::TypeReflection::Kind::Struct:
-    {
-        unsigned fieldCount = typeLayout->getFieldCount();
-        for(unsigned ff = 0; ff < fieldCount; ff++)
-        {
-            VariableLayoutReflection* field = typeLayout->getFieldByIndex(ff);
-            // ...
-        }
     }
     // ...
 }
 ```
 
-One important note for recursively iterating a struct kind is that the "offset" values for each field are offset values counted from the beginning of the struct it belongs to. The application must sum up the offset values of the nesting structs to get the binding index.
+Note that similarly to how we get the "offset" information, you need to query "size" information for a specific `category` as shown above. In other words, `getSize()` or `getElementStride()` must be called with a specific `category`.
+
+`arrayElementStride` in the example illustrates that the size of an array element is not always same to the distance between each element in an array. `getElementStride` provides the information of how much stride is used in the array.
 
 ### `ConstantBuffer` vs `ParameterBlock`
 
 `ParameterBlock` is a unique feature in Slang. `ParameterBlock` provides consistent binding locations in separate spaces.
 
 > TODO: The content below describes a rough idea of what needs to be written.
-
-The main difference is whether or not the enclosing resources bleed into the outer environment. `ConstantBuffer`: No indirection, everything bleeds out. `ParameterBlock`: Uses a separate space to hold all child elements; only the “space” binding will bleed out.
-
-Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
+>
+> The main difference is whether or not the enclosing resources bleed into the outer environment. `ConstantBuffer`: No indirection, everything bleeds out. `ParameterBlock`: Uses a separate space to hold all child elements; only the “space” binding will bleed out.
+> 
+> Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
 ### How to Figure Out Which Binding Slots Are Unused
 
@@ -324,7 +347,6 @@ session->createCompositeComponentType(
     2,
     compositeProgram.writeRef(),
     diagnosticBlob.writeRef());
-SLANG_CHECK(compositeProgram != nullptr);
 
 ComPtr<slang::IComponentType> linkedProgram;
 compositeProgram->link(linkedProgram.writeRef(), nullptr);
@@ -391,3 +413,7 @@ unsigned int attribCount = funcReflection->getUserAttributeCount();
 slang::UserAttribute* attrib = funcReflection->getUserAttributeByIndex(0);
 const char* attribName = attrib->getName();
 ```
+
+### Shader Cursor
+
+> TODO: Do we want to talk about shader cursor in this document?
