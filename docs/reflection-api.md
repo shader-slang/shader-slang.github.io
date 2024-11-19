@@ -37,22 +37,6 @@ This allows "modules" of Slang to be used consistently on multiple shaders. Rega
 
 Because the binding information is independent from the target compiler, the binding information is identical for all targets. The information doesn't need to be queried for different targets.
 
-### Examples of implicit binding
-TODO: We need examples to show how binding indices are assigned with DXC and compare it to Slang.
-
-TODO: We can have an example with modules like scene.hlsl/cpp, material.hlsl/cpp and/or lighting.hlsl/cpp.
-
-
-### `ConstantBuffer` vs `ParameterBlock`
-
-`ParameterBlock` is a unique feature in Slang. `ParameterBlock` provides consistent binding locations in separate spaces.
-
-TODO: The content below describes a rough idea of what needs to be written.
-
-The main difference is whether or not the enclosing resources bleed into the outer environment. `ConstantBuffer`: No indirection, everything bleeds out. `ParameterBlock`: Uses a separate space to hold all child elements; only the “space” binding will bleed out.
-
-Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
-
 
 ## How Shader binding works for target platforms
 
@@ -293,6 +277,16 @@ switch (kind)
 ```
 
 One important note for recursively iterating a struct kind is that the "offset" values for each field is an offset value counted from the beginning of its struct it belongs to. The application must sum up the offset values of the nesting structs to get the binding index.
+
+### `ConstantBuffer` vs `ParameterBlock`
+
+`ParameterBlock` is a unique feature in Slang. `ParameterBlock` provides consistent binding locations in separate spaces.
+
+TODO: The content below describes a rough idea of what needs to be written.
+
+The main difference is whether or not the enclosing resources bleed into the outer environment. `ConstantBuffer`: No indirection, everything bleeds out. `ParameterBlock`: Uses a separate space to hold all child elements; only the “space” binding will bleed out.
+
+Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
 
 ### How to figure out which binding slots are unused
