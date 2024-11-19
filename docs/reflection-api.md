@@ -320,15 +320,13 @@ Note that similarly to how we get the "offset" information, you need to query "s
 
 `arrayElementStride` in the example illustrates that the size of an array element is not always same to the distance between each element in an array. `getElementStride` provides the information of how much stride is used in the array.
 
-### `ConstantBuffer` vs `ParameterBlock`
+### `ParameterBlock`
 
-`ParameterBlock` is a unique feature in Slang. `ParameterBlock` provides consistent binding locations in separate spaces.
+`ParameterBlock` is a unique feature in Slang. Parameter blocks (exposed as ParameterBlock<T>) provide a first-class language feature for grouping related shader parameters and specifying that they should be passed to the GPU as a coherent block. Parameter blocks make it easy for applications to use the most efficient parameter-binding model of each API, such as descriptor tables/sets in D3D12/Vulkan.
 
-> TODO: The content below describes a rough idea of what needs to be written.
->
-> The main difference is whether or not the enclosing resources bleed into the outer environment. `ConstantBuffer`: No indirection, everything bleeds out. `ParameterBlock`: Uses a separate space to hold all child elements; only the “space” binding will bleed out.
-> 
-> Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
+> TODO: We need an example code for ParameterBlock
+
+Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
 ### How to Figure Out Which Binding Slots Are Unused
 
