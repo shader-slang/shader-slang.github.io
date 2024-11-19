@@ -39,8 +39,6 @@ Slang takes a slightly different approach to address the problem. The explicit b
 
 This allows "modules" of Slang to be used consistently on multiple shaders. Regardless of which shader parameters are used or unused, the assigned binding indices are the same for a given Slang module. It allows applications using Slang to reuse the parameter data more efficiently. When the parameter layouts are consistent across multiple shaders, the same data can be reused more often, and it can improve the overall efficiency of the application.
 
-Because the binding information is independent from the target compiler, the binding information is identical for all targets. The information doesn't need to be queried for different targets.
-
 ### Shader Permutation by an Example
 
 The following example shows a typical shader source code that gets compiled with macro permutation.
@@ -238,7 +236,7 @@ The example above shows four shader parameters:
 
 Slang abstracts "Resource Type." As exemplified above, HLSL has different types of registers, each of which starts with a letter like `t` for textures and `s` for samplers. The register `t0` represents a different slot from a register `s0` in HLSL. However, in Vulkan, there is just a binding index number that doesn't differentiate the resource types. A texture can be bound to a binding index `0`, and it will conflict if a sampler is also bound to a binding index `0`.
 
-As described earlier, Slang assigns the binding indices based on the input program, and the binding information is the same for any targets, which allows the Slang Reflection API to be cross-platform. But it comes with the cost that the Slang users need to learn a few new concepts that abstract the differences.
+As described earlier, Slang assigns the binding indices based on the input program, which allows the Slang Reflection API to be cross-platform. But it comes with the cost that the Slang users need to learn a few new concepts that abstract the differences.
 
 ### `VariableLayout` and `TypeLayout`
 
