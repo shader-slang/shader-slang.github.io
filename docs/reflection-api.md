@@ -37,6 +37,12 @@ This allows "modules" of Slang to be used consistently on multiple shaders. Rega
 
 Because the binding information is independent from the target compiler, the binding information is identical for all targets. The information doesn't need to be queried for different targets.
 
+### Parameter binding for modules by example
+
+> TODO: We need an example that shows why the input program based binding is required for modules in Slang.
+
+> TODO: We can use scene.cpp/hlsl, material.cpp/hlsl and lighting.cpp/hlsl
+
 
 ## How Shader binding works for target platforms
 
