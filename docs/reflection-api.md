@@ -3,13 +3,14 @@
 This document is intended to explain the principle of how Slang Reflection APIs are designed.
 For the information of how to use the Slang Reflection API functions, please refer to [Slang User's Guide](https://shader-slang.com/slang/user-guide/reflection.html).
 
+## Goal and dificulties of Slang Reflection API
 Slang provides "Slang reflection API" that works for multiple targets. This allows the Slang users to write more cross platform applications that can unify the similar API funcitonalities for different APIs. However, since Slang supports multiple targets, there are difficulties to design the reflection API that works for all of them.
 
 When a certain target comes with specific requirements, Slang Reflection APIs may need to comform to the requirements even when the other targets have no such requirements. As an example, when targeting CPP, the texture and sampler parameters in a single struct type can be serialized together. But when targeting HLSL, texture parameters are bound to `t` registers, and the sampler parameters are bound to `s` registers separately.
 
 When Slang provides advanced language features that a target doesn't support directly, Slang has to "de-sugar" it and this process must be deterministically well defined by the Slang Reflection APIs.
 
-The goals of the Slang Reflection APIs are:
+The goals of the Slang Reflection API are:
  - Reflect the program as how the user worte; not as how the target compiler generated.
  - Support applications that is cross-platform and cross-APIs.
  - Report the complete layout information for each platform.
@@ -53,7 +54,11 @@ The main difference is whether or not the enclosing resources bleed into the out
 Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
 
-## How parameter binding works for different graphics APIs
+## Cross platform reflection API
+
+"Resource type" is one of many challenges that Slang needs to abstract. As an example, there are different types of registers in HLSL, each of which increaments its binding index for its own resource type. Texture resources are bound to `t0`, `t1`, and so on and sampler resources are bound to `s0`, `s1` and so on. The register `t0` represents a different slot from a register `s0` in HLSL. However, in Vulkan, there is just a binding index number that doesn't differentiate the resource types. A texture can be bound to a binding index `0` and it will conflict if a sampler is also bound to a binding index `0`.
+
+Slang introduces new concepts to abstract the differences. The details of how Slang handles it is described in the later part of this section.
 
 ### Direct3D 11
 
@@ -186,64 +191,106 @@ The example above shows four shader parameters:
 - `outputTexture` is bound to `texture(1)`, because unlike HLSL, Metal doesn't differentiate UAV from SRV.
 - `ConstantBuffer` is bound to `buffer(0)`, because it is a buffer resoutce.
 
+## Slang Reflection API by example
 
-## Binding offset
+### `VariableLayout` and `TypeLayout`
+Because Slang Reflection API works for all the targets, all of the examples above for different targets should work in a same set of reflection APIs.
 
-> TODO: This section needs to be rewritten with an example that has a struct with opaque types as member variables such as SamplerState or Texture2D.
+For Variables, Slang has following concepts and relationships:
+ - Variable : `Variable` represents each variable declaration.
+ - Type : every `Variable` has a `Type`.
+ - VariableLayout : `VariableLayout` holds the offset information of a `variable` for a given scope. And a `variable` has one or more than one `VariableLayout`.
+ - TypeLayout : `TypeLayout` holds the size information of a `type`. A `VariableLayout` has a `TypeLayout`.
 
-### Binding offset differences for different graphics APIs
-Different graphics APIs use different structures to store the shader parameters.
- - Direct3D 11 (D3D11): Uses HLSL packing rules, where variables are packed into 16-byte boundaries (4-component vectors). Scalars and smaller vectors can share space within these boundaries if they fit.
- - Direct3D 12 (D3D12): Packs variables more tightly based on their natural alignment, without the 16-byte boundary restrictions. This results in more compact offsets.
- - OpenGL: Follows the std140 layout, which imposes stricter alignment rules. Vectors like float3 are aligned to 16 bytes, and padding is added as necessary.
- - Vulkan: Uses std140 or std430 layouts. In the std140 layout (commonly used for uniform buffers), the alignment rules are similar to OpenGL's std140.
- - Metal: Aligns data according to its natural alignment but with considerations for efficient GPU access. It often results in offsets similar to those in OpenGL and Vulkan.
+For Slang Reflection API, you will be mostly dealing with `VariableLayout` and `TypeLayout`. Both of them reflect the layout information, but `VariableLayout` is more for the "offset" information from a beginning of the given scope and `TypeLayout` is more for the "size" information of the type.
 
-Consider the following example,
-```hlsl
-struct MyConstants
+### Iterating global-scope shader uniform parameters
+To start from a simple example, here is a simple example for getting the binding information of globa-scope shader uniform parameters,
+```cpp
+unsigned parameterCount = shaderReflection->getParameterCount();
+for(unsigned pp = 0; pp < parameterCount; pp++)
 {
-    int        myInt;
-    float2     myFloat2;
-    struct
-    {
-        float3 innerFloat3;
-    } myStruct;
-    float      myFloat;
+    slang::VariableLayoutReflection* parameter =
+        shaderReflection->getParameterByIndex(pp);
+
+    slang::ParameterCategory category = parameter->getCategory();
+    unsigned index = parameter->getOffset(category);
+    unsigned space = parameter->getBindingSpace(category)
+                   + parameter->getOffset(SLANG_PARAMETER_CATEGORY_SUB_ELEMENT_REGISTER_SPACE);
+```
+The example above shows that the application using HLSL will get the resource type information as "category", the binding index as "index", and the space index as "space". For the application using Vulkan, "category" will be always `slang::ParameterCategory::DescriptorTableSlot`.
+
+### Iterating Mixed category
+As for a more complex example, Slang can put multiple resource types in a single `struct` like the following,
+```hlsl
+struct SimpleMaterial
+{
+    int materialIndex;
+    Texture2D diffuse;
 };
 ```
-Offsets for each variable is,
-| Variable | D3D11 Offset | D3D12 Offset | std140 Offset (OpenGL, Vulkan) | std430 Offset (Vulkan) | Metal Offset |
-|---------------------------|--------------------------|--------------------------|---------------------------|---------------------------|--------------------------|
-| myInt | 0 | 0 | 0 | 0 | 0 |
-| myFloat2 | 4 | 8 | 8 | 8 | 8 |
-| myStruct.innerFloat3 | 16 | 16 | 16 | 16 | 16 |
-| myFloat | 28 | 28 | 32 | 28 | 32 |
-| Total Size | 32 bytes | 32 bytes | 48 bytes | 32 bytes | 48 bytes |
 
-
-As you can see, the offset calculation differs based on which graphics API is used. And the applicatoin will need to handle them properly when supporting multiple graphics APIS. Manually calculating the offset or hard-coding the offset values may lead to a high cost of the maintainance over the lifespan of the application.
-
-Slang provides a consistent way to get the offset values for any given graphics API and it allows the application to avoid manual offset calculations for any graphics APIs it may support.
-
-### Visualizing offset data on playground
-[Slang Playground](https://shader-slang.com/slang-playground/) prvoides a feature to visualize the reflection data. You can also dump a JSON file with slangc.exe,
+In this case, the type `SimpleMaterial` uses two "ParameterCategory": `uniform` for `int` and `ShaderResource` for `Texture2D`. Because it has more than one ParameterCategories, its ParameterCategory is `Mixed`. You will need to iterate for each category as following,
+```cpp
+slang::ParameterCategory category = parameter->getCategory();
+if (category == slang::ParameterCategory::Mixed)
+{
+    unsigned categoryCount = parameter->getCategoryCount();
+    for(unsigned cc = 0; cc < categoryCount; cc++)
+    {
+        slang::ParameterCategory category = parameter->getCategoryByIndex(cc);
+        size_t offsetForCategory = parameter->getOffset(category);
+        size_t spaceForCategory = parameter->getBindingSpace(category)
+            + parameter->getOffset(SLANG_PARAMETER_CATEGORY_SUB_ELEMENT_REGISTER_SPACE);
+        // ...
+    }
+}
+else
+{
+    // ...
+}
 ```
-slangc.exe -reflection-json myShader.json -preserve-params -target hlsl myShader.hlsl
+Note that the code above returns the offset information for `SimpleMaterial` not the offset information of its member variables. The "category" in this example plays an important role when quering with `getOffset`. As `uniform` resource type, `SimpleMaterial` has an offset of the value returned from `getOffset` function call. And as `ShaderResource` resource type, `SimpleMaterial` has an offset of the value returned from `getOffset` function call.
+
+### Size information of a parameter
+Once you have the offset information, you will need to know the size information, because for some types, it could be more than a single type such as `struct` or array. For that reason, you need to first query what "kind" of parameter it is. It could be `Scalar`, `Matrix`, `Array` and so on.
+
+Similarly to how we get the "offset" information, you need to query "size" information for a specific "category" as shown on the example below,
+```cpp
+slang::TypeLayoutReflection* typeLayout = parameter->getTypeLayout();
+slang::TypeReflection::Kind kind = typeLayout->getKind();
+switch (kind)
+{
+    case slang::TypeReflection::Kind::Scalar:
+    {
+        size_t sizeInBytes = typeLayout->getSize(category);
+        // ...
+        break;
+    }
+    case slang::TypeReflection::Kind::Array:
+    {
+        size_t arrayElementCount = typeLayout->getElementCount();
+        slang::TypeLayoutReflection* elementTypeLayout = typeLayout->getElementTypeLayout();
+        size_t arrayElementStride = typeLayout->getElementStride(category);
+        // ...
+        break;
+    }
+    case slang::TypeReflection::Kind::Struct:
+    {
+        unsigned fieldCount = typeLayout->getFieldCount();
+        for(unsigned ff = 0; ff < fieldCount; ff++)
+        {
+            VariableLayoutReflection* field = typeLayout->getFieldByIndex(ff);
+            // ...
+        }
+    }
+    // ...
 ```
 
-For the given example above, you can see a JSON output from the slang-playground. The screenshot below shows the reflection data when targeting HLSL.
-
-![image](https://github.com/user-attachments/assets/225281f6-c7d6-49bf-a49f-f557c4b17897)
-
-Note that the reflection tree on the right side shows the offset for each member variables.
-
-Also note that these offset values will differ when you change the target API. The screenshot below shows a different offset value when targeting GLSL.
-
-![image](https://github.com/user-attachments/assets/de7d57ff-9087-4487-a2c5-8a9ce5df15af)
+One important note for recursively iterating a struct kind is that the "offset" values for each field is an offset value counted from the beginning of its struct it belongs to. The application must sum up the offset values of the nesting structs to get the binding index.
 
 
-## How to figure out which binding slots are unused
+### How to figure out which binding slots are unused
 
 Slang allows the application to query if a parameter location is used after Dead-Code-Elimination. This is done through the `IMetadata` interface:
 
