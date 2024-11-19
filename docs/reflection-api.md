@@ -1,64 +1,68 @@
 # Using the Slang Reflection API
 
-This document is intended to explain the principle of how Slang Reflection APIs are designed.
-For the information of how to use the Slang Reflection API functions, please refer to [Slang User's Guide](https://shader-slang.com/slang/user-guide/reflection.html).
+This document is intended to explain the principles of how the Slang Reflection APIs are designed.
+For information on how to use the Slang Reflection API functions, please refer to [Slang User's Guide](https://shader-slang.com/slang/user-guide/reflection.html).
 
-## Goal and dificulties of Slang Reflection API
-Slang provides "Slang reflection API" that works for multiple targets. This allows the Slang users to write more cross platform applications that can unify the similar API funcitonalities for different APIs. However, since Slang supports multiple targets, there are difficulties to design the reflection API that works for all of them.
+## Goal and Difficulties of Slang Reflection API
 
-When a certain target comes with specific requirements, Slang Reflection APIs may need to comform to the requirements even when the other targets have no such requirements. As an example, when targeting CPP, the texture and sampler parameters in a single struct type can be serialized together. But when targeting HLSL, texture parameters are bound to `t` registers, and the sampler parameters are bound to `s` registers separately.
+Slang provides the "Slang Reflection API" that works for multiple targets. This allows Slang users to write more cross-platform applications that can unify similar API functionalities for different APIs. However, since Slang supports multiple targets, there are difficulties in designing a reflection API that works for all of them.
 
-When Slang provides advanced language features that a target doesn't support directly, Slang has to "de-sugar" it and this process must be deterministically well defined by the Slang Reflection APIs.
+When a certain target comes with specific requirements, Slang Reflection APIs may need to conform to the requirements even when the other targets have no such requirements. As an example, when targeting C++, the texture and sampler parameters in a single struct type can be serialized together. But when targeting HLSL, texture parameters are bound to `t` registers, and the sampler parameters are bound to `s` registers separately.
+
+When Slang provides advanced language features that a target doesn't support directly, Slang has to "de-sugar" it, and this process must be deterministically well-defined by the Slang Reflection APIs.
 
 The goals of the Slang Reflection API are:
- - Reflect the program as how the user worte; not as how the target compiler generated.
- - Support applications that is cross-platform and cross-APIs.
+ - Reflect the program as the user wrote it; not as how the target compiler generated it.
+ - Support applications that are cross-platform and cross-APIs.
  - Report the complete layout information for each platform.
 
+## Reflection Based on the Input Program
 
-## Reflection based on the input program
-Most of shader compilers out there provides the reflection API that is based on the compiled shader binary. When a shader parameters is, as an example, unused, the reflection API provides no information about it, because they don't exist in the compiled shader binary.
+Most of the shader compilers out there provide a reflection API that is based on the compiled shader binary. When a shader parameter is, for example, unused, the reflection API provides no information about it, because they don't exist in the compiled shader binary.
 
-Slang Reflection API is based on the input program, and this is only way to provide a consistent binding across multiple platforms.
+The Slang Reflection API is based on the input program, and this is the only way to provide a consistent binding across multiple platforms.
 
-### Problems of the current binding methods
+### Problems of the Current Binding Methods
+
 When a shader is compiled, the application has two options for how to assign the binding indices for the shader parameters.
-1. Explicit binding : the shader developer assign unique numbers to each and every shader parameters manually.
-2. Binding data from reflection : when the binding indices are not explicitly specified, the compiler assigns binding indices just for the shader parameters that are actually used.
 
-When binding indices are explicitly assigned to each and every shader parameter, it has an advantage of what binding indices are assigned to which shader parameter prior to the shader compilation. The application doesn't need to use the reflection API to query the binding information from the compiled shader binary. Even when certain sets of shader parameters were unused and the compiler removed them from the final shader binary, the binding indicies stay same, which allows the application to reused a same data layout for multiple shader permutations. But it becomes a burden of the application developers to maintain the uniqueness of the indices. And it is often considered not scalable approach.
+1. **Explicit binding**: the shader developer assigns unique numbers to each and every shader parameter manually.
+2. **Binding data from reflection**: when the binding indices are not explicitly specified, the compiler assigns binding indices just for the shader parameters that are actually used.
 
-Alternatively, when the shader parameters don't have any binding indices specified, the compiler will assign binding indices. The application can, then, query the binding information from the compiled shader binary with the reflection APIs. But in this approach, the binding information is based on the compiled shader binary and any unused shader parameters are not counted. This creates different sets of shader parameters for different sets of shader permutations even when they are all from a same shader source file. In other words, the binding indices will be assigned in an unpredictable manner when there are a lot of shader permutations. This prevents the application from reusing a same data layout that could be reused if the binding indices were explicitly assigned.
+When binding indices are explicitly assigned to each shader parameter, it has the advantage that the binding indices assigned to each shader parameter are known prior to shader compilation. The application doesn't need to use the reflection API to query the binding information from the compiled shader binary. Even when certain sets of shader parameters are unused and the compiler removes them from the final shader binary, the binding indices stay the same, which allows the application to reuse the same data layout for multiple shader permutations. But it becomes a burden for application developers to maintain the uniqueness of the indices, and it is often considered not a scalable approach.
 
-### Slang addresses the problem with "implicit binding"
-Slang takes a little different approach to address the problem. The explicit binding is still supported but when the binding indices are unspecified, Slang will automatically assign the binding indices deterministically. The binding indices are assigned before the dead-code-elimination and the binding information remains until the final binary as if the binding information was explicitly specified to all shader parameters.
+Alternatively, when the shader parameters don't have any binding indices specified, the compiler will assign binding indices. The application can then query the binding information from the compiled shader binary with the reflection APIs. But in this approach, the binding information is based on the compiled shader binary and any unused shader parameters are not counted. This creates different sets of shader parameters for different sets of shader permutations even when they are all from the same shader source file. In other words, the binding indices will be assigned in an unpredictable manner when there are a lot of shader permutations. This prevents the application from reusing the same data layout that could be reused if the binding indices were explicitly assigned.
 
-This allows "modules" of Slang to be used consistently on multiple shaders. Regardless of which shader parameters are used or unused, the assigned binding indices are same for a same Slang module. And it allows the applications using Slang to reuse the parameter data more efficiently. When the parameter layouts are consistent across multiple shaders, the same data can be reused more often, and it can improve the overall efficiency of the application.
+### Slang Addresses the Problem with "Implicit Binding"
+
+Slang takes a slightly different approach to address the problem. The explicit binding is still supported, but when the binding indices are unspecified, Slang will automatically assign the binding indices deterministically. The binding indices are assigned before dead-code elimination, and the binding information remains in the final binary as if the binding information were explicitly specified to all shader parameters.
+
+This allows "modules" of Slang to be used consistently on multiple shaders. Regardless of which shader parameters are used or unused, the assigned binding indices are the same for a given Slang module. It allows applications using Slang to reuse the parameter data more efficiently. When the parameter layouts are consistent across multiple shaders, the same data can be reused more often, and it can improve the overall efficiency of the application.
 
 Because the binding information is independent from the target compiler, the binding information is identical for all targets. The information doesn't need to be queried for different targets.
 
-### Parameter binding for modules by example
+### Parameter Binding for Modules by Example
 
-> TODO: We need an example that shows why the input program based binding is required for modules in Slang.
+> TODO: We need an example that shows why the input program-based binding is required for modules in Slang.
 
-> TODO: We can use scene.cpp/hlsl, material.cpp/hlsl and lighting.cpp/hlsl
+> TODO: We can use `scene.cpp/hlsl`, `material.cpp/hlsl`, and `lighting.cpp/hlsl`.
 
+## How Shader Binding Works for Target Platforms
 
-## How Shader binding works for target platforms
+There are differences in how the target platforms bind the shader parameters. Some of the restrictions can be mitigated by "legalizing," but Slang has to conform to some restrictions that cannot be avoided. One of the restrictions is the existence of "Resource Type." In HLSL, there are roughly four resource types: "Constant Buffer", "Texture", "Sampler", and "UAV". OpenGL/Vulkan simply have binding indices and set indices without "resource types". Slang abstracts the differences and calls it "ParameterCategory" or "Category" for short. In other contexts, it is also called `LayoutResourceKind`, which is more descriptive.
 
-There are differences on how the target platforms bind the shader parameters. Some of restrictions can be mitergated by "legalizing", but Slang has to comform to some of restricts that cannot be avoided. One of the restrictions is the existance of "Resource Type". In HLSL, there are roughly four resource types: "constant buffer", "Texture", "Sampler", and "UAV". OpenGL/Vulkan simply has binding indices and set indices without "resource types". Slang abstracts the differences and calls it "ParameterCategory" or "Category" for short. In other context, it is also called `LayoutResourceKind`, which is more descriptive.
-
-This section quickly summarizes how each target handles the binding and the next section will describe how they are abstracted in a Slang way.
+This section quickly summarizes how each target handles the binding, and the next section will describe how they are abstracted in a Slang way.
 
 ### Direct3D 11
 
 The shader parameters in D3D11 are bound in one of four ways.
 1. When the resource type is texture, it is bound to a register starting with the letter `t`.
 2. When the resource type is sampler, it is bound to a register starting with the letter `s`.
-3. When the resource type is Unordered Access View, it is bound to a register starting with the letter `u`.
+3. When the resource type is Unordered Access View (UAV), it is bound to a register starting with the letter `u`.
 4. When the resource type is constant buffer, multiple values are stored in a buffer, and it is bound to a register starting with the letter `b`.
 
-Consider the following example,
+Consider the following example:
+
 ```hlsl
 // D3D11 HLSL Compute Shader Example
 
@@ -78,7 +82,7 @@ The example above shows four shader parameters:
 - `myTexture` is bound to register `t0`, because it is a `Texture2D` type.
 - `mySampler` is bound to register `s0`, because it is a `SamplerState` type.
 - `ConstantBuffer` is bound to register `b0`, because it is a `cbuffer` type.
-- `outputTexture` is bound to register `u0`, because it is an `RWTexture2D` or also known as UAV type.
+- `outputTexture` is bound to register `u0`, because it is an `RWTexture2D`, also known as UAV type.
 
 ### Direct3D 12
 
@@ -86,7 +90,8 @@ The shader parameters in D3D12 support all the binding methods in D3D11. Additio
 1. A register `space` can be specified.
 2. An "array of descriptors" can be specified.
 
-Consider the following example,
+Consider the following example:
+
 ```hlsl
 // D3D12 HLSL Compute Shader Example with Register Spaces
 
@@ -103,7 +108,8 @@ The example above shows three shader parameters:
 
 The shader parameters in OpenGL follow a similar rule as Direct3D, but the binding index is more monolithic, in that the binding index is just a single number regardless of their resource types.
 
-Consider the following example,
+Consider the following example:
+
 ```glsl
 // OpenGL GLSL Compute Shader Example
 
@@ -128,11 +134,12 @@ The example above shows four shader parameters:
 
 ### Vulkan
 
-The shader parameters in Vulkan support all the binding syntax of OpenGL, but support additional concepts like D3D12 does:
+The shader parameters in Vulkan support all the binding syntax of OpenGL but support additional concepts like D3D12 does:
 1. GLSL with Vulkan backend can specify a descriptor set index with a `set` keyword, which is similar to `space` in D3D12.
 2. GLSL with Vulkan backend can declare arrays of descriptors by using `[]` syntax, which is similar to "array of descriptors" in D3D12.
 
-Consider the following example,
+Consider the following example:
+
 ```glsl
 // Vulkan GLSL Compute Shader Example with descriptor set
 
@@ -179,28 +186,28 @@ The example above shows four shader parameters:
 - `myTexture` is bound to `texture(0)`, because it is a texture resource.
 - `mySampler` is bound to `sampler(0)`, because it is a texture sampler.
 - `outputTexture` is bound to `texture(1)`, because unlike HLSL, Metal doesn't differentiate UAV from SRV.
-- `ConstantBuffer` is bound to `buffer(0)`, because it is a buffer resoutce.
+- `ConstantBuffer` is bound to `buffer(0)`, because it is a buffer resource.
 
-## Cross platform reflection API
+## Cross-Platform Reflection API
 
-Slang abstracts "Resource type". As an example, there are different types of registers in HLSL, each of which increaments its binding index for its own resource type. Texture resources are bound to `t0`, `t1`, and so on and sampler resources are bound to `s0`, `s1` and so on. The register `t0` represents a different slot from a register `s0` in HLSL. However, in Vulkan, there is just a binding index number that doesn't differentiate the resource types. A texture can be bound to a binding index `0` and it will conflict if a sampler is also bound to a binding index `0`.
+Slang abstracts "Resource type". As an example, there are different types of registers in HLSL, each of which increments its binding index for its own resource type. Texture resources are bound to `t0`, `t1`, and so on, and sampler resources are bound to `s0`, `s1`, and so on. The register `t0` represents a different slot from a register `s0` in HLSL. However, in Vulkan, there is just a binding index number that doesn't differentiate the resource types. A texture can be bound to a binding index `0`, and it will conflict if a sampler is also bound to a binding index `0`.
 
-Slang introduces new concepts to abstract the differences. The details of how Slang handles it is described in the later part of this section.
+Slang introduces new concepts to abstract the differences. The details of how Slang handles it are described in the later part of this section.
 
-
-Because Slang Reflection API works for all the targets, all of the examples above for different targets should work in a same set of reflection APIs.
+Because the Slang Reflection API works for all the targets, all of the examples above for different targets should work in the same set of reflection APIs.
 
 ### `VariableLayout` and `TypeLayout`
-For Variables, Slang has following concepts and relationships:
- - Variable : `Variable` represents each variable declaration.
- - Type : every `Variable` has a `Type`.
- - VariableLayout : `VariableLayout` holds the offset information of a `variable` for a given scope. And a `variable` has one or more than one `VariableLayout`.
- - TypeLayout : `TypeLayout` holds the size information of a `type`. A `VariableLayout` has a `TypeLayout`.
+For variables, Slang has the following concepts and relationships:
+ - **Variable**: `Variable` represents each variable declaration.
+ - **Type**: every `Variable` has a `Type`.
+ - **VariableLayout**: `VariableLayout` holds the offset information of a `Variable` for a given scope. And a `Variable` has one or more `VariableLayout`s.
+ - **TypeLayout**: `TypeLayout` holds the size information of a `Type`. A `VariableLayout` has a `TypeLayout`.
 
-For Slang Reflection API, you will be mostly dealing with `VariableLayout` and `TypeLayout`. Both of them reflect the layout information, but `VariableLayout` is more for the "offset" information from a beginning of the given scope and `TypeLayout` is more for the "size" information of the type.
+For the Slang Reflection API, you will be mostly dealing with `VariableLayout` and `TypeLayout`. Both of them reflect the layout information, but `VariableLayout` is more for the "offset" information from the beginning of the given scope, and `TypeLayout` is more for the "size" information of the type.
 
-### Iterating global-scope shader uniform parameters
-To start from a simple example, here is a simple example for getting the binding information of globa-scope shader uniform parameters,
+### Iterating Global-Scope Shader Uniform Parameters
+To start from a simple example, here is a simple example for getting the binding information of global-scope shader uniform parameters:
+
 ```cpp
 unsigned parameterCount = shaderReflection->getParameterCount();
 for(unsigned pp = 0; pp < parameterCount; pp++)
@@ -213,10 +220,12 @@ for(unsigned pp = 0; pp < parameterCount; pp++)
     unsigned space = parameter->getBindingSpace(category)
                    + parameter->getOffset(SLANG_PARAMETER_CATEGORY_SUB_ELEMENT_REGISTER_SPACE);
 ```
-The example above shows that the application using HLSL will get the resource type information as "category", the binding index as "index", and the space index as "space". For the application using Vulkan, "category" will be always `slang::ParameterCategory::DescriptorTableSlot`.
 
-### Iterating Mixed category
-As for a more complex example, Slang can put multiple resource types in a single `struct` like the following,
+The example above shows that the application using HLSL will get the resource type information as `category`, the binding index as `index`, and the space index as `space`. For the application using Vulkan, `category` will always be `slang::ParameterCategory::DescriptorTableSlot`.
+
+### Iterating Mixed Category
+As for a more complex example, Slang can put multiple resource types in a single `struct` like the following:
+
 ```hlsl
 struct SimpleMaterial
 {
@@ -225,7 +234,8 @@ struct SimpleMaterial
 };
 ```
 
-In this case, the type `SimpleMaterial` uses two "ParameterCategory": `uniform` for `int` and `ShaderResource` for `Texture2D`. Because it has more than one ParameterCategories, its ParameterCategory is `Mixed`. You will need to iterate for each category as following,
+In this case, the type `SimpleMaterial` uses two `ParameterCategory`: `uniform` for `int` and `ShaderResource` for `Texture2D`. Because it has more than one `ParameterCategory`, its `ParameterCategory` is `Mixed`. You will need to iterate for each category as follows:
+
 ```cpp
 slang::ParameterCategory category = parameter->getCategory();
 if (category == slang::ParameterCategory::Mixed)
@@ -245,12 +255,14 @@ else
     // ...
 }
 ```
-Note that the code above returns the offset information for `SimpleMaterial` not the offset information of its member variables. The "category" in this example plays an important role when quering with `getOffset`. As `uniform` resource type, `SimpleMaterial` has an offset of the value returned from `getOffset` function call. And as `ShaderResource` resource type, `SimpleMaterial` has an offset of the value returned from `getOffset` function call.
 
-### Size information of a parameter
-Once you have the offset information, you will need to know the size information, because for some types, it could be more than a single type such as `struct` or array. For that reason, you need to first query what "kind" of parameter it is. It could be `Scalar`, `Matrix`, `Array` and so on.
+Note that the code above returns the offset information for `SimpleMaterial`, not the offset information of its member variables. The `category` in this example plays an important role when querying with `getOffset`. As `uniform` resource type, `SimpleMaterial` has an offset of the value returned from the `getOffset` function call. And as `ShaderResource` resource type, `SimpleMaterial` has an offset of the value returned from the `getOffset` function call.
 
-Similarly to how we get the "offset" information, you need to query "size" information for a specific "category" as shown on the example below,
+### Size Information of a Parameter
+Once you have the offset information, you will need to know the size information, because for some types, it could be more than a single type such as `struct` or array. For that reason, you need to first query what "kind" of parameter it is. It could be `Scalar`, `Matrix`, `Array`, and so on.
+
+Similarly to how we get the "offset" information, you need to query "size" information for a specific `category` as shown in the example below:
+
 ```cpp
 slang::TypeLayoutReflection* typeLayout = parameter->getTypeLayout();
 slang::TypeReflection::Kind kind = typeLayout->getKind();
@@ -280,30 +292,31 @@ switch (kind)
         }
     }
     // ...
+}
 ```
 
-One important note for recursively iterating a struct kind is that the "offset" values for each field is an offset value counted from the beginning of its struct it belongs to. The application must sum up the offset values of the nesting structs to get the binding index.
+One important note for recursively iterating a struct kind is that the "offset" values for each field are offset values counted from the beginning of the struct it belongs to. The application must sum up the offset values of the nesting structs to get the binding index.
 
 ### `ConstantBuffer` vs `ParameterBlock`
 
 `ParameterBlock` is a unique feature in Slang. `ParameterBlock` provides consistent binding locations in separate spaces.
 
-TODO: The content below describes a rough idea of what needs to be written.
+> TODO: The content below describes a rough idea of what needs to be written.
 
 The main difference is whether or not the enclosing resources bleed into the outer environment. `ConstantBuffer`: No indirection, everything bleeds out. `ParameterBlock`: Uses a separate space to hold all child elements; only the “space” binding will bleed out.
 
 Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
+### How to Figure Out Which Binding Slots Are Unused
 
-### How to figure out which binding slots are unused
+Slang allows the application to query if a parameter location is used after dead code elimination. This is done through the `IMetadata` interface:
 
-Slang allows the application to query if a parameter location is used after Dead-Code-Elimination. This is done through the `IMetadata` interface:
-
-1. `IComponentType::getEntryPointMetadata()` or `IComponentType::getTargetMetadata()` returns `IMetadata*`
+1. `IComponentType::getEntryPointMetadata()` or `IComponentType::getTargetMetadata()` returns `IMetadata*`.
 2. `IMetadata::isParameterLocationUsed(int set, int binding)` tells you whether or not the parameter binding at the specific location is being used.
 
 Here is an example of how to check if a slot is being used in the shader binary.
-```
+
+```cpp
 ComPtr<slang::IComponentType> compositeProgram;
 slang::IComponentType* components[] = {module, entryPoint.get()};
 session->createCompositeComponentType(
@@ -326,12 +339,13 @@ metadata->isParameterLocationUsed(SLANG_PARAMETER_CATEGORY_SHADER_RESOURCE, spac
 metadata->isParameterLocationUsed(SLANG_PARAMETER_CATEGORY_VARYING_INPUT, spaceIndex, registerIndex, isUsed);
 ```
 
-## Report the complete layout information
+## Report the Complete Layout Information
 
-### Iterating entry points
+### Iterating Entry Points
 Slang Reflection API also provides information about entry points. This information can be accessed from `slang::EntryPointReflection`.
 
-Here is an example of how you can iterate the entry points,
+Here is an example of how you can iterate the entry points:
+
 ```cpp
 SlangUInt entryPointCount = shaderReflection->getEntryPointCount();
 for(SlangUInt ee = 0; ee < entryPointCount; ee++)
@@ -353,10 +367,11 @@ for(SlangUInt ee = 0; ee < entryPointCount; ee++)
 }
 ```
 
-### Iterating functions
+### Iterating Functions
 Slang also provides information about other functions. This information can be accessed from `slang::FunctionReflection`.
 
-Here is an example of how you can access the information of a function,
+Here is an example of how you can access the information of a function:
+
 ```cpp
 auto funcReflection = program->getLayout()->findFunctionByName("ordinaryFunc");
 
@@ -375,3 +390,4 @@ slang::TypeReflection* param0Type = param0->getType();
 unsigned int attribCount = funcReflection->getUserAttributeCount();
 slang::UserAttribute* attrib = funcReflection->getUserAttributeByIndex(0);
 const char* attribName = attrib->getName();
+```
