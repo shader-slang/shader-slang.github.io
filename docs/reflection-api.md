@@ -376,7 +376,7 @@ Note that similarly to how we get the "offset" information, you need to query "s
 
 `ParameterBlock` is a unique feature in Slang. Parameter blocks (exposed as `ParameterBlock<T>`) provide a first-class language feature for grouping related shader parameters and specifying that they should be passed to the GPU as a coherent block. Parameter blocks make it easy for applications to use the most efficient parameter-binding model of each API, such as descriptor tables/sets in D3D12/Vulkan.
 
-> **Note:** We need an example code for `ParameterBlock`. And the example should be able to show what `ParameterBlock` can do that is not possible with the native shading languages.
+> **TODO:** We need an example code for `ParameterBlock`. And the example should be able to show what `ParameterBlock` can do that is not possible with the native shading languages.
 
 Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
