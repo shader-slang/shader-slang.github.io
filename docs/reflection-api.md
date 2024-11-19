@@ -269,7 +269,7 @@ if (category == slang::ParameterCategory::Mixed)
 
 Note that the `category` in this example plays an important role when querying with `getOffset()`. `myOldTexture` has two offset values: one is as `ShaderResource` and another is as `SamplerState`.
 
-## Offset of `struct`
+### Offset of `struct`
 When a variable is a `struct` type, you need to iterate "fields" as follows:
 ```cpp
 slang::TypeLayoutReflection* typeLayout = parameter->getTypeLayout();
