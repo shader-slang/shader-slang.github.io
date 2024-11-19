@@ -54,11 +54,11 @@ The main difference is whether or not the enclosing resources bleed into the out
 Best practices are to use parameter blocks to reuse parameter binding logic by creating descriptor sets/descriptor tables once and reusing them in different frames. `ParameterBlocks` allow developers to group parameters in a stable set, where the relative binding locations within the block are not affected by where the parameter block is defined. This enables developers to create descriptor sets and populate them once, and reuse them over and over. For example, the scene often doesn't change between frames, so we should be able to create a descriptor table for all the scene resources without having to rebind every single parameter in every frame.
 
 
-## Cross platform reflection API
+## How Shader binding works for target platforms
 
-"Resource type" is one of many challenges that Slang needs to abstract. As an example, there are different types of registers in HLSL, each of which increaments its binding index for its own resource type. Texture resources are bound to `t0`, `t1`, and so on and sampler resources are bound to `s0`, `s1` and so on. The register `t0` represents a different slot from a register `s0` in HLSL. However, in Vulkan, there is just a binding index number that doesn't differentiate the resource types. A texture can be bound to a binding index `0` and it will conflict if a sampler is also bound to a binding index `0`.
+There are differences on how the target platforms bind the shader parameters. Some of restrictions can be mitergated by "legalizing", but Slang has to comform to some of restricts that cannot be avoided. One of the restrictions is the existance of "Resource Type". In HLSL, there are roughly four resource types: "constant buffer", "Texture", "Sampler", and "UAV". OpenGL/Vulkan simply has binding indices and set indices without "resource types". Slang abstracts the differences and calls it "ParameterCategory" or "Category" for short. In other context, it is also called `LayoutResourceKind`, which is more descriptive.
 
-Slang introduces new concepts to abstract the differences. The details of how Slang handles it is described in the later part of this section.
+This section quickly summarizes how each target handles the binding and the next section will describe how they are abstracted in a Slang way.
 
 ### Direct3D 11
 
@@ -191,11 +191,16 @@ The example above shows four shader parameters:
 - `outputTexture` is bound to `texture(1)`, because unlike HLSL, Metal doesn't differentiate UAV from SRV.
 - `ConstantBuffer` is bound to `buffer(0)`, because it is a buffer resoutce.
 
-## Slang Reflection API by example
+## Cross platform reflection API
 
-### `VariableLayout` and `TypeLayout`
+Slang abstracts "Resource type". As an example, there are different types of registers in HLSL, each of which increaments its binding index for its own resource type. Texture resources are bound to `t0`, `t1`, and so on and sampler resources are bound to `s0`, `s1` and so on. The register `t0` represents a different slot from a register `s0` in HLSL. However, in Vulkan, there is just a binding index number that doesn't differentiate the resource types. A texture can be bound to a binding index `0` and it will conflict if a sampler is also bound to a binding index `0`.
+
+Slang introduces new concepts to abstract the differences. The details of how Slang handles it is described in the later part of this section.
+
+
 Because Slang Reflection API works for all the targets, all of the examples above for different targets should work in a same set of reflection APIs.
 
+### `VariableLayout` and `TypeLayout`
 For Variables, Slang has following concepts and relationships:
  - Variable : `Variable` represents each variable declaration.
  - Type : every `Variable` has a `Type`.
@@ -320,3 +325,53 @@ int registerIndex = ;
 metadata->isParameterLocationUsed(SLANG_PARAMETER_CATEGORY_SHADER_RESOURCE, spaceIndex, registerIndex, isUsed);
 metadata->isParameterLocationUsed(SLANG_PARAMETER_CATEGORY_VARYING_INPUT, spaceIndex, registerIndex, isUsed);
 ```
+
+## Report the complete layout information
+
+### Iterating entry points
+Slang Reflection API also provides information about entry points. This information can be accessed from `slang::EntryPointReflection`.
+
+Here is an example of how you can iterate the entry points,
+```cpp
+SlangUInt entryPointCount = shaderReflection->getEntryPointCount();
+for(SlangUInt ee = 0; ee < entryPointCount; ee++)
+{
+    slang::EntryPointReflection* entryPoint =
+        shaderReflection->getEntryPointByIndex(ee);
+
+    char const* entryPointName = entryPoint->getName();
+    SlangStage stage = entryPoint->getStage();
+
+    unsigned parameterCount = entryPoint->getParameterCount();
+    for(unsigned pp = 0; pp < parameterCount; pp++)
+    {
+        slang::VariableLayoutReflection* parameter =
+            entryPoint->getParameterByIndex(pp);
+        // ...
+    }
+    // ...
+}
+```
+
+### Iterating functions
+Slang also provides information about other functions. This information can be accessed from `slang::FunctionReflection`.
+
+Here is an example of how you can access the information of a function,
+```cpp
+auto funcReflection = program->getLayout()->findFunctionByName("ordinaryFunc");
+
+// Get return type.
+slang::TypeReflection* returnType = funcReflection->getReturnType();
+
+// Get parameter count.
+unsigned int paramCount = funcReflection->getParameterCount();
+
+// Get Parameter.
+slang::VariableReflection* param0 = funcReflection->getParameter(0);
+const char* param0Name = param0->getName();
+slang::TypeReflection* param0Type = param0->getType();
+
+// Get user defined attributes on the function.
+unsigned int attribCount = funcReflection->getUserAttributeCount();
+slang::UserAttribute* attrib = funcReflection->getUserAttributeByIndex(0);
+const char* attribName = attrib->getName();
