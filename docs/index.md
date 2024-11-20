@@ -54,13 +54,11 @@ See how to use Slang's compilation API to integrate the Slang compiler into your
 #### [Using the reflection API](/slang/user-guide/reflection)
 See how to use Slang's reflection API to query for parameter binding info at runtime.
 
-#### Understanding Slang Generics
+#### [Understanding Slang Generics](/docs/understanding-generics.md)
 
 Learn how to use Slang's generics and interfaces to write structured code that can be
 specialized at compile time. This tutorial covers the differences between generics and C++ templates
 and how to map common templated code to generics.
-
-[//]: # (TODO: write documentation and update link here)
 
 #### Migrating to Slang from HLSL
 
