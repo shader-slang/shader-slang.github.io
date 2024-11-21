@@ -1,0 +1,52 @@
+<div class="divider"></div>
+<footer class="footer">
+  <div class="container">
+    <p class="visually-hidden-focusable">Page footer starts here. <a href="#backtop">Return to main content</a></p>
+    <div class="row">
+      <div class="col-xs-12 col-sm-10 footer_branding">
+        <figure><a href="https://www.khronos.org/"><img src="/images/khronos-logo.svg"
+              alt="Khronos Logo"></a></figure>
+        <p>Slang is now under open-governance at Khronos to encourage and enable broad industry collaboration to propel its
+        continued growth and evolution.</p>
+<div id="footer-menu" class="footer-menu">
+  {% assign mainmenu = site.data.menus.footer | sort: 'weight' %}
+  <ul>
+    {% for item in mainmenu %}
+    <li class="{% if item.url == page.url %}active{% endif %}">
+      <a href="{{ item.url | relative_url }}">{{ item.name }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</div>
+
+      </div>
+
+
+          <div class="col-xs-12 col-sm-2 footer_details">
+            <h4>Community</h4>
+            {% if site.data.social %} {% include social.html %} {% endif %}
+
+
+                          <a href="http://eepurl.com/Xh4Q" class="btn btn-primary btn-small text-uppercase"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="25"
+                            height="25" viewBox="0 0 256 256" xml:space="preserve">
+                            <defs>
+                            </defs>
+                            <g style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: none; fill-rule: nonzero; opacity: 1;"
+                              transform="translate(1.4065934065934016 1.4065934065934016) scale(2.81 2.81)">
+                              <path
+                                d="M 45 51.815 l 45 -33.87 v -1.967 c 0 -2.03 -1.646 -3.676 -3.676 -3.676 H 3.676 C 1.646 12.302 0 13.948 0 15.978 v 1.967 L 45 51.815 z"
+                                style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;"
+                                transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                              <path
+                                d="M 47.405 60.019 c -0.712 0.536 -1.559 0.804 -2.405 0.804 s -1.693 -0.268 -2.405 -0.804 L 0 27.958 v 46.064 c 0 2.03 1.646 3.676 3.676 3.676 h 82.648 c 2.03 0 3.676 -1.646 3.676 -3.676 V 27.958 L 47.405 60.019 z"
+                                style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-linejoin: miter; stroke-miterlimit: 10; fill: rgb(255,255,255); fill-rule: nonzero; opacity: 1;"
+                                transform=" matrix(1 0 0 1 0 0) " stroke-linecap="round" />
+                            </g>
+                          </svg> newsletter</a>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+</footer>

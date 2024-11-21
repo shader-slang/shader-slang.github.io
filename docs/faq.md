@@ -1,4 +1,11 @@
-# Frequently Asked Questions
+---
+title: Frequently Asked Questions
+layout: page
+description: Frequently Asked Questions
+permalink: "/docs/faq/"
+intro_image_absolute: true
+intro_image_hide_on_mobile: false
+---
 
 #### Where should I ask questions on Slang?
 

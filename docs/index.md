@@ -1,75 +1,99 @@
-# Documentation
+---
+title: Documentation
+layout: docs
+description: Documentation
+permalink: "/docs/"
+---
 
-## Overview
+<div class="container">
+    <div id="docs_overview" class="section">
+        <div class="row">
+            <div class="col-12">
+                <h3>Overview
+                    <hr>
+                </h3>
+                {% assign overview_items = site.data.documentation.overview %}
+                <div class="grid gridSlang">
+                {% for item in overview_items %}
+                {% if item.title and item.title != '' %}
+                    <div class="g-col-md-4 g-col-sm-6 g-col-12 gridSlang-wrapper">
+                        <h4>{{ item.title }}</h4>
+                        <p>{{ item.description }}</p>
+                        {% if item.link_url and item.link_url != '' %}
+                        <p class="gridSlang-link"><a href="{{ item.link_url }}">{{ item.link_label }}</a></p>
+                        {% else %}
+                        <p class="gridSlang-link">{{ item.link_label }}</p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
 
-#### [The Slang User's Guide](/slang/user-guide/)
-The guide provides an introduction to the Slang language and its major features, as well as the compilation and reflection API.
-
-#### [The Slang's Standard Modules Reference](/stdlib-reference/)
-
-The reference of the standard modules that comes with the Slang compiler.
-
-#### [Language Specification](https://github.com/shader-slang/spec)
-
-The formal specification of the Slang programming language. Work in progress.
-
-#### [Slang Feature Matureness](/docs/feature_matureness)
-
-List of Slang Features with their stableness/matureness.
-
-#### [Frequently Asked Questions](/docs/faq)
-
-Answers to a list of frequently asked questions.
-
-## Articles
-
-#### [The Commandline Tool Reference](https://github.com/shader-slang/slang/blob/master/docs/command-line-slangc-reference.md)
-
-There is the documentation specific to using the `slangc` command-line tool.
-
-#### [SPIR-V Specific Functionalities](/slang/user-guide/spirv-target-specific.html)
-
-Things to know when using Slang to compile to SPIR-V.
-
-#### Metal Specific Functionalities
-
-Things to know when using Slang to compile to the Metal Shading Language.
-
-[//]: # (TODO: write documentation in user-guide next to spirv doc, and update link here)
-
-#### WGSL Specific Functionalities
-
-Things to know when using Slang to compile to the WGSL.
-
-[//]: # (TODO: write documentation in user-guide next to spirv doc, and update link here)
-
-## Tutorials
-
-#### [Write your first slang shader](/docs/first-slang-shader)
-See how to write a simple compute shader in Slang and compile it for execution on Vulkan.
-
-#### [Using the compilation API](/slang/user-guide/compiling)
-See how to use Slang's compilation API to integrate the Slang compiler into your application.
-
-#### [Using the reflection API](/slang/user-guide/reflection)
-See how to use Slang's reflection API to query for parameter binding info at runtime.
-
-#### [Understanding Slang Generics](/docs/understanding-generics.md)
-Learn how to use Slang's generics and interfaces to write structured code that can be
-specialized at compile time. This tutorial covers the differences between generics and C++ templates
-and how to map common templated code to generics.
-
-#### [Migrating to Slang from HLSL](/docs/coming-from-hlsl.md)
-Main things to know if you are coming to Slang as an HLSL developer.
-
-#### Migrating to Slang from GLSL
-Main things to know if you are coming to Slang as an GLSL developer.
-
-[//]: # (TODO: write documentation and update link here)
-
-
-## Contributors
-
-[//]: # (TODO: link more internal documentation and contribution process, build instructions etc.)
-
-For contributors to the Slang project, the information under the [docs/proposals/](https://github.com/shader-slang/slang/tree/master/docs/proposals) directory documents all feature proposals to the Slang language or the compiler API.
+    <div id="docs_articles" class="section">
+        <div class="row">
+            <div class="col-12">
+                <h3>Articles
+                    <hr>
+                </h3>
+                {% assign articles_items = site.data.documentation.articles %}
+                    <div class="grid gridSlang">
+                    {% for item in articles_items %}
+                    {% if item.title and item.title != '' %}
+                        <div class="g-col-md-4 g-col-sm-6 g-col-12 gridSlang-wrapper">
+                            <h4>{{ item.title }}</h4>
+                            <p>{{ item.description }}</p>
+                        {% if item.link_url and item.link_url != '' %}
+                        <p class="gridSlang-link"><a href="{{ item.link_url }}">{{ item.link_label }}</a></p>
+                        {% else %}
+                        <p class="gridSlang-link">{{ item.link_label }}</p>
+                        {% endif %}
+                        </div>
+                    {% endif %}
+                    {% endfor %}
+                    </div>
+            </div>
+        </div>
+    </div>
+    <div id="docs_tutorials" class="section">
+        <div class="row">
+            <div class="col-12">
+                <h3>Tutorials
+                    <hr>
+                </h3>
+                {% assign tutorials_items = site.data.documentation.tutorials %}
+                    <div class="grid gridSlang">
+                    {% for item in tutorials_items %}
+                    {% if item.title and item.title != '' %}
+                        <div class="g-col-md-4 g-col-sm-6 g-col-12 gridSlang-wrapper">
+                            <h4>{{ item.title }}</h4>
+                            <p>{{ item.description }}</p>
+                        {% if item.link_url and item.link_url != '' %}
+                        <p class="gridSlang-link"><a href="{{ item.link_url }}">{{ item.link_label }}</a></p>
+                        {% else %}
+                        <p class="gridSlang-link">{{ item.link_label }}</p>
+                        {% endif %}
+                        </div>
+                    {% endif %}
+                        {% endfor %}
+                    </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="section">
+        <div class="row">
+            <div class="col-12">
+                <h3>Contributions
+                    <hr>
+                </h3>
+                <p>If you’d like to contribute to the project, we are excited to have your input. Our community pages provides information
+                on our structure and our process for accepting contributions.</p>
+                <a class="btn btn-primary" href="/community/">Making Community Contributions</a>
+            </div>
+        </div>
+    </div>
+</div>

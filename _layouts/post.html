@@ -1,0 +1,22 @@
+---
+layout: default
+bodyClass: "page-post"
+---
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+
+            <p><button class="btn btn-secondary">Blog Post</button></p>
+
+            <h1>{{ page.title }}<hr></h1>
+            <div class="metadata">
+                <div class="date"> {{ page.date | date: "%B %d, %Y"}}</div>
+                <div class="author">{{ page.author }}</div>
+            </div>
+
+
+            {{content}}
+</div>
+</div>
+</div>

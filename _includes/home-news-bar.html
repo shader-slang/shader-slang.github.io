@@ -1,0 +1,41 @@
+<div class="section home-news-bar">
+    <div class="container">
+        <div class="" style="position:absolute;top:1em; right:1em;"><a class="btn btn-primary" href="/posts">View All
+                News &amp; Events</a></div>
+        <div class="row">
+            <h3>What's New
+                <hr>
+            </h3>
+
+            <div class="grid gridNews">
+                {% for post in site.posts limit:3 %}
+                <div class="g-col-12 g-col-sm-6 g-col-md-4">
+                    <div class="card">
+                        {% if post.image %}
+                        <img src="{{ post.image }}" class="card-img-top img-fluid" alt="#">
+                        {% else %}
+                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid" alt="#">
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h4>{{ post.title }}</h4>
+                            </div>
+                            <div class="card-text">{{ post.date | date_to_string }}</div>
+                            <a class="btn btn-primary" href="{% if post.source_url and post.source_url != '' %}{{ post.source_url }}{% else %}{{ post.url | relative_url }}{% endif %}">
+
+                                {% if post.categories contains 'press_release' %}Read Press Release
+                                {% elsif post.categories contains 'news' %}Read News Item
+                                {% elsif post.categories contains 'blog' %}Read Blog
+                                {% elsif post.categories contains 'presentation' %}View Presentation
+                                {% else %}Read More
+                                {% endif %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>

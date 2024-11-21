@@ -1,7 +1,15 @@
-# Bar of Code Quality for Slang
+---
+title: Bar of Code Quality for Slang
+layout: page
+description: Bar of Code Quality for Slang
+permalink: "/community/code-quality/"
+intro_image_absolute: true
+intro_image_hide_on_mobile: false
+---
+
 Thank you for your interest in contributing to Slang! We welcome contributions from the community, and to ensure a high standard of quality across the codebase, we maintain a set of expectations that we ask all contributors to adhere to. Please read through the following guidelines to help your pull request meet the quality bar required for merging.
 
-## Code Style and Consistency
+### Code Style and Consistency
 
 **Follow Project Standards:** Adhere to the code style and conventions currently used in Slang. This includes formatting, naming conventions, and structural patterns.
 
@@ -9,11 +17,11 @@ Thank you for your interest in contributing to Slang! We welcome contributions f
 
 **Comments and Documentation:** Document all public methods, significant logic blocks, and any complex code in a clear, concise manner. Each comment should add value to the code and explain why something is done, not just what it does.
 
-## Code Efficiency and Performance
+### Code Efficiency and Performance
 
 Many graphics applications are having issues with long shader compilation times. We should make sure the Slang compiler runs efficiently whenever possible to not make shader compilation time worse for our user applications. Aim for efficiency in your code, avoiding unnecessary computations, memory allocations, and redundant processes. Memory Management: Ensure that memory is allocated, used, and deallocated properly, with attention to avoiding memory leaks. Use C++ RAII mechanism whenever possible to ensure correctness of resource management.
 
-## Testing
+### Testing
 
 **Unit and Integration Tests:** Include tests for all new features and bug fixes. Each pull request should add or update tests that validate the new functionality or fix. Pull requests should not break any existing tests.
 
@@ -21,7 +29,7 @@ Many graphics applications are having issues with long shader compilation times.
 
 **Maintain Test Coverage:** Maintain or improve existing test coverage. Avoid reducing the coverage or introducing untested paths in the code.
 
-## Code Readability
+### Code Readability
 
 **Readable and Self-Explanatory:** Code should be easy to read and self-explanatory, even without comments. Avoid overly complex or nested structures; prioritize clarity over conciseness.
 
@@ -31,13 +39,13 @@ Many graphics applications are having issues with long shader compilation times.
 
 **Small, Focused Commits:** Keep each commit focused on a single change or issue. This helps reviewers understand the intent of the change and makes it easier to trace history later.
 
-## Code Review Process
+### Code Review Process
 
 **Follow Review Feedback:** Be prepared to make changes based on feedback from committers. We aim for constructive reviews that ensure quality without stalling progress.
 
 **Documentation and Clarity:** Provide a clear and detailed pull request description. Include context, goals, and any specific details reviewers should know to understand your contribution.
 
-## Community and Collaboration
+### Community and Collaboration
 Be Respectful and Collaborative: Open-source projects are collaborative efforts. Communicate clearly, and respect feedback and the time of maintainers and reviewers.
 
 Thank you for contributing to our project and helping to build a robust shading language for the community!
