@@ -39,7 +39,8 @@ intro_image_hide_on_mobile: false
 </div>
 <div class="col-md-6 col-sm-12">
 <p>Looking for intellisense support for writing Slang code? We provide a Visual Studio Code extension and Visual Studio extension that provide full intellisense experience within these IDEs, including code completion, semantic highlighting, function signature help, go to definition and more.</p>
-<a class="btn btn-primary" href="https://github.com/shader-slang/slang/releases/latest">Download latest release</a>
+<a class="btn btn-primary" href="https://marketplace.visualstudio.com/items?itemName=shader-slang.slang-language-extension">Download VSCode Extension</a>
+<a class="btn btn-primary" href="https://marketplace.visualstudio.com/items?itemName=shader-slang.slang-vs-extension">Download VS Extension</a>
 </div>
 
 <div class="col-md-6  col-sm-12">
