@@ -1,11 +1,19 @@
-# Slang Feature matureness
+---
+title: Slang Feature matureness
+layout: page
+description: Slang Feature matureness
+permalink: "/docs/feature_matureness/"
+intro_image_absolute: true
+intro_image_hide_on_mobile: false
+---
 
 The table below shows the matureness of each Slang feature.
 
 There are four types of Status:
 - Stable: feature is stable and mature, and is documented by the language spec.
 - Public Review: feature is implemented and tested by the community, and is now under public review and ready to be marked as stable and become part of the language spec.
-- Experimental: feature is implemented and being tested by early adopters. Features in this stage are subject to change or removal at any time.
+- Experimental: feature is implemented and being tested by early adopters. Features in this stage are subject to change or removal at any time.  
+<br>
 
 | Feature | Status | Notes |
 | --- | --- | --- |
@@ -54,3 +62,4 @@ There are four types of Status:
 | Uniformity Analysis | Experimental | Implemented the first version, tested with 2 unit tests, no actual user code exercising it, not thoroughly tested, unlikely to work out of box when it gets actual use but expected to mature within 2 weeks in close iteration loop with adopting users. |
 | `as` and `is` operators | Experimental |  |
 | `reinterpret<T>` | Experimental |  |
+{:.table}

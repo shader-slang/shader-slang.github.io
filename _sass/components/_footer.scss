@@ -1,0 +1,43 @@
+
+
+.footer {
+  background: $footer-background-color;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  .social img {
+    color: $black;
+  }
+  .btn {
+    color: $white;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    li:not(:last-child)::after {
+      content: "|";
+      color: #888;
+      line-height: 1.5rem;
+      margin: 0 1em;
+    }
+    li {
+            display: inline-block;
+    }
+  }
+  .footer_details {
+    margin-top: 0;
+    margin-bottom: 2em;
+  }
+}
+
+@media (max-width: 576px) {
+  .footer {
+    ul {
+      text-align: center;
+    }
+  }
+  .footer_details {
+    padding-top: 2em;
+    text-align: center;
+  }
+}

@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Github",
+    "link": "https://github.com/shader-slang/",
+    "image": "images/social/github-dark.svg"
+  },
+  {
+      "name": "Discord",
+      "link": "https://discord.gg/cf2bWwct",
+      "image": "images/social/discord-dark.svg"
+  },
+  {
+    "name": "Mastodon",
+    "link": "https://fosstodon.org/@slang",
+    "image": "images/social/mastodon-dark.svg"
+  },
+  {
+    "name": "",
+    "link": "https://bsky.app/profile/shader-slang.bsky.social",
+    "image": "images/social/bluesky.svg"
+  }
+]

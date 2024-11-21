@@ -1,0 +1,51 @@
+p {
+  color: $steel;
+  font-family: $font-family-base;
+  margin-bottom: 20px;
+}
+h1, .h1 {
+  font-family: $font-family-heading;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  font-size: 2.2rem;
+  @include media-breakpoint-up(md) {
+    line-height: 1.2;
+  }
+}
+h2, .h2 {
+  font-family: $font-family-heading;
+  line-height: 1.4;
+  margin-bottom: 10px;
+  @include media-breakpoint-up(md) {
+    line-height: 1.4;
+  }
+}
+h3, .h3 {
+  font-family: $font-family-heading;
+    line-height: 1.4;
+    @include media-breakpoint-up(md) {
+      line-height: 1.4;
+  }
+}
+h4,
+.h4 {
+  font-family: $font-family-heading;
+  line-height: 1.4;
+  font-size: 1.2rem;
+  @include media-breakpoint-up(md) {
+    line-height: 1.4;
+  }
+}
+
+h, .h {
+  font-family: $font-family-heading;
+}
+ul,
+ol {
+  margin: 0;
+  padding: 0;
+  li {
+    padding: 0;
+    margin: 0;
+  }
+}

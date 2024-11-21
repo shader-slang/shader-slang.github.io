@@ -1,3 +1,48 @@
-theme: jekyll-theme-tactile
-title: The Slang Programming Language
-description: Productivity and performance for real-time graphics developers
+baseurl: '/'
+permalink: pretty
+title: 'Shader Slang'
+
+logo:
+  mobile: "images/logo/slang-logo.svg"
+  mobile_height: "55px"
+  mobile_width: "180px"
+  desktop: "images/logo/slang-logo.svg"
+  desktop_height: "55px"
+  desktop_width: "180px"
+
+
+collections:
+  posts:
+    output: true
+  events:
+    output: true
+
+defaults:
+  - scope:
+      path: ""
+      type: "services"
+    values:
+      layout: "service"
+  - scope:
+      path: ""
+      type: "team"
+    values:
+      layout: "team"
+
+sass:
+  style: compressed
+
+plugins:
+  - jekyll-environment-variables
+
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor/bundle/
+  - vendor/cache/
+  - vendor/gems/
+  - vendor/ruby/
+  - LICENSE.md
+  - LICENSE
+  - README.md

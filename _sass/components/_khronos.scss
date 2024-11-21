@@ -1,0 +1,36 @@
+
+.footer {
+    font-size: 1.0rem;
+}
+
+.footer_branding>figure>a>img {
+    width: 220px;
+    margin-bottom: 0em;
+}
+
+
+
+
+.btn-blue-light {
+    @include button-variant(#ffffff, #1a4186, #1a4186);
+}
+
+.btn-blue-dark {
+    @include button-variant(#ffffff, #234761, #234761);
+}
+
+.btn-purple {
+    @include button-variant(#ffffff, #782B90, #782B90);
+}
+
+.btn-orange {
+    @include button-variant(#ffffff, #F35A1C, #F35A1C);
+}
+
+.btn {
+    margin-bottom: 5px;
+}
+
+a.btn:link {
+    text-decoration: none;
+}
