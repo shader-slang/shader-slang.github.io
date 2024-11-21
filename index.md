@@ -1,7 +1,7 @@
 ---
-title: Shader Slang
+title: The Slang Shading Language
 layout: home
-description: Shader Slang
+description: Empowering real-time graphics developers with advanced language features.
 ---
 
 
