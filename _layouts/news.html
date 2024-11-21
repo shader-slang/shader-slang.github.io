@@ -54,7 +54,6 @@ bodyClass: "news-events"
 </div>
 {% endif %}
 
-{% assign category_posts = site.posts | where_exp: "post", "post.categories contains 'presentation' or post.categories contains 'video'" %}
 {% if category_posts and category_posts.size > 0 %}
 <div class="section">
     <div class="container">
