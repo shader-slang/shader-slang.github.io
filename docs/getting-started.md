@@ -7,8 +7,8 @@ intro_image_absolute: true
 intro_image_hide_on_mobile: false
 ---
 
-<div class="container getting-started">
-    <div class="section">
+<div class="section greyBar">
+<div class="container">
         <div class="row">
             <div class="col-6">
                 <h3>Try Slang
@@ -46,6 +46,7 @@ intro_image_hide_on_mobile: false
 </div>
 </div>
 
+<div class="container">
 <div id="docs_tutorials" class="section">
     <div class="row">
         <div class="col-12">
@@ -69,4 +70,5 @@ intro_image_hide_on_mobile: false
             </div>
         </div>
     </div>
+</div>
 </div>

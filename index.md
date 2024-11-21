@@ -219,8 +219,8 @@ description: Shader Slang
     </div>
 </div>
 
-<div class="section" style="padding-bottom: 1em;margin-bottom: -2em;">
-    <div class="container">
+<div class="container">
+    <div class="section">
         <div class="row">
             <h3>Open Governance
                 <hr>
