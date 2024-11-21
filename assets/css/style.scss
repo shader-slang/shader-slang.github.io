@@ -179,6 +179,11 @@ ul {
   background-size: cover;
   .section {
     padding: 2em 0;
+    p {
+      background-color: rgb(255, 255, 255, 0.7);
+        padding: 5px;
+        font-weight: bold;
+    }
   }
   .btn {
     border: 1px solid #ffffff;
