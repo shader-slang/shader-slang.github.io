@@ -68,7 +68,7 @@ description: Shader Slang
                 </h3>
                 <div class="col-sm-5">
                     The Slang compiler can generate code for a wide variety of targets: D3D12, Vulkan, Metal, D3D11,
-                    OpenGL, CUDA, and even generate code to run on a CPU. For textual targets, such as Metal Shading
+                    OpenGL, CUDA, WebGPU and even generate code to run on a CPU. For textual targets, such as Metal Shading
                     Language (MSL) and CUDA, Slang produces readable code that preserves original identifier names, as
                     well as the type and call structure, making it easier to debug.
                 </div>
@@ -192,7 +192,7 @@ description: Shader Slang
                         to immediately benefit from Slang without requiring a complete rewrite or port.
                         Slang provides a compatibility module that enables the use of most GLSL intrinsic functions and
                         GLSL’s parameter binding syntax.</p>
-                    <a class="btn btn-primary" href="/docs/coming-from-hlsl/">Port to HLSL</a>
+                    <a class="btn btn-primary" href="/docs/coming-from-hlsl/">Port from HLSL</a>
 
                 </div>
             </div>
@@ -204,7 +204,7 @@ description: Shader Slang
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="/images/tooling-support.jpg" />
+                    <img class="img-fluid" src="/images/tooling-support.webp" />
 
                 </div>
 
@@ -219,7 +219,7 @@ description: Shader Slang
     </div>
 </div>
 
-<div class="section greyBar" style="padding-bottom: 1em;margin-bottom: -2em;">
+<div class="section" style="padding-bottom: 1em;margin-bottom: -2em;">
     <div class="container">
         <div class="row">
             <h3>Open Governance

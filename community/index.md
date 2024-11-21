@@ -31,8 +31,11 @@ intro_image_hide_on_mobile: false
                 <p>We use the <a href="https://github.com/shader-slang/slang/discussions">GitHub discussion page</a> for
                     all community announcements and discussions. All community members are welcomed to
                     post questions, ideas, suggestions for new features in the discussion page. We will also use the
-                    discussion page to
-                    announce or provide update on new feature developments.</p>
+                    discussion page to announce or provide update on new feature developments.</p>
+                <p>We use <a href="https://khr.io/slangdiscord">Discord</a> for
+                     community and developer discussions. All community members are welcomed to
+                    ask for help, post questions, ideas, and suggestions for new features. We will also use to announce 
+                    or provide update on new feature developments.</p>
                 <a class="btn btn-primary" href="https://github.com/shader-slang/slang/discussions">GitHub
                     Discussions</a>
                 <a class="btn btn-primary" href="https://khr.io/slangdiscord">Discord Discussions</a>
@@ -41,7 +44,7 @@ intro_image_hide_on_mobile: false
     </div>
 </div>
 
-<div class="section greyBar">
+<div class="section ">
     <div class="container">
         <div class="row">
             <div classs="col-12">
@@ -90,7 +93,7 @@ intro_image_hide_on_mobile: false
                     owners need to reach
                     consensus amongst themselves.</p>
                 <p>
-                    <strong>Language Owner</strong> A language owner is the owner of the <a
+                    <strong>Language Owner</strong>: A language owner is the owner of the <a
                         href="https://github.com/shader-slang/slang/tree/master/docs/proposals">/docs/proposals/</a> All
                     new Slang language and core module
                     features (e.g. new language syntax, new functions, or new types in the Slang core module) starts
