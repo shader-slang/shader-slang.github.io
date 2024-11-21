@@ -18,6 +18,13 @@
   <meta property="og:url" content="{{ url }}"/>
   {% if page.image %}<meta property="og:image" content="{{ page.image | absolute_url }}"/>{% endif %}
   {% if page.description %}<meta property="og:description" content="{{ page.description }}"/>{% endif %}
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-TMTZVLLMBP"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-TMTZVLLMBP');
+  </script>
 </head>
 
 <body class='page {{layout.bodyClass}}'>
@@ -31,6 +38,5 @@
   {% include footer.html %}
   {% include sub-footer.html %}
   <script type="text/javascript" src="{{ '/assets/js/scripts.js' | relative_url }}"></script>
-  {% include google-analytics.html %}
 </body>
 </html>
