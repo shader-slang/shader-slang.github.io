@@ -23,10 +23,6 @@ overview:
     description: "Answers to a list of frequently asked questions."
     link_url: "https://shader-slang.com/docs/faq"
     link_label: "Slang FAQ"
-  - title: ""
-    description: ""
-    link_url: ""
-    link_label: ""
 
 articles:
   - title: "SPIR-V  Specific Functionalities"
