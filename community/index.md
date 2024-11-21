@@ -32,13 +32,13 @@ intro_image_hide_on_mobile: false
                     all community announcements and discussions. All community members are welcomed to
                     post questions, ideas, suggestions for new features in the discussion page. We will also use the
                     discussion page to announce or provide update on new feature developments.</p>
-                <p>We use <a href="https://discord.gg/cf2bWwct">Discord</a> for
+                <p>We use <a href="https://khr.io/slangdiscord">Discord</a> for
                      community and developer discussions. All community members are welcomed to
                     ask for help, post questions, ideas, and suggestions for new features. We will also use to announce 
                     or provide update on new feature developments.</p>
                 <a class="btn btn-primary" href="https://github.com/shader-slang/slang/discussions">GitHub
                     Discussions</a>
-                <a class="btn btn-primary" href="https://discord.gg/cf2bWwct">Discord Discussions</a>
+                <a class="btn btn-primary" href="https://khr.io/slangdiscord">Discord Discussions</a>
             </div>
         </div>
     </div>
