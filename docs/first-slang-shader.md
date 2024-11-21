@@ -2,7 +2,7 @@
 title: Your first Slang shader
 layout: page
 description: Your first Slang shader
-permalink: "/docs/first-shader-slang/"
+permalink: "/docs/first-slang-shader"
 intro_image_absolute: true
 intro_image_hide_on_mobile: false
 ---

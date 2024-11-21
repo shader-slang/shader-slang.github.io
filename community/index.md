@@ -149,7 +149,7 @@ intro_image_hide_on_mobile: false
                 <p>If you are ready to start contributing, please follow our guide for creating a pull request. All pull
                     requests are
                     expected to meet our bar of code quality.</p>
-                <a class="btn btn-primary" href="https://github.com/shader-slang/slang/blob/master/CONTRIBUTION.md">Pull
+                <a class="btn btn-primary" href="https://github.com/shader-slang/slang/blob/master/CONTRIBUTING.md">Pull
                     Request Guidelines</a>
                 <a class="btn btn-primary" href="/community/code-quality">Code Quality Guidelines</a>
             </div>
