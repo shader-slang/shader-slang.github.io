@@ -1,7 +1,8 @@
 <div class="social">
   {% for item in site.data.social %}
   {% if item.name and item.name != '' %}
-    <a href="{{ item.link }}" target="blank"><img src="{{ item.image | relative_url }}" title="{{ item.name }}" alt="{{ item.name }}" /></a>
+    <a href="{{ item.link }}" target="blank" rel="me" aria-label="Shader Slang {{ item.name }} Account"><img
+        src="{{ item.image | relative_url }}" title="{{ item.name }}" alt="{{ item.name }}" /></a>
     {% endif %}
   {% endfor %}
 </div>
