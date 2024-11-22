@@ -49,11 +49,22 @@ Since unused shader parameters will be eliminated, each shader can be optimized 
 
 Developers don't need to maintain the binding information or any platform-specific annotation rules, because the platform compilers will assign bindings automatically. However, it requires using per-target reflection APIs to query where parameters ended up, and the per-target reflection APIs may require developers to understand legalization rules for parameters.
 
-## Slang Solution: Binding Based on Types
+## Big idea: Type based binding
 
-The basic idea is that the layout of **types** matter more than the bindings for **each parameters**.
+In Slang, the layout of types matter more than the bindings for each parameter. The binding information is relative to the nesting `struct` and it is self-contained in a consistent way across programs or shader variants.
 
-Slang assigns the binding information based on how types are defined on the shader source. It allows modules, features and subsystems to have consistent binding information regardless the target platforms and shader variants.
+Slang propses the following workflow to address the problem described above.
+ - Define Slang `struct` types, each of which bundles together all of its parameters without explicit binding annotations.
+ - Query reflection information about the types with Reflection API.
+ - Define methods on your host code that set the relevant parameters
+
+Defining Slang `struct` in this context is more like defining a module, subsystem or feature that encapsulates its resources for one purpose. You define `struct` types on both the host side and the shader side. The host side types will mirror the types on the shader side and they will be used to fill in those parameters at runtime.
+
+**(TODO: This paragraph seems too much detail for this section)** When you define `struct` on the shader side, Slang allows to have member variables whose types are the ordinary types such as scalars, vector and matrices, and the resource types such as textures and samplers together. Slang also gives developers the freedom to nest a `struct` within another `struct` when it makes sesne.
+
+When querying, the offset values for fields in `struct` can be queried with Slang Reflection API. The offset values for each member is relative to the starting point of its nesting `struct`. The values are not changed even when there are unused parameters within the `struct`, which provides the consistent offset information regardless the shader variants and across the different parts of the whole application.
+
+When defining the host side method that updates the shader parameters, you can calculate the "binding indices" for the native platform API by adding the "starting offset" of the given `struct` and the offset value for each member variable. When a `struct` nests another `struct`, you need to recursively add up the offset of the nesting `struct`.
 
 ## Evaluating This Approach
 
