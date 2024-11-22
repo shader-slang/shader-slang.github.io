@@ -140,9 +140,9 @@ The size of a type needs to be reflected for each category it consumes. And the 
 
 // TODO: Show reflection API example for the shader example above.
 
-### Key Concepts: Layouts for Types and Variables
+### `TypeLayout` and `VariableLayout`
 
-To store the "layout" information, Slang has the following concepts and relationships:
+To store the "layout" information, Slang introduces the following key concepts and relationships:
 
 - **TypeLayout** (`TypeLayoutReflection`): provides **size** and alignment information for a type. It also contains information about "sub-parts" such as fields of a struct, element type of an array and other nested types.
 
@@ -156,7 +156,7 @@ For the Slang Reflection API, you will be mostly dealing with `VariableLayout` a
 
 > ======================================================
 
-## Shader Cursors: Writing the Application/Engine Code to Actually Bind Things
+## How to actually bind with Shader Cursor
 
 ### Why Shader Cursors?
 
