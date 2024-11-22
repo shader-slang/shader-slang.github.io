@@ -51,7 +51,9 @@ Developers don't need to maintain the binding information or any platform-specif
 
 ## Slang Solution: Binding Based on Types
 
-The basic idea is that the layout of **types** matter more than the bindings for **each parameters**. Slang assigns the binding information based on how types are defined on the shader source. It allows modules, features and subsystems to have consistent binding information regardless the target platforms and shader variants.
+The basic idea is that the layout of **types** matter more than the bindings for **each parameters**.
+
+Slang assigns the binding information based on how types are defined on the shader source. It allows modules, features and subsystems to have consistent binding information regardless the target platforms and shader variants.
 
 ## Evaluating This Approach
 
