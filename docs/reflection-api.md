@@ -51,106 +51,25 @@ Developers don't need to maintain the binding information or any platform-specif
 
 ## Slang Solution: Binding Based on Types
 
-Let's say your system has modules and features. You will want to define `struct` types intended for your purposes, such as "Scene" module, "Material" module, or "Shadow" feature.
-
-On the shader side, Slang allows developers to define a `struct` that bundles together all of its parameters, such as scalars, vectors, matrices, textures, and samplers. Slang developers also have the freedom to nest other `struct` types within another `struct` type when it makes sense.
-
-On the host side, you define the types that mirror the shader-side types. Slang requires the host types to have the members that are necessary to fill in the corresponding parameters, but the types don't need to have exactly the same members.
-
-Example (Slang Shader Code):
-
-```hlsl
-struct MaterialParams
-{
-    float4 baseColor;
-    Texture2D baseColorTexture;
-    SamplerState baseColorSampler;
-};
-
-struct LightingParams
-{
-    float3 lightDirection;
-    float3 lightColor;
-};
-
-struct SceneParams
-{
-    MaterialParams material;
-    LightingParams lighting;
-};
-```
-
-Example (Host Code):
-
-```cpp
-struct MaterialParams
-{
-    Vector4 baseColor;
-    Texture* baseColorTexture;
-    Sampler* baseColorSampler;
-};
-
-struct LightingParams
-{
-    Vector3 lightColor;
-};
-
-struct OmniLightingParams : LightingParams
-{
-    bool canCastShadow;
-};
-
-struct DirectionalLightingParams : LightingParams
-{
-    Vector3 lightDirection;
-};
-
-struct SceneParams
-{
-    MaterialParams* material;
-    LightingParams* lighting;
-};
-```
-
-When querying with the Slang reflection API, the binding information is based on how the shader-side types are defined. Slang assigns the binding information before any unused parameters are identified and before the target specifics are considered. This means that the **offsets** of fields will not change across programs or variants.
-
-Then, the application can get the **binding indices** by recursively adding up the offset value of each member with the offset value of the nesting struct it belongs to.
+The basic idea is that the layout of **types** matter more than the bindings for **each parameters**. Slang assigns the binding information based on how types are defined on the shader source. It allows modules, features and subsystems to have consistent binding information regardless the target platforms and shader variants.
 
 ## Evaluating This Approach
 
-Let's assume that all shader parameters of your program were bundled up into one big struct.
+Assuming that all shader parameters of your program are bundled into one big struct, there are several advantages to this approach.
 
-Example (Slang Shader Code):
+Firstly, there is no need for explicit binding annotations whatsoever. This means there is no global resource allocation problem—you just declare what you use. Additionally, there is no need to tweak annotations when compiling for a new platform.
 
-```hlsl
-struct AllParams
-{
-    // Material
-    float4 baseColor;
-    Texture2D baseColorTexture;
-    SamplerState baseColorSampler;
+Secondly, arbitrary module composition is possible. This approach is more flexible even than the post-compilation reflection option because it allows you to include multiple instances of a given feature or component.
 
-    // Lighting
-    float3 lightDirection;
-    float3 lightColor;
-};
-```
+Thirdly, the offsets of parameters within a struct do not change across programs and variants. This consistency enables you to allocate and re-use buffers, descriptor sets, and other resources within and potentially across frames.
 
-**Pros**
+However, the downside of this approach is that you will pay for the parameters unused. To address it, the shader needs to change architecturally. It should have subsystems like `MaterialSystem` or `LightingSystem`. Each subsystem should own the relevant parameters explicitly. This also helps keep things cleaner, as the parameters are organized more coherently.
 
-- No need for explicit binding annotations whatsoever
-  - No global resource allocation problem: just declare what you use
-  - No need to tweak annotations when compiling for a new platform
-- Arbitrary module composition
-  - More flexible even than the post-compilation reflection option: can include multiple instances of a given feature/component
-- Offsets of parameters within a struct do not change across programs and variants
-  - Can allocate and re-use buffers, descriptor sets, etc., within (and potentially across) frames
+> ======================================================
 
-**Cons**
+> **TODO**: Need to rewrite the lines below
 
-- Pay for unused parameters
-
-To address the problem of "paying for unused parameters," the shader needs to change architecturally. It should have subsystems like `MaterialSystem` or `LightingSystem`. Each subsystem should own the relevant parameters explicitly. This also helps keep things cleaner, as the parameters are organized more coherently.
+> ======================================================
 
 ## Implementation: How the Slang Reflection API Tells You What You Need
 
