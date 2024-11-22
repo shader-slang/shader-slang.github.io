@@ -111,18 +111,18 @@ The following code shows how to get the reflection data for the shader parameter
 unsigned parameterCount = shaderReflection->getParameterCount();
 for (unsigned pp = 0; pp < parameterCount; pp++)
 {
-    slang::VariableLayoutReflection* parameter =
+    VariableLayoutReflection* parameter =
         shaderReflection->getParameterByIndex(pp);
 
-    slang::ParameterCategory category = parameter->getCategory();
+    ParameterCategory category = parameter->getCategory();
     unsigned index = parameter->getOffset(category);
     unsigned space = parameter->getBindingSpace(category)
-                   + parameter->getOffset(slang::ParameterCategory::SubElementRegisterSpace);
+                   + parameter->getOffset(ParameterCategory::SubElementRegisterSpace);
     // ...
 }
 ```
 
-The example above shows that the application using HLSL will get the resource type information as `category`, the binding index as `index`, and the space index as `space`. For the application using Vulkan, category will always be `slang::ParameterCategory::DescriptorTableSlot`.
+The example above shows that the application using HLSL will get the resource type information as `category`, the binding index as `index`, and the space index as `space`. For the application using Vulkan, category will always be `ParameterCategory::DescriptorTableSlot`.
 
 Note that `getOffset()` is called with an argument, `category`. It is important to understand that the "offset" and "size" information is not a single value but an array of values, each of which is for each category. When `getOffset()` or `getSize()` is called with a category the parameter doesn't belong to, it will return a zero value.
 
@@ -130,15 +130,44 @@ Note that `getOffset()` is called with an argument, `category`. It is important 
 
 The layout information is multi-dimensional in Slang. A full set of layout information exists for each "ParameterCategory". This means that the size and offset information need to be query for each relavent category for every shader parameters.
 
-// TODO: shader example goes here.
+Consider the following shader that has a type with different categories:
+
+```hlsl
+struct Material
+{
+    Texture2D diffuseMap;
+    SamplerState diffuseSampler;
+}
+```
 
 // TODO: explain that the offset for each field depends on the category.
 
 // TODO: Aggregate types like `struct` may be stored using multiple categories.
 
-The size of a type needs to be reflected for each category it consumes. And the offset of a field needs to be reflected for each category it consumes as well.
+The following code shows how to iterate the members in the `struct` for each category:
 
-// TODO: Show reflection API example for the shader example above.
+```cpp
+TypeLayoutReflection* typeLayout = parameter->getTypeLayout();
+TypeReflection::Kind kind = typeLayout->getKind();
+if (kind == TypeReflection::Kind::Struct)
+{
+    unsigned fieldCount = typeLayout->getFieldCount();
+    for (unsigned ff = 0; ff < fieldCount; ff++)
+    {
+        VariableLayoutReflection* field = typeLayout->getFieldByIndex(ff);
+        TypeLayoutReflection* fieldTypeLayout = field->getTypeLayout();
+
+        auto category = field->getCategory();
+        auto index = field->getOffset(category);
+        auto space = field->getBindingSpace(category);
+        auto size = fieldTypeLayout->getSize(category);
+
+        // ...
+    }
+}
+```
+
+The size of a type needs to be reflected for each category. And the offset of a field needs to be reflected for each category as well.
 
 ### `TypeLayout` and `VariableLayout`
 
