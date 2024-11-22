@@ -14,13 +14,16 @@ This guide is intended for developers who:
 - Care about **reuse of shader code modules** for efficiency and maintainability.
 - Aim to **keep platform-specific code to a minimum** to ensure portability and ease of development.
 
-## Background
+## Challenges for Cross-platform Reflection API
 
-### Why Is This Challenging?
+Two main challenges are:
 
-To execute a shader program, an application must provide arguments for all its shader parameters. This parameter passing is orchestrated by the CPU application code invoking the GPU program. However, the mechanisms for parameter passing are mediated by **platform-specific GPU APIs**, each with its own set of rules and constraints.
+- **Shader Parameter Binding**: Slang Reflection API must provide binding indices/offsets consistant across multiple platforms.
+- **Resource Types**: Slang abstracts the concept of "Resource Type" with a few new concepts.
 
-Different platforms handle shader parameters differently:
+To execute a shader program, an application must provide arguments for all its shader parameters. The **shader parameter binding** is orchestrated by the CPU application code invoking the GPU program. However, the mechanisms for parameter passing are mediated by platform-specific GPU APIs, each with its own set of rules and constraints.
+
+Also different platforms handle **resource types** differently:
 
 - **Direct3D**: Uses register slots (`b`, `t`, `s`, `u`) for binding constant buffers, textures, samplers, and UAVs, respectively.
 - **Vulkan**, **OpenGL**, **WGSL**: Employ binding indices and descriptor sets without differentiating resource types.
@@ -28,6 +31,8 @@ Different platforms handle shader parameters differently:
 - **CUDA/OptiX**: Might pass parameters as ordinary data within buffers.
 
 These differences make it challenging to write cross-platform applications that manage shader parameters efficiently while keeping code maintainable.
+
+## How Slang addresses Shader Parameter Binding problem
 
 ### Typical Approaches in Current Engines/Applications
 
@@ -49,14 +54,19 @@ Since unused shader parameters will be eliminated, each shader can be optimized 
 
 Developers don't need to maintain the binding information or any platform-specific annotation rules, because the platform compilers will assign bindings automatically. However, it requires using per-target reflection APIs to query where parameters ended up, and the per-target reflection APIs may require developers to understand legalization rules for parameters.
 
-## Big idea: Type based binding
+### Slang approach to the parameter binding
 
-In Slang, the layout of types matter more than the bindings for each parameter. The binding information is relative to the nesting `struct` and it is self-contained in a consistent way across programs or shader variants.
+Slang approaches the parameter binding problem differently. The binding indices are relative to the beginning of its nesting `struct`, and they are stored as "offset" for the given `struct` types. When the actual binding happens at runtime, the application will add up the offset of each parameter with the offset of its nesting `struct`.
 
-Slang propses the following workflow to address the problem described above.
- - Define Slang `struct` types, each of which bundles together all of its parameters without explicit binding annotations.
+#### Type based binding
+
+In Slang, the layout of types matter more than the bindings for individual parameter. The offset information to each parameter is relative to the nesting `struct` and the information is self-contained in the type consistently across programs or shader variants.
+
+Slang propses the following workflow:
+
+ - Define Slang `struct` types without explicit binding annotations.
  - Query reflection information about the types with Reflection API.
- - Define methods on your host code that set the relevant parameters
+ - Define methods on your host code that update the corresponding parameters
 
 Defining Slang `struct` in this context is more like defining a module, subsystem or feature that encapsulates its resources for one purpose. You define `struct` types on both the host side and the shader side. The host side types will mirror the types on the shader side and they will be used to fill in those parameters at runtime.
 
@@ -66,80 +76,85 @@ When querying, the offset values for fields in `struct` can be queried with Slan
 
 When defining the host side method that updates the shader parameters, you can calculate the "binding indices" for the native platform API by adding the "starting offset" of the given `struct` and the offset value for each member variable. When a `struct` nests another `struct`, you need to recursively add up the offset of the nesting `struct`.
 
-## Evaluating This Approach
+#### Evaluating Type-Based Binding
 
 Assuming that all shader parameters of your program are bundled into one big struct, there are several advantages to this approach.
 
-Firstly, there is no need for explicit binding annotations whatsoever. This means there is no global resource allocation problem—you just declare what you use. Additionally, there is no need to tweak annotations when compiling for a new platform.
+Firstly, there is no need for explicit binding annotations whatsoever. This means there is no global resource allocation problem and you just declare what you use. Additionally, there is no need to tweak annotations when compiling for different platforms.
 
-Secondly, arbitrary module composition is possible. This approach is more flexible even than the post-compilation reflection option because it allows you to include multiple instances of a given feature or component.
+Secondly, arbitrary module composition is possible. This approach is even more flexible than the post-compilation reflection option, because it allows you to include multiple instances of a given feature or component.
 
-Thirdly, the offsets of parameters within a struct do not change across programs and variants. This consistency enables you to allocate and re-use buffers, descriptor sets, and other resources within and potentially across frames.
+Thirdly, the offsets of parameters within a `struct` do not change across programs and variants. This consistency enables you to allocate and re-use buffers, descriptor sets, and other resources within and potentially across frames.
 
-However, the downside of this approach is that you will pay for the parameters unused. To address it, the shader needs to change architecturally. It should have subsystems like `MaterialSystem` or `LightingSystem`. Each subsystem should own the relevant parameters explicitly. This also helps keep things cleaner, as the parameters are organized more coherently.
+However, the downside of this approach is that you pay for the unused parameters. This can be easily addressed by spliting the monolitic `struct` into sub-modules like `MaterialSystem` or `LightingSystem`. Each module should own the relevant parameters explicitly so that when a certain module is unused, you don't pay for a bunch of unused parameters. This also helps to keep things cleaner, as the parameters are organized more coherently.
+
+## How Slang Abstracts "Resource type"
+
+Different platforms have their own way to handle the resource types. For example, HLSL uses `t` registers for textures whereas Vulkan goes with binding index and set regardless of their resource types.
+
+In order to provide portability across multiple platforms, Slang abstracts the concept of "resource type" and call it "ParameterCategory", or "Category" for short. In other context, it is also called `LayoutResourceKind`, which is more descriptive. This abstraction requires developers to understand some of Slang unique concepts.
+
+This section will start from simple examples of how Slang Reflection API works, and some of key concepts will be explained along the way.
+
+### Simple Cases by Examples
+
+To start with a simple example, consider the following simple shader parameters:
+
+```hlsl
+Texture2D myTexture;
+SamplerState mySampler;
+```
+
+The following code shows how to get the reflection data for the shader parameters above:
+
+```
+unsigned parameterCount = shaderReflection->getParameterCount();
+for (unsigned pp = 0; pp < parameterCount; pp++)
+{
+    slang::VariableLayoutReflection* parameter =
+        shaderReflection->getParameterByIndex(pp);
+
+    slang::ParameterCategory category = parameter->getCategory();
+    unsigned index = parameter->getOffset(category);
+    unsigned space = parameter->getBindingSpace(category)
+                   + parameter->getOffset(slang::ParameterCategory::SubElementRegisterSpace);
+    // ...
+}
+```
+
+The example above shows that the application using HLSL will get the resource type information as `category`, the binding index as `index`, and the space index as `space`. For the application using Vulkan, category will always be `slang::ParameterCategory::DescriptorTableSlot`.
+
+Note that `getOffset()` is called with an argument, `category`. It is important to understand that the "offset" and "size" information is not a single value but an array of values, each of which is for each category. When `getOffset()` or `getSize()` is called with a category the parameter doesn't belong to, it will return a zero value.
+
+### Layout is Multi-Dimensional
+
+The layout information is multi-dimensional in Slang. A full set of layout information exists for each "ParameterCategory". This means that the size and offset information need to be query for each relavent category for every shader parameters.
+
+// TODO: shader example goes here.
+
+// TODO: explain that the offset for each field depends on the category.
+
+// TODO: Aggregate types like `struct` may be stored using multiple categories.
+
+The size of a type needs to be reflected for each category it consumes. And the offset of a field needs to be reflected for each category it consumes as well.
+
+// TODO: Show reflection API example for the shader example above.
+
+### Key Concepts: Layouts for Types and Variables
+
+To store the "layout" information, Slang has the following concepts and relationships:
+
+- **TypeLayout** (`TypeLayoutReflection`): provides **size** and alignment information for a type. It also contains information about "sub-parts" such as fields of a struct, element type of an array and other nested types.
+
+- **VariableLayout** (`VariableLayoutReflection`): provide **offset** information for a variable. It also contains information of each filed of a TypeLayout.
+
+For the Slang Reflection API, you will be mostly dealing with `VariableLayout` and the variants of `TypeLayout`. Both of them reflect the layout information, but `VariableLayout` is more for the **offset** information from the beginning of the given scope, and `TypeLayout` is more for the **size** information of the type. You can access `TypeLayoutReflection` from `VariableLayoutReflection` in the reflection APIs.
 
 > ======================================================
 
 > **TODO**: Need to rewrite the lines below
 
 > ======================================================
-
-## Implementation: How the Slang Reflection API Tells You What You Need
-
-### Simple Cases by Examples
-
-### Key Concepts: Layouts for Types and Variables
-
-#### TypeLayout (`TypeLayoutReflection`)
-
-- Provides **size and alignment information** for a type.
-- Contains information about **sub-parts**:
-  - Fields of a struct.
-  - Element type of an array.
-  - Other nested types.
-
-#### VariableLayout (`VariableLayoutReflection`)
-
-- Provides **offset information** for a variable within its containing scope.
-- Each field in a struct's type layout is associated with a variable layout.
-
-#### Layout is Multi-Dimensional
-
-### Slang API Approach to Reflecting All of This
-
-#### Accessing Type and Variable Layouts
-
-Example:
-
-```cpp
-// Obtain TypeLayoutReflection for SceneParams
-TypeReflection* sceneParamsType = slangReflection->findTypeByName("SceneParams");
-TypeLayoutReflection* sceneParamsLayout = slangReflection->getTypeLayout(sceneParamsType);
-
-// Iterate over fields
-for (unsigned int i = 0; i < sceneParamsLayout->getFieldCount(); ++i)
-{
-    VariableLayoutReflection* fieldLayout = sceneParamsLayout->getFieldByIndex(i);
-    const char* fieldName = fieldLayout->getName();
-    // Obtain offset and size per resource kind
-    for (int kind = 0; kind < SLANG_PARAMETER_CATEGORY_COUNT; ++kind)
-    {
-        size_t offset = fieldLayout->getOffset((slang::ParameterCategory)kind);
-        size_t size = fieldLayout->getSize((slang::ParameterCategory)kind);
-        // Use offset and size for binding
-    }
-}
-```
-
-#### Handling Nested Structs and Arrays
-
-- **Nested Structs:** Recursively access and process fields.
-- **Arrays:** Use element strides and counts to compute offsets for elements.
-
-#### Binding Parameters Using Offsets
-
-- Use the offsets provided by the reflection API to **bind parameters** accurately.
-- This ensures **correct data alignment and binding**, regardless of the platform.
 
 ## Shader Cursors: Writing the Application/Engine Code to Actually Bind Things
 
@@ -160,79 +175,9 @@ Shader cursors provide a **convenient abstraction** for navigating and setting s
   - **Compute cursors** to array elements.
   - **Set values and resources** at the current cursor position.
 
-### Implementing a Simple Shader Cursor (Vulkan Example)
+### Simple example with Shader Cursor
 
-#### Data Stored in a Shader Cursor
-
-- **Type Layout (`TypeLayoutReflection`)**: The type of data being pointed to.
-- **Descriptor Set**: The Vulkan descriptor set being manipulated.
-- **Buffer**: The buffer being written to for constant data.
-- **Offsets**:
-  - **Byte Offset**: Within the buffer.
-  - **Binding Offset**: Within the descriptor set.
-  - **Array Index**: Within a binding.
-
-#### Key Operations
-
-##### Get Cursor to Structure Field
-
-```cpp
-ShaderCursor ShaderCursor::getField(const char* fieldName)
-{
-    auto fieldLayout = typeLayout->findFieldByName(fieldName);
-    ShaderCursor fieldCursor;
-    fieldCursor.typeLayout = fieldLayout->getTypeLayout();
-    fieldCursor.descriptorSet = this->descriptorSet;
-    fieldCursor.bindingOffset = this->bindingOffset + fieldLayout->getOffset(slang::ParameterCategory::DescriptorTableSlot);
-    fieldCursor.byteOffset = this->byteOffset + fieldLayout->getOffset(slang::ParameterCategory::ConstantBuffer);
-    return fieldCursor;
-}
-```
-
-##### Get Cursor to Array Element
-
-```cpp
-ShaderCursor ShaderCursor::getElement(size_t index)
-{
-    auto elementTypeLayout = typeLayout->getElementTypeLayout();
-    ShaderCursor elementCursor;
-    elementCursor.typeLayout = elementTypeLayout;
-    elementCursor.descriptorSet = this->descriptorSet;
-    size_t stride = typeLayout->getElementStride(slang::ParameterCategory::DescriptorTableSlot);
-    elementCursor.bindingOffset = this->bindingOffset + index * stride;
-    stride = typeLayout->getElementStride(slang::ParameterCategory::ConstantBuffer);
-    elementCursor.byteOffset = this->byteOffset + index * stride;
-    return elementCursor;
-}
-```
-
-##### Setting Values
-
-```cpp
-void ShaderCursor::setData(const void* data, size_t size)
-{
-    // Copy data into buffer at byteOffset
-    memcpy(buffer + byteOffset, data, size);
-}
-
-void ShaderCursor::setResource(Texture* texture)
-{
-    // Bind texture to descriptor set at bindingOffset
-    vkUpdateDescriptorSet(descriptorSet, bindingOffset, texture);
-}
-
-void ShaderCursor::setSampler(Sampler* sampler)
-{
-    // Bind sampler to descriptor set at bindingOffset
-    vkUpdateDescriptorSet(descriptorSet, bindingOffset, sampler);
-}
-```
-
-#### Handling Buffers/Blocks
-
-- Allocate buffer memory based on **size information** from the reflection API.
-- Use **byte offsets** to write data into the correct location in the buffer.
-- For parameter blocks, manage **binding spaces** and **registers** as per the platform's requirements.
+> **TODO**
 
 ## Appendices
 
