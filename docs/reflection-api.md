@@ -119,6 +119,22 @@ struct SceneParams
 
 Let's assume that all shader parameters of your program were bundled up into one big struct.
 
+Example (Slang Shader Code):
+
+```hlsl
+struct AllParams
+{
+    // Material
+    float4 baseColor;
+    Texture2D baseColorTexture;
+    SamplerState baseColorSampler;
+
+    // Lighting
+    float3 lightDirection;
+    float3 lightColor;
+};
+```
+
 **Pros**
 
  - No need for explicit binding annotations whatsoever
