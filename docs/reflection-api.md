@@ -1,25 +1,33 @@
 # A Practical and Scalable Approach to Cross-Platform Shader Parameter Passing Using Slang's Reflection API
 
-## Introduction
-
-In this document, we present **one practical approach** to implementing shader parameter passing in an application or engine using Slang's reflection API. This method leverages Slang's powerful features to provide a scalable and cross-platform solution for managing shader parameters efficiently.
-
-We believe this approach is effective, and the Slang reflection API has been designed to support it directly and well. While this is a recommended strategy, it's important to note that **other approaches are possible and supported**. We plan to publish additional "how-to" documents detailing alternative methods for using the reflection API for different needs.
-
 ## Target Audience
 
-This guide is intended for developers who:
+Our primary audience for this document is developers who are building and maintaining a large GPU shader codebase, and who have the freedom or opportunity to consider their high-level architecture for shader parameter passing.
 
-- Maintain **large, multi-platform shader codebases**.
-- Care about **reuse of shader code modules** for efficiency and maintainability.
-- Aim to **keep platform-specific code to a minimum** to ensure portability and ease of development.
+These developers may find that the approach outlined here is a good fit for their requirements, and we hope that they will consider adopting it. Developers who are already locked in to an architectural approach may find this material enlightening or aspirational, but not immediately actionable.
 
-## Challenges for Cross-platform Reflection API
+A second audience for this document is any developer who wants to better understand the design of the Slang reflection API - especially developers who are considering contributing to the Slang project such that they might need to make changes to the interface or implementation of reflection. Because the engine approach described here motivates many of the design choices in the API, an understanding of the material in this document should help inform understanding of the reflection API design.
+
+## Introduction
+
+This document describes a comprehensive strategy for handling **parameter-passing** for GPU shader code. The presented approach is able to scale to large shader codebases which implement many different features across multiple modules. The Slang reflection API was intentionally designed to support this approach and to make it practical to adopt.
+
+### This is not the only valid approach!
+
+It is important to emphasize that this document only describes one approach to parameter-passing. Other approaches are possible and can yield good results; indeed, these other approaches are quite common in production shader codebases.
+
+The approach we describe here was developed in collaboration with early adopters of Slang, based on their requirements and the challenges they face. We believe that this is a good general-purpose approach, and that developers can benefit from understanding it even if they do not adopt it.
+
+Developers who are not interested in the approach described here are invited to utilize other documentation on the Slang reflection API instead.
+
+## Background
+
+### Challenges for Cross-platform Reflection API
 
 Two main challenges are:
 
 - **Shader Parameter Binding**: Slang Reflection API must provide binding indices/offsets consistant across multiple platforms.
-- **Resource Types**: Slang abstracts the concept of "Resource Type" with a few new concepts.
+- **Resource Types**: Slang abstracts the concept of "Resource Type" with new concepts and Slang Reflect API provides consistent binding information.
 
 To execute a shader program, an application must provide arguments for all its shader parameters. The **shader parameter binding** is orchestrated by the CPU application code invoking the GPU program. However, the mechanisms for parameter passing are mediated by platform-specific GPU APIs, each with its own set of rules and constraints.
 
@@ -31,8 +39,6 @@ Also different platforms handle **resource types** differently:
 - **CUDA/OptiX**: Might pass parameters as ordinary data within buffers.
 
 These differences make it challenging to write cross-platform applications that manage shader parameters efficiently while keeping code maintainable.
-
-## How Slang addresses Shader Parameter Binding problem
 
 ### Typical Approaches in Current Engines/Applications
 
@@ -54,11 +60,11 @@ Since unused shader parameters will be eliminated, each shader can be optimized 
 
 Developers don't need to maintain the binding information or any platform-specific annotation rules, because the platform compilers will assign bindings automatically. However, it requires using per-target reflection APIs to query where parameters ended up, and the per-target reflection APIs may require developers to understand legalization rules for parameters.
 
-### Slang approach to the parameter binding
+## How Slang addresses Shader Parameter Binding problem
 
 Slang approaches the parameter binding problem differently. The binding indices are relative to the beginning of its nesting `struct`, and they are stored as "offset" for the given `struct` types. When the actual binding happens at runtime, the application will add up the offset of each parameter with the offset of its nesting `struct`.
 
-#### Type based binding
+### Type based binding
 
 In Slang, the layout of types matter more than the bindings for individual parameter. The offset information to each parameter is relative to the nesting `struct` and the information is self-contained in the type consistently across programs or shader variants.
 
@@ -70,13 +76,11 @@ Slang propses the following workflow:
 
 Defining Slang `struct` in this context is more like defining a module, subsystem or feature that encapsulates its resources for one purpose. You define `struct` types on both the host side and the shader side. The host side types will mirror the types on the shader side and they will be used to fill in those parameters at runtime.
 
-**(TODO: This paragraph seems too much detail for this section)** When you define `struct` on the shader side, Slang allows to have member variables whose types are the ordinary types such as scalars, vector and matrices, and the resource types such as textures and samplers together. Slang also gives developers the freedom to nest a `struct` within another `struct` when it makes sesne.
-
 When querying, the offset values for fields in `struct` can be queried with Slang Reflection API. The offset values for each member is relative to the starting point of its nesting `struct`. The values are not changed even when there are unused parameters within the `struct`, which provides the consistent offset information regardless the shader variants and across the different parts of the whole application.
 
 When defining the host side method that updates the shader parameters, you can calculate the "binding indices" for the native platform API by adding the "starting offset" of the given `struct` and the offset value for each member variable. When a `struct` nests another `struct`, you need to recursively add up the offset of the nesting `struct`.
 
-#### Evaluating Type-Based Binding
+### Evaluating Type-Based Binding
 
 Assuming that all shader parameters of your program are bundled into one big struct, there are several advantages to this approach.
 
@@ -88,11 +92,11 @@ Thirdly, the offsets of parameters within a `struct` do not change across progra
 
 However, the downside of this approach is that you pay for the unused parameters. This can be easily addressed by spliting the monolitic `struct` into sub-modules like `MaterialSystem` or `LightingSystem`. Each module should own the relevant parameters explicitly so that when a certain module is unused, you don't pay for a bunch of unused parameters. This also helps to keep things cleaner, as the parameters are organized more coherently.
 
-## How Slang Abstracts "Resource type"
+## How Slang Reflects "Resource type"
 
 Different platforms have their own way to handle the resource types. For example, HLSL uses `t` registers for textures whereas Vulkan goes with binding index and set regardless of their resource types.
 
-In order to provide portability across multiple platforms, Slang abstracts the concept of "resource type" and call it "ParameterCategory", or "Category" for short. In other context, it is also called `LayoutResourceKind`, which is more descriptive. This abstraction requires developers to understand some of Slang unique concepts.
+In order to provide portability across multiple platforms, Slang reflectss the concept of "resource type" and call it "ParameterCategory", or "Category" for short. In other context, it is also called `LayoutResourceKind`, which is more descriptive. This abstraction requires developers to understand some of Slang unique concepts.
 
 This section will start from simple examples of how Slang Reflection API works, and some of key concepts will be explained along the way.
 
@@ -128,9 +132,11 @@ Note that `getOffset()` is called with an argument, `category`. It is important 
 
 ### Layout is Multi-Dimensional
 
-The layout information is multi-dimensional in Slang. A full set of layout information exists for each "ParameterCategory". This means that the size and offset information need to be query for each relavent category for every shader parameters.
+The layout information is multi-dimensional in Slang. A full set of layout information exists for each "ParameterCategory".
 
-Consider the following shader that has a type with different categories:
+This means that the size and offset information need to be queried for each relavent category for every shader parameters. As a more interesting case, aggregate types like `struct` may store parameters using multiple categories.
+
+Consider the following shader that has a `struct` with multiple categories:
 
 ```hlsl
 struct Material
@@ -140,9 +146,7 @@ struct Material
 }
 ```
 
-// TODO: explain that the offset for each field depends on the category.
-
-// TODO: Aggregate types like `struct` may be stored using multiple categories.
+In HLSL, the shader above will use `Texture2D` to `t0` and `SamplerState` to `s0`. Although their binding indices are both "0", they don't conflict, because they are assigned to different "resource type". From an abstraction point of view, you can think of each "resource type" as its own dimension orthogonal to the other "resource type".
 
 The following code shows how to iterate the members in the `struct` for each category:
 
@@ -158,7 +162,7 @@ if (kind == TypeReflection::Kind::Struct)
         TypeLayoutReflection* fieldTypeLayout = field->getTypeLayout();
 
         auto category = field->getCategory();
-        auto index = field->getOffset(category);
+        auto offset = field->getOffset(category);
         auto space = field->getBindingSpace(category);
         auto size = fieldTypeLayout->getSize(category);
 
@@ -167,7 +171,7 @@ if (kind == TypeReflection::Kind::Struct)
 }
 ```
 
-The size of a type needs to be reflected for each category. And the offset of a field needs to be reflected for each category as well.
+Note that the `offset`, `space` and `size` values above are meaningful only for the relavent `category` it belongs to. In other words, the offset, space and size of a type need to be reflected for each category.
 
 ### `TypeLayout` and `VariableLayout`
 
