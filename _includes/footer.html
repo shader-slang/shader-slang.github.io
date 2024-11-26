@@ -3,7 +3,7 @@
   <div class="container">
     <p class="visually-hidden-focusable">Page footer starts here. <a href="#backtop">Return to main content</a></p>
     <div class="row">
-      <div class="col-xs-12 col-sm-10 footer_branding">
+      <div class="col-xs-12 col-sm-9 footer_branding">
         <figure><a href="https://www.khronos.org/"><img src="/images/khronos-logo.svg"
               alt="Khronos Logo"></a></figure>
         <p>Slang is now under open-governance at Khronos to encourage and enable broad industry collaboration to propel its
@@ -13,7 +13,7 @@
   <ul>
     {% for item in mainmenu %}
     <li class="{% if item.url == page.url %}active{% endif %}">
-      <a href="{{ item.url | relative_url }}">{{ item.name }}</a>
+      <small><a href="{{ item.url | relative_url }}">{{ item.name }}</a></small>
     </li>
     {% endfor %}
   </ul>
@@ -22,7 +22,7 @@
       </div>
 
 
-          <div class="col-xs-12 col-sm-2 footer_details">
+          <div class="col-xs-12 col-sm-3 footer_details">
             <h4>Community</h4>
             {% if site.data.social %} {% include social.html %} {% endif %}
 

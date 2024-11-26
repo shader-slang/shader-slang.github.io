@@ -11,7 +11,11 @@ bodyClass: "page-post"
 
             <h1>{{ page.title }}<hr></h1>
             <div class="metadata">
+                {% if page.human_date and page.human_date != '' %}
+                <div class="date"> {{ page.human_date | date: "%B %d, %Y"}}</div>
+                {% else %}
                 <div class="date"> {{ page.date | date: "%B %d, %Y"}}</div>
+                {% endif %}
                 <div class="author">{{ page.author }}</div>
             </div>
 

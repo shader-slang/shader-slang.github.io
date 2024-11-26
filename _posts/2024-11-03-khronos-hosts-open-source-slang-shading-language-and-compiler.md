@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Khronos Hosts Open Source Slang Shading Language and Compiler"
-date: 2024-11-03 10:00:00 +0000
+date: 2024-11-21 10:00:00 +0000
 categories: [ "news", "featured" ]
 tags: [khronos]
 author: "The Khronos Group"

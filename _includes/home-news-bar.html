@@ -20,7 +20,11 @@
                             <div class="card-title">
                                 <h4>{{ post.title }}</h4>
                             </div>
+                            {% if post.human_date and post.human_date != '' %}
+                            <div class="card-text">{{ post.human_date | date_to_string }}</div>
+                            {% else %}
                             <div class="card-text">{{ post.date | date_to_string }}</div>
+                            {% endif %}
                             <a class="btn btn-primary" href="{% if post.source_url and post.source_url != '' %}{{ post.source_url }}{% else %}{{ post.url | relative_url }}{% endif %}">
 
                                 {% if post.categories contains 'press_release' %}Read Press Release
