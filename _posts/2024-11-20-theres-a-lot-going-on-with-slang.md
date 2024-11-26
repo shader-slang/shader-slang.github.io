@@ -6,6 +6,7 @@ categories: [ "blog" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/2024-11-slang-blog-falcor-tiger.webp
+human_date: "November 21, 2024"
 ---
 
 If you’ve been following Slang developments, you’ve probably noticed a lot of changes happening recently! We’ve been hard at work, and we’re excited to share the latest updates with the Slang community. 
@@ -24,7 +25,7 @@ One of the biggest enhancements in recent months is [support for Apple's Metal s
 
 ### WebGPU Support
 
-But Metal Shading Language is not the only new backend, Slang can now also [compile to WGSL](https://shader-slang.com/slang/user-guide/wgsl-target-specific) for WebGPU! WebGPU is the latest graphics API for the web, providing high-performance and flexible access to GPU capabilities. With Slang's new WebGPU support, developers can now compile and run Slang shaders directly in the browser,making it easier than ever to create immersive and interactive web experiences.
+But Metal Shading Language is not the only new backend, Slang can now also [compile to WGSL](https://shader-slang.com/slang/user-guide/wgsl-target-specific) for WebGPU! WebGPU is the latest graphics API for the web, providing high-performance and flexible access to GPU capabilities. With Slang's new WebGPU support, developers can now compile and run Slang shaders directly in the browser, making it easier than ever to create immersive and interactive web experiences.
 
 ### Live Playground
 
