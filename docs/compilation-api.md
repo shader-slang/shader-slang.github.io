@@ -241,7 +241,7 @@ The Slang language philosophy with respect to supporting multiple target variati
 Precompiled Modules
 -------------------
 
-Modules are loaded into the session as described in [Load Modules](#load-modules). There is processing involved in that, as the raw source code needs to be compiled to the Slang internal representation, IR for short. Once loaded, that module does not need to be recompiled for the duration of the [Sessions](#about-sessions).
+Modules are loaded into the session as described in [Load Modules](#load-modules). There is processing involved in that, as the raw source code needs to be compiled to the Slang internal representation, IR for short. Once loaded, that module does not need to be recompiled for the duration of the [Session](#about-sessions).
 
 Slang offers the capability to save modules to disk after this initial processing, allowing for faster initial module load times.
 
@@ -467,7 +467,7 @@ The mechanism for this is "ITypeConformance". Type Conformances are linkable obj
     }
 ```
 
-This sample opts to specify the enum values for `highQuality` and `lowQuality because the host application will need to select the dynamic type at runtime via uniform and will need to know which integral value does what.
+This sample opts to specify the enum values for `highQuality` and `lowQuality` because the host application will need to select the dynamic type at runtime via uniform and will need to know which integral value does what.
 
 Now when composing the program, the source code module, the entry-point, and BOTH `IQuality` implementations will be included. 
 
@@ -760,7 +760,7 @@ int main()
 ```
 
 ### Compile it (g++ directions)
-* Assumes Slang is installed in current directly at `slang`.
+* Assumes Slang is installed in the current directory at `slang`.
 * Assumes program is saved to "shortest.cpp".
 * Assumes a release build of Slang.
 
