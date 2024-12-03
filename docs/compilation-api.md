@@ -25,6 +25,7 @@ Table of Contents
 * [Dynamic Dispatch](#dynamic-dispatch)
 * [Diagnostics](#diagnostics)
 * [Features Accessible Through Additional Interfaces](#features-accessible-through-additional-interfaces)
+* [Post-Compilation Reflection](#post-compilation-reflection)
 * [Complete Example](#complete-example)
 
 Basic Compilation
@@ -110,6 +111,9 @@ Slang supports using the preprocessor.
 ```
 
 #### Create the session
+
+With a fully populated `SessionDesc`, the session can be created.
+
 ```cpp
     Slang::ComPtr<slang::ISession> session;
     globalSession->createSession(sessionDesc, session.writeRef());
@@ -127,7 +131,9 @@ Modules are the granularity of shader source code that can be compiled in Slang.
     Slang::ComPtr<slang::IModule> slangModule;
     {
         Slang::ComPtr<slang::IBlob> diagnosticsBlob;
-        slangModule = session->loadModuleFromSourceString("shortest", "shortest.slang", shortestShader, diagnosticsBlob.writeRef());
+        const char* moduleName = "shortest";
+        const char* modulePath = "shortest.slang";
+        slangModule = session->loadModuleFromSourceString(moduleName, modulePath, shortestShader, diagnosticsBlob.writeRef());
         diagnoseIfNeeded(diagnosticsBlob);
         if (!slangModule)
         {
@@ -136,12 +142,17 @@ Modules are the granularity of shader source code that can be compiled in Slang.
     }
 ```
 
+#### Life Time of Modules
+
+Modules are owned by the slang Session. Once loaded, they are valid as long as the Session is valid.
+
 ### Query Entry Points
 
 Slang shaders may contain many entry points, and it's necessary to be able to identify them programatically in the Compilation API in order to select which entry points to compile.
 
-A common way to query an entry-point is by using the `IModule::findEntryPointByName` method, which will search the Module's reflection data and return the one which, for example, has the name "computeMain" as seen below.
+A common way to query an entry-point is by using the `IModule::findEntryPointByName` method, which will search the Module's reflection data and return the one which, for example, has the name "computeMain" as seen below. In order for `findEntryPointByName` to suceed, the entry-point function must be decorated with the shader attribute in source, e.g. `[shader("compute")]`. If the entry-point is not explicitly marked, it's necessary to use the `IModule::findAndCheckEntryPoint` function instead.
 
+`IModule::findAndCheckEntryPoint` is an alternative way to query entry-points from a module, and it works even if the function was not marked with the `[shader]` attribute. Because functions that lack the `[shader]` attribute, are not validated as entry-points during `loadModule`, that skipped validation is performed during `IModule::findAndCheckEntryPoint` instead.
 
 ```cpp
     Slang::ComPtr<slang::IEntryPoint> entryPoint;
@@ -160,6 +171,8 @@ It is also possible to query entry-points by index, and work backwards to check 
 Check the [User Guide](https://shader-slang.com/slang/user-guide/reflection.html#program-reflection) for info.
 
 ### Compose Modules and Entry Points
+
+Up to this point, modules have been loaded, and entry points have been identified, but to move forward with defining a GPU program, the relevant subset need to be selected for _composition_ into a unified program.
 
 ```cpp
     std::array<slang::IComponentType*, 2> componentTypes =
@@ -199,15 +212,46 @@ Ensure that there are no missing dependencies in the composed program by using `
 
 ### Get Target Kernel Code
 
-Finally, calling `getEntryPointCode` will perform the final compilation to the target language and return an `IBlob` pointer to it.
+Finally, it's time to compile the linked Slang program to the target format.
+
+Calling `IComponentType::getEntryPointCode()` will perform the final compilation to the target language and return an `IBlob` pointer to it. As the name implies, it compiles target code for a single entry-point, identified by the first integer argument, into the target format identified by the second integer argument. The component type must not contain any specialization parameters (it must be fully specialized), and it must not have any unmet requirements (it must be fully linked).
 
 ```cpp
+    // ... loadModule()
+
+    // ... findEntryPointByName() or findAndCheckEntryPoint()
+
+    // ... createCompositeComponentType()
+
+    // ... link()
+
     Slang::ComPtr<slang::IBlob> spirvCode;
     {
         Slang::ComPtr<slang::IBlob> diagnosticsBlob;
         SlangResult result = linkedProgram->getEntryPointCode(
-            0,
-            0,
+            0, // entryPointIndex
+            0, // targetIndex
+            spirvCode.writeRef(),
+            diagnosticsBlob.writeRef());
+        diagnoseIfNeeded(diagnosticsBlob);
+        SLANG_RETURN_ON_FAIL(result);
+    }
+```
+
+Alternatively, there is also a function `IComponentType::getTargetCode()` which will compile all entry-points, which is useful for SPIR-V and Metal targets which support multiple entry-points per shader.
+
+You can skip the `createCompositeComponentType()` where entry-points are identified altogether, and instead directly call `link()` on the Module to pull in its dependencies without having chosen any entry-points. `getTargetCode()` will then return a unified GPU kernel with multiple entry-points.
+
+```cpp
+    // ... loadModule()
+
+    // ... link()
+
+    Slang::ComPtr<slang::IBlob> spirvCode;
+    {
+        Slang::ComPtr<slang::IBlob> diagnosticsBlob;
+        SlangResult result = linkedProgram->getTargetCode(
+            0, // targetIndex
             spirvCode.writeRef(),
             diagnosticsBlob.writeRef());
         diagnoseIfNeeded(diagnosticsBlob);
@@ -216,6 +260,8 @@ Finally, calling `getEntryPointCode` will perform the final compilation to the t
 ```
 
 `spirvCode->getBufferPointer()` is then used to access the compiled data, and `spirvCode->getBufferSize()` is its size.
+
+Both methods cache results within the session and will return a pre-compiled blob when given the same request.
 
 About Sessions
 --------------
@@ -343,16 +389,6 @@ Now instead of composing the unspecialized `entryPoint` into your `CompositeComp
 If you dump output for the compiled shader, you'll see that only "HighQuality" exists in the shader, and `computeMain` now refers directly to `HighQuality_getValue_0" as it's call to interact with the quality object. Here's a resulting HLSL target compile:
 
 ```hlsl
-#pragma pack_matrix(row_major)
-#ifdef SLANG_HLSL_ENABLE_NVAPI
-#include "nvHLSLExtns.h"
-#endif
-
-#ifndef __DXC_VERSION_MAJOR
-// warning X3557: loop doesn't seem to do anything, forcing loop to unroll
-#pragma warning(disable : 3557)
-#endif
-
 RWStructuredBuffer<float > result_0 : register(u0);
 
 float HighQuality_getValue_0()
@@ -397,7 +433,7 @@ struct LowQuality : IQuality
     static float getValue() { return 1.0; }
 }
 
-int quality;
+uniform int quality;
 
 [shader("compute")]
 [numthreads(1,1,1)]
@@ -474,15 +510,7 @@ Now when composing the program, the source code module, the entry-point, and BOT
 Here's the HLSL output from compiling the shader with dynamic dispatch:
 
 ```hlsl
-#pragma pack_matrix(row_major)
-#ifdef SLANG_HLSL_ENABLE_NVAPI
-#include "nvHLSLExtns.h"
-#endif
-
-#ifndef __DXC_VERSION_MAJOR
-// warning X3557: loop doesn't seem to do anything, forcing loop to unroll
-#pragma warning(disable : 3557)
-#endif
+...
 
 RWStructuredBuffer<float > result_0 : register(u0);
 
@@ -626,6 +654,29 @@ Let's say there a `ISample` interface declared in `slang.h` with a method of int
    {
    }
 ```
+
+Post-Compilation Reflection
+---------------------------
+
+Target compilation typically involves the elimination of unused parameters and automatic assignment of bindings. Slang offers a post-compilation reflection interface that answers the question of which parameters remain after optimization, `IMetaData`.
+
+An `IMetaData` interface can be queried from a compiled program. After `getEntryPointCode()` has been called, `getEntryPointMetadata()` with the same `entryPointIndex` and `targetIndex` will provide the reflection information for that entry-point. Similarly, after `getTargetCode()` has been called for a certain `targetIndex`, calling `getTargetMetadata()` on the same `targetIndex` will return its `IMetaData` reflection interface.
+
+`IMetaData` offers the `isParameterLocationUsed()` method which returns whether a resource parameter at the specified binding location is actually being used in the compiled shader.
+
+```cpp
+    bool isUsed = false;
+    SlangParameterCategory category = SLANG_PARAMETER_CATEGORY_DESCRIPTOR_TABLE_SLOT;
+    unsigned spaceIndex = 0;
+    unsigned registerIndex = 0;
+    metadata->isParameterLocationUsed(
+        category,
+        spaceIndex,
+        registerIndex,
+        isUsed);
+```
+
+See [Reflection API Tutorial](https://shader-slang.com/slang/docs/reflection-api) for more details.
 
 Complete Example
 ----------------
