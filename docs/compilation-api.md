@@ -644,12 +644,12 @@ Features Accessible Through Additional Interfaces
 
 Some Slang API features are inaccessible using only the basic `IModule` and `IComponentType` COM pointers that we've used so far.  Getting access to additional features can require querying objects for additional interfaces. Experienced COM users will be familiar with the process.
 
-Let's say there is an `ISample` interface declared in `slang.h` with a method of interest, `InterestingModuleMethod()`. Though `InterestingModuleMethod()` operates on a Module internal to Slang, in order to call it, you need to ask Slang for an `ISample` pointer for the `IModule` that you have.
+Let's say there is an `ISample` interface declared in `slang.h` with a method of interest, `InterestingModuleMethod()`. Though `InterestingModuleMethod()` operates on a Module internal to Slang, in order to call it, you need to ask Slang for an `ISample` pointer for the `IModule` that you have. Doing so requires passing in the COM UUID (Universally Unique Identifier) for the interface to the `queryInterface()` method, which is `SLANG_UUID_ISample` for the made up `ISample` interface. It's also fine to call the static `ISample::getTypeGuid()` function to get the value for the UUID parameter.
 
 ```cpp
    // Assume `mymodule` is a ComPtr<IModule> acquired from an earlier step.
    ComPtr<ISample> mysampleinterface;
-   if (mymodule->queryInterface(SLANG_INTERFACE_SAMPLE, ISample.writeref()))
+   if (mymodule->queryInterface(SLANG_UUID_ISample, ISample.writeref()))
    {
        ISample->InterestingMethod();
    }
