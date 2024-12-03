@@ -98,6 +98,9 @@ Slang supports using the preprocessor.
 ```
 
 #### Compiler options
+
+Here is where you can specify Session-wide options. Check the [User Guide](https://shader-slang.com/slang/user-guide/compiling.html#compiler-options) for info on available options.
+
 ```cpp
     std::array<slang::CompilerOptionEntry, 1> options = 
         {
@@ -291,7 +294,7 @@ Modules are loaded into the session as described in [Load Modules](#load-modules
 
 Slang offers the capability to save modules to disk after this initial processing, allowing for faster initial module load times.
 
-APIs for module precompilation is described in the [User Guide](https://shader-slang.com/slang/user-guide/link-time-specialization.html#using-precompiling-modules-with-the-api).
+API methods for module precompilation are described in the [User Guide](https://shader-slang.com/slang/user-guide/link-time-specialization.html#using-precompiling-modules-with-the-api).
 
 Specialization
 --------------
@@ -386,7 +389,7 @@ In this case, the component to specialize is the `entryPoint`.
 
 Now instead of composing the unspecialized `entryPoint` into your `CompositeComponentType`, you would add the specialized `specializedEntryPoint` into the compositition.
 
-If you dump output for the compiled shader, you'll see that only "HighQuality" exists in the shader, and `computeMain` now refers directly to `HighQuality_getValue_0" as it's call to interact with the quality object. Here's a resulting HLSL target compile:
+If you dump output for the compiled shader, you'll see that only "HighQuality" exists in the shader, and `computeMain` now refers directly to `HighQuality_getValue_0` as its call to interact with the quality object. Here's a resulting HLSL target compile:
 
 ```hlsl
 RWStructuredBuffer<float > result_0 : register(u0);
@@ -413,7 +416,7 @@ The previous use-case was to produce specialized shaders, but imagine that you p
 
 Instead of parameterizing the entry-point such that the definition of `T` can be specialized at link time, let's instead provide the type of `T` as an integer uniform and dynamically create an object of the specified type through that enum.
 
-Slang provides the utility function "createDynamicObject()" to do just that. Based on an integer and a blob of initialization data, an object of the desired `IQuality` type will be initialized at runtime.
+Slang provides the utility function `createDynamicObject()` to do just that. Based on an integer and a blob of initialization data, an object of the desired `IQuality` type will be initialized at runtime.
 
 Here's a shader that uses dynamic dispatch for `getValue()` query.
 
@@ -639,9 +642,9 @@ For example, in the following, if `diagnosticsBlob` is anything other than `null
 Features Accessible Through Additional Interfaces
 -------------------------------------------------
 
-Some Slang API features are inaccessible using only the basic IModule and IComponentType COM pointers that we've used so far.  Getting access to additional features can require querying objects for additional interfaces. COM users will be familiar with the process.
+Some Slang API features are inaccessible using only the basic `IModule` and `IComponentType` COM pointers that we've used so far.  Getting access to additional features can require querying objects for additional interfaces. Experienced COM users will be familiar with the process.
 
-Let's say there a `ISample` interface declared in `slang.h` with a method of interest, `InterestingModuleMethod()`. Though `InterestingModuleMethod()` operates on a Module internal to Slang, in order to call it, you need to ask Slang for an `ISample` pointer for the `IModule` that you have.
+Let's say there is an `ISample` interface declared in `slang.h` with a method of interest, `InterestingModuleMethod()`. Though `InterestingModuleMethod()` operates on a Module internal to Slang, in order to call it, you need to ask Slang for an `ISample` pointer for the `IModule` that you have.
 
 ```cpp
    // Assume `mymodule` is a ComPtr<IModule> acquired from an earlier step.
@@ -652,15 +655,18 @@ Let's say there a `ISample` interface declared in `slang.h` with a method of int
    }
    else
    {
+       // Helpful diagnostic messages, or turn on fallback behavior perhaps.
    }
 ```
+
+Note that the application is expected to handle the scenario where the interface cannot be queried successfully. One likely reason could be that the application is running in an environment with an older Slang library. The application may ask Slang for an interface that isn't yet implemented in that version of the library. Whether that is a fatal error or if it just means that a feature is disabled, is up to the application.
 
 Post-Compilation Reflection
 ---------------------------
 
 Target compilation typically involves the elimination of unused parameters and automatic assignment of bindings. Slang offers a post-compilation reflection interface that answers the question of which parameters remain after optimization, `IMetaData`.
 
-An `IMetaData` interface can be queried from a compiled program. After `getEntryPointCode()` has been called, `getEntryPointMetadata()` with the same `entryPointIndex` and `targetIndex` will provide the reflection information for that entry-point. Similarly, after `getTargetCode()` has been called for a certain `targetIndex`, calling `getTargetMetadata()` on the same `targetIndex` will return its `IMetaData` reflection interface.
+An `IMetaData` interface can be queried from a compiled program. After `getEntryPointCode()` has been called, `getEntryPointMetadata()` with the same `entryPointIndex` and `targetIndex` as was used during compilation will provide the reflection information for that entry-point. Similarly, after `getTargetCode()` has been called for a certain `targetIndex`, calling `getTargetMetadata()` on the same `targetIndex` will return its `IMetaData` reflection interface.
 
 `IMetaData` offers the `isParameterLocationUsed()` method which returns whether a resource parameter at the specified binding location is actually being used in the compiled shader.
 
