@@ -73,7 +73,7 @@ Texture2D shadowCascades[4];
 SamplerComparisonState shadowCascadeSampler;
 cbuffer CSMUniforms
 {
-float4 shadowCascadeDistances;
+    float4 shadowCascadeDistances;
 };
 float evaluateCSM(...);
 ```
@@ -110,7 +110,7 @@ Historically, shading languages like HLSL and GLSL have supported a wide variety
 [[vk::binding(1,9)]] SamplerComparisonState shadowCascadeSampler : register(s0,space9);
 [[vk::binding(2,9)]] cbuffer CSMUniforms : register(b0,space9)
 {
-float4 shadowCascadeDistances;
+    float4 shadowCascadeDistances;
 };
 
 float evaluateCSM(...);
@@ -145,11 +145,11 @@ The essence of our approach is *type-based encapsulation*. Put simply, for each 
 
 struct CascadedShadowMap
 {
-Texture2D shadowCascades[4];
-SamplerComparisonState shadowCascadeSampler;
-float4 shadowCascadeDistances;
+	Texture2D shadowCascades[4];
+	SamplerComparisonState shadowCascadeSampler;
+	float4 shadowCascadeDistances;
 
-float evaluate(...);
+	float evaluate(...);
 }
 ```
 
@@ -170,12 +170,12 @@ import CascadedShadowMaps;
 struct SkyLight
 {
 	CascadedShadowMap csm;
-TextureCube skyEnvMap;
-SamplerState skyEnvSampler;
-float3 sunLightIntensity;
-float3 sunLightDirection;
+	TextureCube skyEnvMap;
+	SamplerState skyEnvSampler;
+	float3 sunLightIntensity;
+	float3 sunLightDirection;
 
-float3 evaluateSkyLighting(...);
+	float3 evaluateSkyLighting(...);
 }
 ```
 
@@ -185,7 +185,7 @@ Note here how the `SkyLight type` includes a field, `csm`, of type `CascadedShad
 
 The next key to our approach is to define a type in the host application that corresponds to each feature in the GPU shader codebase. For our running example, a host application written in C++ might define something like:
 
-```c++
+```cpp
 // CascadedShadowMaps.h
 namespace MyEngine {
 class CascadedShadowMap : public MyEngine::Object
@@ -208,7 +208,7 @@ Note that the host type does *not* need to declare the exact same members with t
 
 In cases where features in the GPU shader codebase logically nest, the corresponding host types should also make use of nesting:
 
-```c++
+```cpp
 // SkyLight.h
 namespace MyEngine {
 class SkyLight : public MyEngine::Light
@@ -217,10 +217,10 @@ public:
 	...
 private:
 	MyEngine::CascadedShadowMap* csm;
-MyEngine::Texture* skyEnvMap;
-MyEngine::Sampler* skyEnvSampler;
-MyEngine::ColorRGB sunLightIntensity;
-MyEngine::Vec3 sunLightDirection;
+	MyEngine::Texture* skyEnvMap;
+	MyEngine::Sampler* skyEnvSampler;
+	MyEngine::ColorRGB sunLightIntensity;
+	MyEngine::Vec3 sunLightDirection;
 };
 }
 ```
@@ -231,7 +231,7 @@ Here we see that the host-side representation of the sky light feature owns an o
 
 The next essential ingredient for our approach is a method belonging to the host type, that is responsible for writing parameter data for the corresponding GPU feature. For our running example, this would be something like:
 
-```c++
+```cpp
 class CascadedShadowMap : ...
 {
 public:
@@ -246,7 +246,7 @@ Much of this document will be dedicated to the ways that an application or engin
 
 The body of `CascadedShadowMap::writeInto()` can be as simple as the following:
 
-```c++
+```cpp
 // CascadedShadowMap.cpp
 void CascadedShadowMap::writeInto(MyEngine::ShaderCursor cursor)
 {
@@ -263,7 +263,7 @@ Conceptually, this code takes a cursor, representing the destination to write to
 
 One of the benefits of our type-based approach to encapsulation is that we can easily re-use the logic for writing parameter data in a hierarchical fashion, when types nest. For example, the `writeInto()` method for the sky light feature might look like:
 
-```c++
+```cpp
 // SkyLight.cpp
 void SkyLight::writeInto(MyEngine::ShaderCursor cursor)
 {
@@ -332,7 +332,7 @@ Our earlier code examples, notably the `writeInto()` method bodies, have already
 
 Given a cursor that points to a location with some aggregate type (a `struct` or array), an application needs a way to navigate to a part of that aggregate: a field of a `struct` or an element of an array. The corresponding operations are:
 
-```c++
+```cpp
 // ShaderCursor.h
 struct ShaderCursor
 {
@@ -350,7 +350,7 @@ The `field()` operations form a cursor to a field of a `struct`, based on either
 
 Once a cursor has been formed that points to a small enough piece of parameter data, such as an individual texture, an application needs a way to write a value for that parameter. The corresponding operations are:
 
-```c++
+```cpp
 // ShaderCursor.h
 struct ShaderCursor
 {
@@ -380,7 +380,7 @@ In the case of the Vulkan API, shader parameters are typically passed using two 
 
 A shader cursor implementation for Vulkan needs to at least store sufficient state to represent a location to write to for each of these parameter-passing mechanisms:
 
-```c++
+```cpp
 // ShaderCursor.h
 struct ShaderCursor
 {
@@ -403,7 +403,7 @@ Here our example `ShaderCursor` type has members to represent a location for eac
 
 A shader cursor acts much like a pointer, but the type of the data being pointed to is determined dynamically rather than statically. Thus rather than having a type template parameter like a C++ smart pointer would, this shader cursor implementation stores the type (and layout) as a field:
 
-```c++
+```cpp
 // ShaderCursor.h
 struct ShaderCursor
 {
@@ -429,7 +429,7 @@ The implementation of writing data to a shader cursor is, in general, specific t
 
 For the Vulkan API, shader parameters of ordinary types are passed via buffer memory. Writing such a parameter to a cursor entails writing that data to the underlying buffer:
 
-```c++
+```cpp
 void ShaderCursor::write(const void* data, size_t size)
 {
 	memcpy(m_bufferData + m_byteOffset, data, size);
@@ -438,7 +438,7 @@ void ShaderCursor::write(const void* data, size_t size)
 
 The above code assumes that the memory of the buffer that the shader cursor points into is CPU-accessible. An alternative implementation for cases where the buffer might not be writable directly from CPU is:
 
-```c++
+```cpp
 void ShaderCursor::write(const void* data, size_t size)
 {
 	vkCmdUpdateBuffer(commandBuffer,
@@ -457,7 +457,7 @@ For the purposes of this document, the important thing to note is that all of th
 
 For the Vulkan API, textures and other opaque types are passed via descriptor sets. Writing a texture to a cursor entails writing a descriptor into a descriptor set:
 
-```c++
+```cpp
 void ShaderCursor::write(MyEngine::Texture* texture)
 {
 	VkDescriptorImageInfo image;
@@ -488,7 +488,7 @@ The operations above for writing using a shader cursor have been simple because 
 
 The task of navigating to a structure field by name can be reduced to the task of navigating by the field index:
 
-```c++
+```cpp
 ShaderCursor ShaderCursor::field(const char* name)
 {
 	return field(m_typeLayout->findFieldIndexByName(name));
@@ -497,7 +497,7 @@ ShaderCursor ShaderCursor::field(const char* name)
 
 The more interesting operation is then:
 
-```c++
+```cpp
 ShaderCursor ShaderCursor::field(int index)
 {
 	slang::VariableLayoutReflection* field = m_typeLayout->getFieldByIndex(index);
@@ -521,11 +521,11 @@ The starting binding index of the field is the starting binding index of the agg
 
 Navigating a shader cursor to an array element is only slightly more complicated than navigating to a structure field:
 
-```c++
+```cpp
 ShaderCursor ShaderCursor::element(int index)
 {
 	slang::TypeLayoutReflection* elementTypeLayout =
-m_typeLayout->getElementTypeLayout();
+		m_typeLayout->getElementTypeLayout();
 
 	ShaderCursor result = *this;
 	result.m_typeLayout = elementTypeLayout;
@@ -627,7 +627,7 @@ Every type layout can be broken down as zero or more bytes of ordinary data, and
 
 Our Vulkan-specific shader cursor implementation used the following state to represent the location being written to:
 
-```c++
+```cpp
 struct ShaderCursor
 {
 	VkBuffer		m_buffer;
@@ -644,7 +644,7 @@ Note how this representation mixes up the representation of offset/index informa
 
 For a portable implementation, we move the offset/index information out into its own type:
 
-```c++
+```cpp
 struct ShaderOffset
 {
 	size_t			byteOffset = 0;
@@ -655,7 +655,7 @@ uint32_t 		arrayIndexInBindingRange = 0;
 
 And then the shader cursor itself just tracks the offset/index information and a conceptual *object* that is being written into:
 
-```c++
+```cpp
 struct ShaderCursor
 {
 	MyEngine::ShaderObject*	m_object = nullptr;
@@ -671,7 +671,7 @@ An application/engine that supports many target GPU APIs will typically define a
 
 The `ShaderObject` type introduced above should be part of the engine’s RHI, and provide operations to write the various kinds of parameters, given an offset:
 
-```c++
+```cpp
 // ShaderObject.h
 class ShaderObject
 {
@@ -685,7 +685,7 @@ public:
 
 The corresponding operations on the target-API-independent shader cursor then just delegate to the shader object, passing along the offset:
 
-```c++
+```cpp
 void ShaderCursor::write(MyEngine::Texture* texture)
 {
 	m_object->write(m_offset, texture);
@@ -700,7 +700,7 @@ With a new representation for the index/offset information in a location, the co
 
 Here is the target-independent code for navigating to a field by index:
 
-```c++
+```cpp
 ShaderCursor ShaderCursor::field(int index)
 {
 	slang::VariableLayoutReflection* field = m_typeLayout->getFieldByIndex(index);
@@ -720,7 +720,7 @@ The only substantive difference here is that instead of updating a Vulkan-specif
 
 In contrast the case for structure fields, the logic for array elements does not really change *at all*:
 
-```c++
+```cpp
 ShaderCursor ShaderCursor::element(int index)
 {
 	slang::TypeLayoutReflection* elementTypeLayout = m_typeLayout->getElementTypeLayout();
@@ -748,7 +748,7 @@ The target-API-specific shader object implementation is responsible for interact
 
 A Vulkan-specific shader object might be declared as:
 
-```c++
+```cpp
 // VulkanShaderObject.h
 class VulkanShaderObject : public ShaderObject
 {
@@ -769,12 +769,11 @@ Note how this type now holds the Vulkan-specific fields from our earlier `Shader
 
 The `write()` operations of this Vulkan RHI shader object are similar to those of the earlier Vulkan-specific `ShaderCursor`, with the key additional work of translating a binding range index into the Vulkan-specific binding index:
 
-```c++
+```cpp
 void VulkanShaderObject::write(ShaderOffset offset, Texture* texture)
 {
-	uint32_t bindingIndex =
-m_typeLayout->getBindingRangeIndexOffset(
-offset.bindingRangeIndex);
+	uint32_t bindingIndex = m_typeLayout->getBindingRangeIndexOffset(
+		offset.bindingRangeIndex);
 
 	VkDescriptorImageInfo image;
 	image.imageView = texture->getVulkanImageView();
@@ -798,7 +797,7 @@ Here we see that the Slang reflection API directly supports the translation that
 
 An additional key detail in the above code that makes it more complete and robust than the earlier simple `ShaderCursor` implementation is that this RHI operation uses Slang reflection to query the type of binding represented by the range, so that it can properly account for more cases of the `VKWriteDescriptorSet::descriptorType` field:
 
-```c++
+```cpp
 VkDescriptorType mapToDescriptorType(slang::BindingType bindingRangeType)
 {
 	switch(bindingRangeType)
@@ -895,31 +894,33 @@ The first of those steps is the one where support from the Slang reflection API 
 
 In order to enumerate all of the bindings in an arbitrary `slang::TypeLayoutReflection`, an application needs to recursively traverse the structure of types. This can be accomplished with a helper type like:
 
-```c++
+```cpp
 struct ShaderObjectLayoutBuilder
 {
 	std::vector<VkDescriptorSetLayoutBinding> m_bindings;
 	uint32_t m_bindingIndex = 0;
 	void addBindingsForParameterBlock(
-slang::TypeLayoutReflection* typeLayout);
+		slang::TypeLayoutReflection* typeLayout);
 	void addBindingsFrom(
-slang::TypeLayoutReflection* typeLayout,
-uint32_t elementCount);
+		slang::TypeLayoutReflection* typeLayout,
+		uint32_t elementCount);
 }
 ```
 
 The `addBindingsForParameterBlock()` method needs to handle the detail of including a binding in the descriptor set for the constant buffer that gets introduced if the type layout contains any ordinary data:
 
-```c++
+```cpp
 void ShaderObjectLayoutBuilder::addBindingsForParameterBlock(
 slang::TypeLayoutReflection* typeLayout)
 {
-	if(auto size = typeLayout->getSize())	{		VkDescriptorSetLayoutBinding layoutBinding;
-	layoutBinding.binding = m_bindingIndex++;
-	layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-	layoutBinding.descriptorCount = 1;
-	...
-	m_bindings.push_back(layoutBinding);
+	if(auto size = typeLayout->getSize())
+	{
+		VkDescriptorSetLayoutBinding layoutBinding;
+		layoutBinding.binding = m_bindingIndex++;
+		layoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+		layoutBinding.descriptorCount = 1;
+		...
+		m_bindings.push_back(layoutBinding);
 	}
 	addBindingsFrom(typeLayout, 1);
 }
@@ -927,7 +928,7 @@ slang::TypeLayoutReflection* typeLayout)
 
 The `addBindingsFrom()` method needs to look at the kind of type that is passed in and add zero or more entries to `m_bindings`, possibly via recursively calling itself. It can do this by `switch`ing on the kind of type passed in:
 
-```c++
+```cpp
 void ShaderObjectLayoutBuilder::addBindingsFrom(
 slang::TypeLayoutReflection* typeLayout,
 uint32_t descriptorCount)
@@ -946,7 +947,7 @@ uint32_t descriptorCount)
 
 The leaf case here is resources, samplers, etc.:
 
-```c++
+```cpp
 case slang::TypeReflection::Kind::Resource:
 ...
 	VkDescriptorSetLayoutBinding layoutBinding;
@@ -963,7 +964,7 @@ Note that in this case it is not immediately obvious how to set the descriptorTy
 
 The recursive cases involve arrays and structure types. The array case is relatively straightforward, and simply modifies the `descriptorCount` that is passed down into a recursive call:
 
-```c++
+```cpp
 case slang::TypeReflection::Kind::Array:
 	addBindingsFrom(
 		typeLayout->getElementType()
@@ -974,13 +975,13 @@ case slang::TypeReflection::Kind::Array:
 
 The structure case is similarly straightforward, and simply recursively traverses each field:
 
-```c++
+```cpp
 case slang::TypeReflection::Kind::Struct:
 	for(int f = 0; f < typeLayout->getFieldCount(); f++)
 	{
-	addBindingsFrom(
-		typeLayout->getFieldByIndex(f)->getTypeLayout(),
-		descriptorCount);
+		addBindingsFrom(
+			typeLayout->getFieldByIndex(f)->getTypeLayout(),
+			descriptorCount);
 	}
 	break;
 ```
@@ -995,7 +996,7 @@ Note that these assumptions are valid in part because the Slang compiler, as a m
 
 The concept of binding ranges in the Slang is closely linked to the way that descriptor sets are organized for Vulkan/D3D12/etc. Using the Slang reflection API for binding ranges makes it possible to write a non-recursive version of the above logic:
 
-```c++
+```cpp
 void ShaderObjectLayoutBuilder::addBindingsFrom(
 slang::TypeLayoutReflection* typeLayout,
 uint32_t descriptorCount)
@@ -1021,15 +1022,15 @@ Note also that even when using binding ranges to simplify this code, an applicat
 
 Given the way that, e.g., the Vulkan API distinguishes between `VkDescriptorSets` and `VkDescriptorSetLayouts`, we advocate that the RHI for an applicaiton/engine should make a distinction between `ShaderObject`s and `ShaderObjectLayout`s. The relevant parts of the RHI might look something like:
 
-```c++
+```cpp
 class ShaderObject;
 class ShaderObjectLayout
 class RHI
 {
 	virtual ShaderObjectLayout* createShaderObjectLayout(
-slang::TypeLayoutReflection* typeLayout) = 0;
-virtual ShaderObject* createParameterBlock(
-	slang::ShaderObjectLayout* layout) = 0;
+	slang::TypeLayoutReflection* typeLayout) = 0;
+	virtual ShaderObject* createParameterBlock(
+		slang::ShaderObjectLayout* layout) = 0;
 }
 ```
 
@@ -1050,7 +1051,7 @@ ParameterBlock<SkyLight> gSkyLight;
 
 the application code needs to look up this parameter by name to start querying how it was bound:
 
-```c++
+```cpp
 void appCodeToRenderSomething(
 	slang::ShaderReflection* programLayout,
 	MyEngine::SkyLight* skyLight)
@@ -1071,14 +1072,14 @@ In the case where the shader parameter in question is declared as a parameter of
 ```hlsl
 [shader("compute")]
 void computeSomething(
-ParameterBlock<SkyLight> skyLight,
-...)
+	ParameterBlock<SkyLight> skyLight,
+	...)
 { ... }
 ```
 
 the application logic is similar:
 
-```c++
+```cpp
 void appCodeToComputeSomething(
 slang::ShaderReflection* programLayout,
 MyEngine::SkyLight* skyLight)
