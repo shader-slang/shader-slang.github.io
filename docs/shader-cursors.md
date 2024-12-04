@@ -1,4 +1,11 @@
-# A practical and scalable approach to cross-platform shader parameter passing using Slang’s reflection API
+---
+title: A practical and scalable approach to cross-platform shader parameter passing using Slang’s reflection API
+layout: page
+description: A practical and scalable approach to cross-platform shader parameter passing using Slang’s reflection API
+permalink: "/docs/shader-cursors/"
+intro_image_absolute: true
+intro_image_hide_on_mobile: false
+---
 
 # Introduction
 
