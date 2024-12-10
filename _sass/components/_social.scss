@@ -1,0 +1,14 @@
+.social {
+  display: block;
+  img {
+    width: 30px;
+    height: 30px;
+  }
+  a {
+    padding: 0 15px 20px 0;
+    display: inline-block;
+    &:hover {
+      opacity: 0.5;
+    }
+  }
+}

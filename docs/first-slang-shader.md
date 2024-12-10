@@ -1,4 +1,11 @@
-# Your first Slang shader
+---
+title: Your first Slang shader
+layout: page
+description: Your first Slang shader
+permalink: "/docs/first-slang-shader"
+intro_image_absolute: true
+intro_image_hide_on_mobile: false
+---
 
 In this tutorial, we demonstrate how to write a simple compute shader in Slang that adds numbers from two buffers and writes the results into a third buffer. To start, create a text file named `hello-world.slang` in any directory, and paste the following content in the newly created file:
 

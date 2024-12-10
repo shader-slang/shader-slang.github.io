@@ -1,4 +1,12 @@
-# Migrating to Slang from GLSL
+---
+title: Migrating to Slang from GLSL
+layout: page
+description: Migrating to Slang from GLSL
+permalink: "/docs/coming-from-glsl/"
+intro_image_absolute: true
+intro_image_hide_on_mobile: false
+---
+
 
 ## Overview
 Slang allows the developers to use GLSL syntax as the input shader. But this feature is intended to provide an easy transition from your existing GLSL based system to Slang system. The GLSL support is not meant to be complete and it may not be up-to-date with the GLSL spec.
