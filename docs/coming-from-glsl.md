@@ -29,11 +29,10 @@ Even though GLSL claims to use "Column-major", it is mostly nomenclature when it
 
 Here is an example that shows the difference between GLSL and HLSL.
 <table>
-<tr><td>HLSL shader</td><td>Slang shader</td></tr>
+<tr><td>GLSL shader</td><td>HLSL shader</td></tr>
 <tr><td>
   
 ```glsl
-// GLSL
 mat3x4 m; // 3 columns and 4 rows
 for (int c = 0; c < 3; ++c)
 {
@@ -52,7 +51,6 @@ result.z  = dot(takeFirstColumn, m[2]); // 8
 </td><td>
   
 ```hlsl
-// HLSL
 float3x4 m; // 3 rows and 4 columns
 for (int r = 0; r < 3; ++r)
 {
