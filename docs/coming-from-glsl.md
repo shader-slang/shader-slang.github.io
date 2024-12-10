@@ -11,13 +11,13 @@ With these options, Slang will import an extra module for GLSL and the GLSL spec
 It means that all of Slang syntax is still available and you can use both Slang and GLSL syntax in a same shader file.
 
 ## Layout rules
-By default, Slang uses `std140` as the layout rule. You can explicitly specify to use `std430` whenever needed.
+By default, Slang uses `std430` as the layout rule. You can explicitly specify to use `std140` whenever needed.
 
 Some examples are follows:
 ```
-StructuredBuffer<T, Std140Layout> std140Layout;
-StructuredBuffer<T, Std430Layout> std430Layout;
-StructuredBuffer<T, ScalarLayout> scalarLayout;
+StructuredBuffer<T, Std140DataLayout> std140Layout;
+StructuredBuffer<T, Std430DataLayout> std430Layout;
+StructuredBuffer<T, ScalarDataLayout> scalarLayout;
 ```
 
 The layout rule can also be changed with options like `-force-glsl-scalar-layout` or `-fvk-use-scalar-layout`.
@@ -25,8 +25,54 @@ The layout rule can also be changed with options like `-force-glsl-scalar-layout
 With those options, Slang will align all aggregrate types according to their elements' natural alignment as a rule described in `VK_EXT_scalar_block_layout`, aka `ScalarLayout`.
 
 ## Matrix layout
-By default, GLSL uses column-major matrix layout.
-TODO:
+Even though GLSL claims to use "Column-major", it is mostly nomenclature when it comes to the shader side implementation.
+
+Here is an example that shows the difference between GLSL and HLSL.
+<table>
+<tr><td>HLSL shader</td><td>Slang shader</td></tr>
+<tr><td>
+  
+```glsl
+// GLSL
+mat3x4 m; // 3 columns and 4 rows
+for (int c = 0; c < 3; ++c)
+{
+  for (int r = 0; r < 4; ++r)
+  {
+    m[c][r] = c * 4 + r;
+  }
+}
+
+vec4 takeFirstColumn = { 1, 0, 0, 0 };
+vec3 result;
+result.x  = dot(takeFirstColumn, m[0]); // 0
+result.y  = dot(takeFirstColumn, m[1]); // 4
+result.z  = dot(takeFirstColumn, m[2]); // 8
+```
+</td><td>
+  
+```hlsl
+// HLSL
+float3x4 m; // 3 rows and 4 columns
+for (int r = 0; r < 3; ++r)
+{
+  for (int c = 0; c < 4; ++c)
+  {
+    m[r][c] = r * 4 + c;
+  }
+}
+
+float4 takeFirstColumn = { 1, 0, 0, 0 };
+float3 result;
+result.x  = dot(takeFirstColumn, m[0]); // 0
+result.y  = dot(takeFirstColumn, m[1]); // 4
+result.z  = dot(takeFirstColumn, m[2]); // 8
+```
+</td></tr></table>
+
+The real difference is on the data "Layout" where CPU stores the data on the memory in a certain order and the shader interprets it in the same way.
+
+For more detailed explanation about the matrix layout, please check another document, [Handling Matrix Layout Differences on Different Platforms](https://shader-slang.com/slang/user-guide/a1-01-matrix-layout.html).
 
 ## Precision qualifiers are ignored
 Slang doesn't respect the precision qualifiers such as `lowp`, `mediump`, and `highp`. All `float` type will be treated as a high precision float.
