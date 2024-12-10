@@ -15,20 +15,6 @@ While the languages share similarities, paying close attention to specific synta
 
 ### Key Syntax and Feature Differences
 
-#### `operator*` performs a column-wise matrix multiplication not the component-wise multiplication
-In HLSL, `operator*` for matrices performs the component-wise multiplication as described in a document, [Per-Component Math Operations](https://learn.microsoft.com/en-us/windows/win32/direct3dhlsl/dx-graphics-hlsl-per-component-math?redirectedfrom=MSDN).
-
-However, `operator*` is for the column-major matrix multiplication in Slang, which is same as the `operator*` in GLSL.
-
-There is `mul()` function in Slang for the row-major matrix multiplication, which is same as `mul()` function in HLSL.
-
-Due to the differences on row/column-majorness, the order of the operands are different for `mul()` and `operator*`.
-```
-// In Slang, the following condition is true
-float4x4 m1, m2;
-bool isSame = (mul(m1, m2) == (m2 * m1)); // evaluates to true
-```
-
 #### `enum` is scoped in Slang
 In HLSL, `enum` is unscoped, which means the enum values can be referred to without the enum's name.
 In Slang, `enum` is scoped, requiring explicit reference to the enum's name along with its values.
