@@ -1,31 +1,74 @@
-# Getting Started
+---
+title: Getting Started
+layout: getting-started
+description: Getting Started
+permalink: "/docs/getting-started/"
+intro_image_absolute: true
+intro_image_hide_on_mobile: false
+---
 
-## Try Slang
+<div class="section greyBar">
+<div class="container">
+        <div class="row">
+            <div class="col-6">
+                <h3>Try Slang
+                    <hr>
+                </h3>
+                <p>Try slang locally in your browser without downloading or installing anything with the Slang
+                    Playground.</p>
+                <a class="btn btn-primary " href="https://try.shader-slang.org/">Try the Slang Playground</a>
+            </div>
+            <div class="col-6">
+                <img class="img-fluid" src="/images/getting-started/slang-demo.png" alt="">
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+<div class="section">
+    <div class="row">
+        <div class="col-12">
+            <h3>Learn How to Become a Slang Expert
+                <hr>
+            </h3>
+            <p>Slang code is highly portable, but can still leverage unique platform capabilities, including the latest
+                features in
+                Direct3D and Vulkan. For example, developers can make full use of <a
+                    href="https://shader-slang.com/slang/user-guide/convenience-features.html#pointers-limited">pointers</a> when generating
+                SPIR-V. Slang's <a href="/slang/user-guide/capabilities.html">capability
+                    system</a> helps applications manage feature set differences across target platforms by ensuring
+                code only uses available
+                features during the type-checking step, before generating final code. Additionally, Slang provides <a
+                    href="https://shader-slang.com/slang/user-guide/a1-04-interop.html">flexible
+                    interop</a> features to enable directly embedding target code or SPIR-V into generated shaders.</p>
+        </div>
+    </div>
+</div>
+</div>
 
-Try Slang locally in your browser without downloading or installing anything with [Slang-Playground](/slang-playground).
+<div class="container">
+<div id="docs_tutorials" class="section">
+    <div class="row">
+        <div class="col-12">
 
-## Download Prebuilt Release
-
-[Download latest release here.](https://github.com/shader-slang/slang/releases/latest)
-
-Binary packages are currently available for:
-
-* Windows 64-bit x86-64, arm64
-* Ubuntu Linux 64-bit x86-64, arm64
-* MacOS x86-64, Apple Silicon
-
-Binary releases include the command-line compiler `slangc`, a shared library for the compiler, and the header files necessary for interacting with that library.
-
-Slang is also distributed with the [Vulkan SDK](https://www.lunarg.com/vulkan-sdk/).
-
-## Build from Source
-
-Instructions for building Slang from source code are maintained as part of the source code repository, [here](https://github.com/shader-slang/slang/blob/master/docs/building.md).
-
-## Your First Slang Shader
-
-Follow [this tutorial](/docs/first-slang-shader) on how to write your first Slang shader and compile it for execution with the Vulkan API.
-
-## The User-Guide
-
-Check out the [Slang User's Guide](https://shader-slang.com/slang/user-guide/index.html) to learn more about the language features, and [Slang Standard Library Reference](https://shader-slang.com/stdlib-reference) for detailed documentation on Slang's builtin types and functions available for use in your shader code.
+            {% assign gs_items = site.data.getting-started.items %}
+            <div class="grid gridSlang">
+                {% for item in gs_items %}
+                {% if item.title and item.title != '' %}
+                <div class="g-col-md-4 g-col-sm-6 g-col-12 gridSlang-wrapper">
+                    <div class="icon">{{ item.icon }}</div>
+                    <h4>{{ item.title }}</h4>
+                    <p>{{ item.description }}</p>
+                    {% if item.link_url and item.link_url != '' %}
+                    <p class="gridSlang-link"><a href="{{ item.link_url }}">{{ item.link_label }} &gt;</a></p>
+                    {% else %}
+                    <p class="gridSlang-link">{{ item.link_label }}</p>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+</div>

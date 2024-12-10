@@ -1,0 +1,165 @@
+---
+layout: default
+bodyClass: "news-events"
+---
+
+<div class="container pb-3 pt-3 pt-md-5 pb-md-5">
+    <div class="row justify-content-start">
+        <div class="col-12">
+            <div class="service service-single">
+                <h1 class="title">{{page.title}}</h1>
+                <div class="">{{content}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% assign category_posts = site.categories.featured %}
+{% if category_posts and category_posts.size > 0 %}
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <h3>Featured News
+                <hr>
+            </h3>
+
+            <div class="">
+                {% for post in site.categories.featured limit:1 %}
+                <div class="col-12">
+                    <div class="row">
+                        <div class="col-4">
+                        {% if post.image %}
+                        <img src="{{ post.image }}" class="card-img-top img-fluid shadow" alt="#">
+                        {% else %}
+                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid shadow" alt="#">
+                        {% endif %}
+                        </div>
+                    <div class="col-8">
+                        <div class="card-body">
+                            <div class="card-text">{{ post.date | date: "%B %d, %Y" }}</div>
+                            <div class="card-title">
+                                <h4>{{ post.title }}</h4>
+                            </div>
+                            <div>{{ post.content }}</div>
+                            <a class="btn btn-primary" href="{{ post.source_url }}">Read Press Release</a>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% assign category_posts = site.posts | where_exp: "post", "post.categories contains 'video'" %}
+{% if category_posts and category_posts.size > 0 %}
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <h3>Presentations
+                <hr>
+            </h3>
+
+            <div class="grid gridNews">
+                {% for post in category_posts limit:3 %}
+                <div class="g-col-12 g-col-sm-6 g-col-md-4">
+                    <div class="card shadow">
+                        {% if post.image %}
+                        <img src="{{ post.image }}" class="card-img-top img-fluid" alt="#">
+                        {% else %}
+                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid" alt="#">
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-text">{{ post.date | date: "%B %d, %Y" }}</div>
+                            <div class="card-tagline">{{ post.tagline }}</div>
+                            <div class="card-title">
+                                <h4>{{ post.title }}</h4>
+                            </div>
+                            <a class="btn btn-primary" href="{{ post.source_url }}">View Presentation</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+
+{% assign category_posts = site.categories.blog %}
+{% if category_posts and category_posts.size > 0 %}
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <h3>Blog Posts
+                <hr>
+            </h3>
+
+            <div class="grid gridNews">
+                {% for post in site.categories.blog limit:3 %}
+                <div class="g-col-12 g-col-sm-6 g-col-md-4">
+                    <div class="card shadow">
+                        {% if post.image %}
+                        <img src="{{ post.image }}" class="card-img-top img-fluid" alt="#">
+                        {% else %}
+                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid" alt="#">
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-title">
+                                <h4>{{ post.title }}</h4>
+                            </div>
+                            <div class="card-text">{{ post.date | date: "%B %d, %Y" }}</div>
+                            <a class="btn btn-primary" href="{% if post.source_url and post.source_url != '' %}{{ post.source_url }}{% else %}{{ post.url | relative_url }}{% endif %}">
+                                Read Blog Post
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
+{% assign upcoming_and_ongoing_events = site.events | where_exp: "event", "event.end_date > site.time" %}
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <h3>Events
+                <hr>
+            </h3>
+
+            <div class="grid gridNews">
+            {% for event in upcoming_and_ongoing_events %}
+                <div class="g-col-12 g-col-sm-6 g-col-md-4">
+                    <div class="card shadow">
+                        {% if event.image %}
+                        <img src="{{ event.image }}" class="card-img-top img-fluid" alt="{{ event.title }}">
+                        {% else %}
+                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid"
+                            alt="{{ event.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-text">{{ event.human_date }}</div>
+                            <div class="card-tagline">{{ event.tagline }}</div>
+                            <div class="card-title">
+                                <h4>{{ event.title }}</h4>
+                            </div>
+                            <a class="btn btn-primary" href="{{ event.source_url }}">View Event</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+

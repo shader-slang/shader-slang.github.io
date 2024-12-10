@@ -1,0 +1,39 @@
+main:
+  - name: "Get Started"
+    url: "/docs/getting-started/"
+    weight: 1
+  - name: "Playground"
+    url: "/slang-playground/"
+    weight: 2
+  - name: "Documentation"
+    url: "/docs/"
+    weight: 3
+  - name: "Tools"
+    url: "/tools/"
+    weight: 4
+  - name: "Community"
+    url: "/community/"
+    weight: 5
+  - name: "News & Events"
+    url: "/news"
+    weight: 6
+
+footer:
+  - name: "Privacy Policy"
+    url: "https://www.khronos.org/legal/privacy"
+    weight: 1
+  - name: "Terms of Use"
+    url: "https://www.khronos.org/legal/terms-of-use/"
+    weight: 2
+  - name: "Code of Conduct"
+    url: "https://www.khronos.org/about/code-of-conduct"
+    weight: 3
+  - name:  "Diversity & Inclusion"
+    url: "https://www.khronos.org/about/diversity-and-inclusion/"
+    weight: 4
+  - name: "Trademarks"
+    url: "https://www.khronos.org/legal/trademarks/"
+    weight: 5
+  - name: "Contact Us"
+    url: "mailto:slang-websupport@shader-slang.org"
+    weight: 6

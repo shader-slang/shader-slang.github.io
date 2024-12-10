@@ -1,3 +1,12 @@
+---
+title: Understanding Slang Generics
+layout: page
+description: Understanding Slang Generics
+permalink: "/docs/understanding-generics/"
+intro_image_absolute: true
+intro_image_hide_on_mobile: false
+---
+
 # Understanding Slang Generics
 
 ## Introduction
@@ -33,7 +42,7 @@ inheritance.
 Let's start with a common scenario in graphics programming - implementing
 different types of lights:
 
-```slang
+```cpp
 // Without generics or interfaces, we need separate implementations
 struct PointLight
 {
@@ -83,7 +92,7 @@ function to call.
 
 One might consider using function overloading to solve this problem:
 
-```slang
+```cpp
 float3 calculateLight(PointLight light, float3 worldPos, float3 normal)
 {
     // Point light implementation
@@ -101,7 +110,7 @@ which type of light it's dealing with. For example one could imagine a light
 culling function which takes a list of lights, and returns a culled list of
 lights.
 
-```slang
+```cpp
 uint cullPointLights(float3 worldPos, inout PointLight lights[MAX_LIGHTS])
 {
   // Put the culled lights at the end of the list and return MAX_LIGHTS - numCulledLights
@@ -127,7 +136,7 @@ giving poorer error messages and code understandability.
 
 We can define an interface, to which lights must conform.
 
-```slang
+```cpp
 interface ILight
 {
     float3 position();
@@ -140,7 +149,7 @@ interface ILight
 
 We can then
 
-```slang
+```cpp
 struct PointLight : ILight
 {
     float3 position;
@@ -183,7 +192,7 @@ Now that these are defined, we can forget all about the details of how lights
 calculate their various properties and concern ourselves only with what we're
 interested in.
 
-```slang
+```cpp
 // We can factor out the code common to both light types (in this case a
 // modulation by the light color and incident angle).
 float3 lighting<T>(T light, float3 worldPos, float3 normal)
@@ -244,7 +253,7 @@ generates a specialized, concrete implementation.
 
 For example, when you write:
 
-```slang
+```cpp
 let result1 = lighting(myPointLight, pos, normal);
 let result2 = lighting(mySpotLight, pos, normal);
 ```
@@ -302,7 +311,7 @@ float addValue(T v0, T v1) { return v0.x + v1.x; }
 void user() {addValue(1,2); }
 ```
 
-```slang
+```cpp
 // In Slang, the type of this function promises that it will work for all types
 // `T`. However the definition requires that the type supports the + operator.
 // Hence, Slang will refuse to compile this.
@@ -317,7 +326,7 @@ The correct definition with Slang will be to constrain the type `T` to be one
 which supports the `+` operator, in this case through the `IArithmetic`
 interface.
 
-```slang
+```cpp
 float addValue<T>(T v0, T v1) where T : IArithmetic { return v0 + v1; }
 ```
 
@@ -338,7 +347,7 @@ Sometimes we need to work with types that are related to our generic parameter.
 For example, different lights might use different parameter types, which we
 might want to move around or update, without caring about the specifics.
 
-```slang
+```cpp
 interface ILight
 {
     associatedtype ParameterType;
@@ -368,7 +377,7 @@ struct SpotLight : ILight
 Sometimes we need to parameterize by compile-time values, for example
 abstracting over a compile-time integer is shown here:
 
-```slang
+```cpp
 struct LightArray<T, let N : int> where T : ILight
 {
     T lights[N];
@@ -385,7 +394,7 @@ struct LightArray<T, let N : int> where T : ILight
 
 ## Further Reading
 
-- Interfaces in Slang: https://github.com/shader-slang/slang/blob/master/docs/design/interfaces.md
-- Existential types in Slang: https://github.com/shader-slang/slang/blob/master/docs/design/existential-types.md
-- Traits in Rust: https://doc.rust-lang.org/book/ch10-02-traits.html
-- Generics in Swift: https://docs.swift.org/swift-book/documentation/the-swift-programming-language/generics/
+- [Interfaces in Slang](https://github.com/shader-slang/slang/blob/master/docs/design/interfaces.md)
+- [Existential types in Slang](https://github.com/shader-slang/slang/blob/master/docs/design/existential-types.md) 
+- [Traits in Rust](https://doc.rust-lang.org/book/ch10-02-traits.html)
+- [Generics in Swift](https://docs.swift.org/swift-book/documentation/the-swift-programming-language/generics/)
