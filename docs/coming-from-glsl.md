@@ -24,7 +24,7 @@ The layout rule can also be changed with options like `-force-glsl-scalar-layout
 
 With those options, Slang will align all aggregrate types according to their elements' natural alignment as a rule described in `VK_EXT_scalar_block_layout`, aka `ScalarLayout`.
 
-## Matrix layout
+## Matrix
 Even though GLSL claims to use "Column-major", it is mostly nomenclature when it comes to the shader side implementation.
 
 Here is an example that shows the difference between GLSL and HLSL.
