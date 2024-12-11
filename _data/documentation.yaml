@@ -63,3 +63,7 @@ tutorials:
     description: "Main things to know if you are coming to Slang as an HLSL developer."
     link_url: "/docs/coming-from-hlsl/"
     link_label: "Coming from HLSL"
+  - title: "Migrating from GLSL to Slang"
+    description: "Main things to know if you are coming to Slang as a GLSL developer."
+    link_url: "/docs/coming-from-glsl/"
+    link_label: "Coming from GLSL"
