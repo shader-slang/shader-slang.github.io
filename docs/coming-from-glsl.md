@@ -31,8 +31,8 @@ targetDesc.format = SLANG_SPIRV;
 targetDesc.profile = globalSession->findProfile("glsl_460");
 
 slang::CompilerOptionEntry compilerOptions[1];
-compilerOptions[optoinCount].name = slang::CompilerOptionName::AllowGLSL;
-compilerOptions[optoinCount].value.intValue0 = 1;
+compilerOptions[0].name = slang::CompilerOptionName::AllowGLSL;
+compilerOptions[0].value.intValue0 = 1;
 
 slang::SessionDesc sessionDesc = {};
 sessionDesc.targets = &targetDesc;
