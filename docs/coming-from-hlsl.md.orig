@@ -75,13 +75,17 @@ int MyFunc()
 }
 ```
 
-#### Variable scope in `for`-loop follows the old FXC rule
+
+<<<<<<< HEAD
+#### Member functions are immutable by default
+=======
+### Variable scope in `for`-loop follows the old FXC rule
 The older version of HLSL compiler, FXC, had a little different variable scope for the `for`-loop compared to other languages.
 
 FXC produces an error or a warning for the following code:
 ```
 for (int i = 0; i < 4; i++) {...}
-for (int i = 0; i < 4; i++) {...} // FXC prints an error or warning
+for (int i = 0; i < 4; i++) {...}
 ```
 
 The warning looks like the following:
@@ -106,7 +110,8 @@ slangc.exe -lang slang -stage vertex -entry vertexMain my_shader.hlsl
 ```
 
 
-#### Member functions are immutable by default
+### Member functions are immutable by default
+>>>>>>> 90589ae (Add a new section that explains the variable scope problem with for-loop)
 By default, Slang member functions do not allow mutations to `this`. It is as if the member function has the `const` keyword in C/C++.
 
 To mutate `this`, you must explicitly use the `[mutating]` attribute on each function.
