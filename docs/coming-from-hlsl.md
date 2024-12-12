@@ -75,6 +75,36 @@ int MyFunc()
 }
 ```
 
+#### Variable scope in `for`-loop follows the old FXC rule
+The older version of HLSL compiler, FXC, had a little different variable scope for the `for`-loop compared to other languages.
+
+FXC produces an error or a warning for the following code:
+```
+for (int i = 0; i < 4; i++) {...}
+for (int i = 0; i < 4; i++) {...}
+```
+
+The warning looks like the following:
+```
+my_shader.hlsl(8,14): warning X3078: 'i': loop control variable conflicts with a previous declaration in the outer scope; most recent declaration will be used
+```
+
+This is no longer the case with the recent HLSL compiler, DXC. But Slang respects the old FXC rule and you may encounter an error like:
+```
+error 30200: declaration of 'i' conflicts with existing declaration
+```
+
+To resolve the problem, you can modify the shader to reuse the previously declared variable:
+```
+for (int i = 0; i < 4; i++) {...}
+for (i = 0; i < 4; i++) {...} // Reuse the variable declared from the previous for-loop
+```
+
+Or, you can explicitly set the language to be `slang`:
+```
+slangc.exe -lang slang -stage vertex -entry vertexMain my_shader.hlsl
+```
+
 
 #### Member functions are immutable by default
 By default, Slang member functions do not allow mutations to `this`. It is as if the member function has the `const` keyword in C/C++.
