@@ -8,6 +8,8 @@ author: "Shannon Woods, NVIDIA, Slang WOrking Group Chair"
 human_date: "December 17, 2024"
 ---
 
+<img src="/images/posts/2024-12-17-slang-support-in-godbolt.webp" alt="" class="img-fluid">
+
 Great news: Slang support is now officially available on [Godbolt Compiler Explorer](https://godbolt.org/z/193GxYrn6)!
  
 Godbolt Compiler Explorer is a widely-used online tool that allows developers to write code in various programming languages and see the resulting assembly code in real-time. This powerful resource helps users understand how high-level code translates to lower-level instructions, making it an invaluable educational and debugging tool. For Slang, this provides an avenue for viewing the SPIR-V, HLSL, GLSL, WGSL, or other output for a given Slang program directly in a compiler explorer tool which may already be familiar to you.
