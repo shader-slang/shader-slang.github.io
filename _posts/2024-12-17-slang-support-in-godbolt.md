@@ -4,7 +4,8 @@ title: "Slang Support Now Available on Godbolt Compiler Explorer"
 date: 2024-12-17 18:00:00 +0000
 categories: [ "news" ]
 tags: [slang]
-author: "Shannon Woods, NVIDIA, Slang WOrking Group Chair"
+author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
+image: /images/posts/2024-12-17-slang-support-in-godbolt.webp
 human_date: "December 17, 2024"
 ---
 
