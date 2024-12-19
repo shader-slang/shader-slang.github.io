@@ -2,7 +2,7 @@
 layout: post
 title: "Documentation Update: Reflection API"
 date: 2024-12-18 18:00:00 +0000
-categories: [ "news" ]
+categories: [ "blog" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair, and Theresa Foley, NVIDIA"
 image: /images/posts/2024-12-18-reflection-api-doc-update.webp
