@@ -12,6 +12,7 @@
   <link rel="apple-touch-icon" sizes="180x180" href="{{ '/images/apple-touch-icon.png' | relative_url }}" />
   <link rel="manifest" href="{{ '/images/site.webmanifest' | relative_url }}" />
   <link href="{{ '/assets/css/style.css' | relative_url }}" rel="stylesheet">
+  <link rel="alternate" type="application/rss+xml" href="{{ site.url }}/feed.xml" />
   {% if page.description %}<meta name="description" content="{{ page.description }}" />{% endif %}
   {% if page.meta_title %}<meta property="og:title" content="{{ page.meta_title }}"/>{% else %}<meta property="og:title" content="{{ page.title }}"/>{% endif %}
   <meta property="og:type" content="website"/>
