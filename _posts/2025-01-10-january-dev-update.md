@@ -15,17 +15,20 @@ Happy new year, Slang enthusiasts! As we beckon in 2025, we wanted to take a mom
 - Specialization constants are now supported for WGSL and Metal targets.
 - Fixed reflection API issues around specialization constants and push constants.
 - Added more validation checks on invalid use of specialization/push constant attributes.
+
 **Improvement on SPIRV pointer support**
 - Added loadAligned and storeAligned intrinsics for aligned load/stores.
 - Now supports pointers to a struct with trailing unsized arrays.
 - Dynamic dispatch via interface-typed pointers are now supported.
 - Reflection on pointer element type now correctly reports the scalar layout.
+
 **SPIRV/GLSL improvements**
 - Added SV_DrawIndex semantic that maps to the DrawIndex builtin
 - Added Sampler2DShadow and friends to combined texture comparison-sampler types.
 - Explicit GLSL binding locations (as in [vk::binding()] and in layout(binding=...) qualifiers) can now use compile time expressions. (contribution from community)
 - -fvk-invert-y option now works for mesh shader position outputs.
 - Added nonuniformEXT intrinsics when consuming GLSL code.
+
 **Reflection API and binding improvement**
 - Explicit [vk::location(N)] binding is now supported for WGSL and Metal targets.
 - IMetadata::isParameterLocationUsed now supports reporting usage info on stage varying inputs/outputs.
