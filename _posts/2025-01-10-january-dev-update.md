@@ -2,7 +2,7 @@
 layout: post
 title: "Slang Development Update - January 2025"
 date: 2025-01-10 19:00:00 +0000
-categories: [ "news" ]
+categories: [ "blog" ]
 tags: [slang]
 author: "Yong He, NVIDIA, and Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/2025-01-10-dev-updates.webp
