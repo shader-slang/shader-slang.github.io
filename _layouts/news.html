@@ -64,7 +64,7 @@ bodyClass: "news-events"
             </h3>
 
             <div class="grid gridNews">
-                {% for post in category_posts limit:3 %}
+                {% for post in category_posts limit:6 %}
                 <div class="g-col-12 g-col-sm-6 g-col-md-4">
                     <div class="card shadow">
                         {% if post.image %}
@@ -100,7 +100,7 @@ bodyClass: "news-events"
             </h3>
 
             <div class="grid gridNews">
-                {% for post in site.categories.blog limit:3 %}
+                {% for post in site.categories.blog limit:6 %}
                 <div class="g-col-12 g-col-sm-6 g-col-md-4">
                     <div class="card shadow">
                         {% if post.image %}
