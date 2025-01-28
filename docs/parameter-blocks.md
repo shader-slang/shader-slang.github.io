@@ -2,7 +2,7 @@
 title: Using Slang Parameter Blocks
 layout: page
 description: A guide to using Slang's Parameter Block feature
-permalink: "/docs/shader-cursors/"
+permalink: "/docs/using-parameter-blocks/"
 intro_image_absolute: true
 intro_image_hide_on_mobile: false
 ---
