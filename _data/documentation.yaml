@@ -64,6 +64,6 @@ tutorials:
     link_url: "/docs/coming-from-hlsl/"
     link_label: "Coming from HLSL"
   - title: "Using Slang Parameter Blocks"
-    description: "Learn how to use Slang's Parameter Block feature in your shader codebase, and to streamline use of the Slang reflection API when using this feature."
-    link_url: "/docs/using-parameter-blocks/"
+    description: "Learn how to use Slang’s Parameter Block feature in your shader codebase, and how to streamline use of the Slang reflection API when using this feature."
+    link_url: "/docs/parameter-blocks/"
     link_label: "Using Slang Parameter Blocks"
