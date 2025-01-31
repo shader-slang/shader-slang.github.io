@@ -2,7 +2,7 @@
 layout: post
 title: "Now Available: Matrix-vector operations using tensor cores"
 date: 2025-01-30 20:00:00 +0000
-categories: [ "news" ]
+categories: [ "blog" ]
 tags: [slang]
 author: "Jay Kwak, NVIDIA, and Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/2025-01-30-coop-vec-available.webp
