@@ -19,7 +19,7 @@ Cooperative vector is currently available as a vendor extension in SPIR-V (SPV_N
 
 Full documentation of cooperative vector operations in Slang can be found in the [cooperative vector feature proposal](https://github.com/shader-slang/slang/tree/master/docs/proposals/019-cooperative-vector.md)
 
-Code Examples
+##Code Examples
 The following code snippet shows a simple example of how to use cooperative vectors in a Slang compute shader:
 
 ```hlsl
@@ -41,7 +41,7 @@ void computeMain(int threadID : SV_DispatchThreadID)
 }
 ```
 
-This compute shader loads 32 values from a shader parameter, `inputBuffer`, and stores them in a local variable, `result`, whose type is CoopVec<int,32>.
+This compute shader loads 32 values from a shader parameter, `inputBuffer`, and stores them in a local variable, `result`, whose type is `CoopVec<int,32>`.
 
 Note that the variable `result` is a vector with 32 elements, which is much longer than a traditional vector, whose size ranges up to 4.
 
@@ -76,7 +76,7 @@ void computeMain(int threadID : SV_DispatchThreadID)
 This compute shader loads 4 values and stores them in a cooperative vector variable, `vec`.
 The `coopVecMatMul()` function performs matrix multiplication with a given vector and a given matrix.
 
-Note that most cooperative vector functions take "interpretation" parameters. If a target platform doesn't directly support int8 type, the interpretation parameter can allow you to use smaller data types for the calculation.
+Note that most cooperative vector functions take "interpretation" parameters. If a target platform doesn't directly support the `int8` type, the interpretation parameter can allow you to use smaller data types for the calculation.
 
 For more practical examples of Cooperative Vector usage, please see the RTX Neural Shading and RTX Neural Texture Compression (NTC) SDKs that will be released soon within RTX Kit. NTC contains implementations of neural texture decompression using Cooperative Vectors in Slang, as well as fallback implementations of the same using traditional shader math. On recent NVIDIA GPUs, using Cooperative Vectors can provide up to 4x speedup in decompression compared to using DP4a instructions.
 
