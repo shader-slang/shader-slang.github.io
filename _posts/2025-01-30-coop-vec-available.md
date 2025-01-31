@@ -19,7 +19,7 @@ Cooperative vector is currently available as a vendor extension in SPIR-V (SPV_N
 
 Full documentation of cooperative vector operations in Slang can be found in the [cooperative vector feature proposal](https://github.com/shader-slang/slang/tree/master/docs/proposals/019-cooperative-vector.md)
 
-##Code Examples
+## Code Examples
 The following code snippet shows a simple example of how to use cooperative vectors in a Slang compute shader:
 
 ```hlsl
