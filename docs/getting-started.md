@@ -24,6 +24,22 @@ intro_image_hide_on_mobile: false
         </div>
     </div>
 </div>
+
+<div class="container">
+<div class="section">
+    <div class="row">
+        <div class="col-12">
+            <h3>Machine Learning with Slang
+                <hr>
+            </h3>
+            <p>The SlangPy package seamlessly bridges the graphics and machine learning ecosystems in Python. You can write Slang code to implement complex data structures and algorithms, or to uses rasterization and ray-tracing. The Slang code can then be integrated directly into your Python/PyTorch training loop with SlangPy. No boilerplate, no C++.</p>
+            <p>Get started with <code>pip install slangpy</code>.</p>
+            <a class="btn btn-primary " href="https://slangpy.shader-slang.org/">Try SlangPy</a>
+        </div>
+    </div>
+</div>
+</div>
+
 <div class="container">
 <div class="section">
     <div class="row">
