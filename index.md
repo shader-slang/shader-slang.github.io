@@ -67,14 +67,16 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-5">
-                    The Slang compiler can generate code for a wide variety of targets: D3D12, Vulkan, Metal, D3D11,
-                    OpenGL, CUDA, WebGPU and even generate code to run on a CPU. For textual targets, such as Metal Shading
-                    Language (MSL) and CUDA, Slang produces readable code that preserves original identifier names, as
-                    well as the type and call structure, making it easier to debug.
+                    <p>
+                        The Slang compiler can generate code for a wide variety of targets: D3D12, Vulkan, Metal, D3D11,
+                        OpenGL, CUDA, WebGPU and even generate code to run on a CPU. For textual targets, such as Metal Shading
+                        Language (MSL) and CUDA, Slang produces readable code that preserves original identifier names, as
+                        well as the type and call structure, making it easier to debug.
+                    </p>
                 </div>
 
                 <div class="col-sm-7">
-                    <img class="img-fluid" src="/images/write-once.webp" />
+                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/write-once.webp" />
                 </div>
             </div>
         </div>
@@ -85,29 +87,30 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="/images/latest-feature.webp" />
+                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/latest-feature.webp" />
 
                 </div>
 
                 <div class="col-sm-6">
-                    Slang code is highly portable, but can still leverage unique platform capabilities, including the
-                    latest
-                    features in
-                    Direct3D and Vulkan. For example, developers can make full use of
-                    <a href="/slang/user-guide/convenience-features.html#pointers-limited">pointers</a> when generating
-                    SPIR-V.
-                    Slang's <a href="/slang/user-guide/capabilities.html">capability system</a> helps applications
-                    manage
-                    feature
-                    set differences
-                    across target platforms by ensuring code only uses available features during the type-checking step,
-                    before
-                    generating
-                    final code. Additionally, Slang provides <a href="/slang/user-guide/a1-04-interop.html">flexible
-                        interop</a>
-                    features to enable
-                    directly embedding target code or SPIR-V into generated shaders.
-
+                    <p>
+                        Slang code is highly portable, but can still leverage unique platform capabilities, including the
+                        latest
+                        features in
+                        Direct3D and Vulkan. For example, developers can make full use of
+                        <a href="/slang/user-guide/convenience-features.html#pointers-limited">pointers</a> when generating
+                        SPIR-V.
+                        Slang's <a href="/slang/user-guide/capabilities.html">capability system</a> helps applications
+                        manage
+                        feature
+                        set differences
+                        across target platforms by ensuring code only uses available features during the type-checking step,
+                        before
+                        generating
+                        final code. Additionally, Slang provides <a href="/slang/user-guide/a1-04-interop.html">flexible
+                            interop</a>
+                        features to enable
+                        directly embedding target code or SPIR-V into generated shaders.
+                    </p>
                 </div>
             </div>
         </div>
@@ -118,20 +121,32 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="/images/autodiff.jpg" />
+                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/autodiff.jpg" />
 
                 </div>
 
                 <div class="col-sm-6">
                     <p>Slang can automatically generate both forward and backward derivative propagation code for
                         complex functions that involve arbitrary control flow and dynamic dispatch. This allows existing
-                        rendering codebases to easily become differentiable, or for Slang to serve as the kernel
-                        language in a PyTorch-driven machine learning framework via <a href="https://shader-slang.com/slang/user-guide/a1-02-slangpy.html">slangtorch</a>.</p>
+                        rendering codebases to easily become differentiable, enabling adoption of neural components, or integration into a training process.</p>
                     <a class="btn btn-primary" href="/slang/user-guide/autodiff.html">Automatic Differentiation</a>
                 </div>
             </div>
         </div>
-
+        <div class="section">
+            <div class="row">
+                <h3>Seamless Integration with Python
+                    <hr>
+                </h3>
+                <div class="col-sm-6">
+                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/slangpy.jpg" />
+                </div>
+                 <div class="col-sm-6">
+                    <p>Slang code can be integrated directly into your Python/PyTorch training loop with SlangPy. You can implement complex control-divergent algorithms, sparse data structures, make use of advanced GPU features in Slang, and call your Slang code from Python without any boilerplate with the SlangPy package.</p>
+                    <a class="btn btn-primary" href="https://slangpy.shader-slang.org">SlangPy</a>
+                </div>
+            </div>
+        </div> 
         <div class="section">
             <div class="row">
                 <h3>Scalable Software Development with Modules
@@ -159,7 +174,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="/images/generics.jpg" />
+                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/generics.jpg" />
 
                 </div>
 
@@ -182,7 +197,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="/images/hlsl-compatibility.jpg" />
+                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/hlsl-compatibility.jpg" />
 
                 </div>
 
@@ -204,7 +219,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="/images/tooling-support.webp" />
+                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/tooling-support.webp" />
 
                 </div>
 
