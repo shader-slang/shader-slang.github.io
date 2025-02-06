@@ -128,14 +128,14 @@ description: Empowering real-time graphics developers with advanced language fea
                 <div class="col-sm-6">
                     <p>Slang can automatically generate both forward and backward derivative propagation code for
                         complex functions that involve arbitrary control flow and dynamic dispatch. This allows existing
-                        rendering codebases to easily become differentiable, enabling adoption of neural components, or integration into a training processk.</p>
+                        rendering codebases to easily become differentiable, enabling adoption of neural components, or integration into a training process.</p>
                     <a class="btn btn-primary" href="/slang/user-guide/autodiff.html">Automatic Differentiation</a>
                 </div>
             </div>
         </div>
         <div class="section">
             <div class="row">
-                <h3>Effortless Integration Into Python Training Loop
+                <h3>Seamless Integration with Python
                     <hr>
                 </h3>
                 <div class="col-sm-6">
