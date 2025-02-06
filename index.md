@@ -128,6 +128,7 @@ description: Empowering real-time graphics developers with advanced language fea
                         rendering codebases to easily become differentiable, or for Slang to serve as the kernel
                         language in a Python-driven machine learning framework via <a href="https://slangpy.shader-slang.org">SlangPy</a>.</p>
                     <a class="btn btn-primary" href="/slang/user-guide/autodiff.html">Automatic Differentiation</a>
+                    <a class="btn btn-primary" href="https://slangpy.shader-slang.org">SlangPy</a>
                 </div>
             </div>
         </div>
