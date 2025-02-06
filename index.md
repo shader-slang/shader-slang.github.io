@@ -126,7 +126,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <p>Slang can automatically generate both forward and backward derivative propagation code for
                         complex functions that involve arbitrary control flow and dynamic dispatch. This allows existing
                         rendering codebases to easily become differentiable, or for Slang to serve as the kernel
-                        language in a PyTorch-driven machine learning framework via <a href="https://shader-slang.com/slang/user-guide/a1-02-slangpy.html">slangtorch</a>.</p>
+                        language in a Python-driven machine learning framework via <a href="https://slangpy.shader-slang.org">SlangPy</a>.</p>
                     <a class="btn btn-primary" href="/slang/user-guide/autodiff.html">Automatic Differentiation</a>
                 </div>
             </div>
