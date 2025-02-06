@@ -32,8 +32,7 @@ intro_image_hide_on_mobile: false
             <h3>Machine Learning with Slang
                 <hr>
             </h3>
-            <p>The SlangPy package seamlessly bridges the graphics and machine learning ecosystems in Python. You can write Slang code to implement complex data structures and algorithms, or to uses rasterization and ray-tracing. The Slang code can then be integrated directly into your Python/PyTorch training loop with SlangPy. No boilerplate, no C++.</p>
-            <p>Get started with <code>pip install slangpy</code>.</p>
+            <p>The SlangPy package seamlessly bridges the graphics and machine learning ecosystems in Python. You can write Slang code to implement complex data structures and algorithms, or to use rasterization and ray-tracing. Slang code can be integrated directly into your Python/PyTorch training loop with SlangPy. No boilerplate, no C++.</p>
             <a class="btn btn-primary " href="https://slangpy.shader-slang.org/">Try SlangPy</a>
         </div>
     </div>
