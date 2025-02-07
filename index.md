@@ -76,7 +76,7 @@ description: Empowering real-time graphics developers with advanced language fea
                 </div>
 
                 <div class="col-sm-7">
-                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/write-once.webp" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/write-once.webp" />
                 </div>
             </div>
         </div>
@@ -87,7 +87,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/latest-feature.webp" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/latest-feature.webp" />
 
                 </div>
 
@@ -121,7 +121,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/autodiff.jpg" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/autodiff.jpg" />
 
                 </div>
 
@@ -139,7 +139,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/slangpy.jpg" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/slangpy.jpg" />
                 </div>
                  <div class="col-sm-6">
                     <p>Slang code can be integrated directly into your Python/PyTorch training loop with SlangPy. You can implement complex control-divergent algorithms, sparse data structures, make use of advanced GPU features in Slang, and call your Slang code from Python without any boilerplate with the SlangPy package.</p>
@@ -153,7 +153,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-12">
-                    <img class="img-fluid" src="/images/modules-1.jpg" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/modules-1.jpg" />
 
                 </div>
 
@@ -174,7 +174,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/generics.jpg" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/generics.jpg" />
 
                 </div>
 
@@ -197,7 +197,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/hlsl-compatibility.jpg" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/hlsl-compatibility.jpg" />
 
                 </div>
 
@@ -219,7 +219,7 @@ description: Empowering real-time graphics developers with advanced language fea
                     <hr>
                 </h3>
                 <div class="col-sm-6">
-                    <img class="img-fluid" src="{{ site.url }}{{ site.baseurl }}/images/tooling-support.webp" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/tooling-support.webp" />
 
                 </div>
 
