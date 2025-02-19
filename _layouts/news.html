@@ -14,7 +14,8 @@ bodyClass: "news-events"
     </div>
 </div>
 
-{% assign category_posts = site.categories.featured %}
+{% assign category_posts = site.posts | where_exp: "post", "post.categories contains 'news' and post.categories
+contains 'featured'" %}
 {% if category_posts and category_posts.size > 0 %}
 <div class="section">
     <div class="container">
@@ -24,7 +25,7 @@ bodyClass: "news-events"
             </h3>
 
             <div class="">
-                {% for post in site.categories.featured limit:1 %}
+                {% for post in category_posts limit:1 %}
                 <div class="col-12">
                     <div class="row">
                         <div class="col-4">
@@ -94,6 +95,8 @@ bodyClass: "news-events"
 {% if category_posts and category_posts.size > 0 %}
 <div class="section">
     <div class="container">
+        <div class="" style="position:absolute;top:1em; right:1em;"><a class="btn btn-primary" href="/news/blogs">View All
+                Blog Posts</a></div>
         <div class="row">
             <h3>Blog Posts
                 <hr>
