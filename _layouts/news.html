@@ -14,8 +14,8 @@ bodyClass: "news-events"
     </div>
 </div>
 
-{% assign category_posts = site.posts | where_exp: "post", "post.categories contains 'news' and post.categories
-contains 'featured'" %}
+{% assign featured_posts = site.posts | where: "categories", "featured" %}
+{% assign category_posts = featured_posts | where: "categories", "news" %}
 {% if category_posts and category_posts.size > 0 %}
 <div class="section">
     <div class="container">

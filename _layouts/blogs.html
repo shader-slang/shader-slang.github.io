@@ -14,8 +14,8 @@ bodyClass: "news-events"
     </div>
 </div>
 
-{% assign category_posts = site.posts | where_exp: "post", "post.categories contains 'featured' and post.categories
-contains 'blog'" %}
+{% assign featured_posts = site.posts | where: "categories", "featured" %}
+{% assign category_posts = featured_posts | where: "categories", "blog" %}
 {% if category_posts and category_posts.size > 0 %}
 <div class="section">
     <div class="container">
@@ -41,7 +41,10 @@ contains 'blog'" %}
                             <div class="card-title">
                                 <h3>{{ post.title }}</h3>
                             </div>
-                            <a class="btn btn-primary" href="{{ post.source_url }}">Read Blog Post</a>
+                            <a class="btn btn-primary"
+                                href="{% if post.source_url and post.source_url != '' %}{{ post.source_url }}{% else %}{{ post.url | relative_url }}{% endif %}">
+                                Read Blog Post
+                            </a>
                         </div>
                     </div>
                     </div>
@@ -64,7 +67,7 @@ contains 'blog'" %}
             </h3>
 
             <div class="grid gridNews">
-                {% for post in site.categories.blog %}
+                {% for post in category_posts %}
                 <div class="g-col-12 g-col-sm-6 g-col-md-4">
                     <div class="card shadow">
                         {% if post.image %}
