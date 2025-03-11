@@ -63,20 +63,18 @@ description: Empowering real-time graphics developers with advanced language fea
 
         <div class="section pt-4">
             <div class="row">
+            <div class="col-sm-12">
                 <h3>Write Shaders Once, Run Anywhere
                     <hr>
                 </h3>
-                <div class="col-sm-5">
                     <p>
                         The Slang compiler can generate code for a wide variety of targets: D3D12, Vulkan, Metal, D3D11,
                         OpenGL, CUDA, WebGPU and even generate code to run on a CPU. For textual targets, such as Metal Shading
                         Language (MSL) and CUDA, Slang produces readable code that preserves original identifier names, as
                         well as the type and call structure, making it easier to debug.
                     </p>
-                </div>
 
-                <div class="col-sm-7">
-                    <img class="img-fluid" src="{{ site.baseurl }}/images/write-once.webp" />
+                    <img class="img-fluid" src="{{ site.baseurl }}/images/write-once-run-anywhere-graphic.webp" />
                 </div>
             </div>
         </div>
