@@ -27,6 +27,8 @@ Our concrete example, which you can see in action on the [Slang playground](http
 - Sigma (how fuzzy/spread out it is)
 - Color
 
+Why are Gaussian splats so powerful? Their mathematical properties make them particularly well-suited for representing visual information. Each Gaussian splat naturally creates smooth gradients from its center outward, which is perfect for capturing how light and color blend in real-world scenes. And because of this smoothness, they are well suited to optimization techniques like they one we are about to explore. In more advanced applications, these properties allow Gaussian splats to represent complex 3D scenes with remarkably high visual quality while maintaining real-time performance – a sweet spot that's made them increasingly popular in computer graphics applications from virtual production to AR/VR.
+
 The challenge is: how do we determine the right parameters for thousands of splats to recreate a specific image? To do this, we can use a technique common in machine learning called gradient descent. Gradient descent can be used to find an optimal solution to a problem by making small adjustments to its inputs and checking whether they bring the result closer to our desired output. The basic idea is that we start with random splat properties, and define a “loss function”, which measures how different the resulting image is from what we want it to be, and then use gradient descent to adjust the splat properties until the difference is minimized.
 
 ## The Challenge: Computing Gradients
