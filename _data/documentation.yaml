@@ -71,3 +71,7 @@ tutorials:
     description: "Learn how to use Slang’s Parameter Block feature in your shader codebase, and how to streamline use of the Slang reflection API when using this feature."
     link_url: "/docs/parameter-blocks/"
     link_label: "Using Slang Parameter Blocks"
+  - title: "Migrating from GLSL to Slang"
+    description: "Main things to know if you are coming to Slang as an GLSL developer."
+    link_url: "/docs/coming-from-glsl/"
+    link_label: "Coming from GLSL"
