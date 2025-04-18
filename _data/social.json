@@ -18,5 +18,10 @@
     "name": "Bsky",
     "link": "https://bsky.app/profile/shader-slang.bsky.social",
     "image": "images/social/bluesky.svg"
+  },
+  {
+    "name": "Reddit",
+    "link": "https://www.reddit.com/r/SlangShadingLanguage",
+    "image": "images/social/reddit-dark.svg"
   }
 ]
