@@ -9,8 +9,6 @@ image: /images/posts/slang-celebration.webp
 human_date: "April 24, 2025"
 ---
 
-# Welcome Our Newest Slang Committers!
-
 We're thrilled to celebrate two outstanding members of the Slang community who have recently become committers: fairywreath and juliusikkala! Their elevation to committer status recognizes their significant contributions to Slang and their ongoing commitment to improving the shader programming ecosystem.
 
 ## Meet Our New Committers
