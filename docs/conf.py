@@ -64,8 +64,7 @@ myst_title_to_header = True
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
 html_theme = "furo"
-html_title = "Slang"
-html_static_path = ["_static"]
+html_title = "<a href='https://shader-slang.org/docs/'>Slang Documentation</a>"
 html_css_files = ["theme_overrides.css"]
 html_theme_options = {
     "light_css_variables": {
