@@ -1,3 +1,11 @@
+.. raw:: html
+
+      <meta http-equiv="refresh" content="0; url=https://shader-slang.org/docs/" />
+      <script>
+        window.location.href = "https://shader-slang.org/docs/";
+      </script>
+      <p>If you are not redirected automatically, click <a href="https://shader-slang.org/docs/">here</a>.</p>
+ 
 Slang Documentation
 ===================
 
