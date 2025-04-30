@@ -11,14 +11,27 @@ human_date: "April 30, 2025"
 
 In my [last blog post](https://shader-slang.org/blog/2025/04/04/neural-gfx-in-an-afternoon/), I gave an introduction to how gradient descent is used to drive gaussian splatting representations– essentially, going through a list of blobs in 2D space, calculating their color values at a specific texture coordinate, and blending them together, and iteratively adjusting them to be as close as possible to an ideal target image. Notably, this simplified version had significant performance and quality limitations. In this post, I’ll take you through the changes needed to go from that simple pedagogical example to an implementation that achieves real-time performance.
 
-## Tile-based Rasterization
-One big limiting factor in our simplified splatting implementation is that we have to traverse the entire list of gaussian blobs and evaluate each one for every pixel in the image. So the first thing we can do to improve performance is to reduce the number of blobs that need to be evaluated per-pixel.
+## A More Efficient Algorithm
 
-One of the ways we can achieve this is by taking advantage of the concept of compute workgroups. A workgroup is a collection of invocations of the compute shader which are executed simultaneously on the same compute unit. Because these invocations are executed together, they can take advantage of special operations to collaborate, and they have access to a small amount of on-chip memory that allows them to share data quickly. 
+The key limitation of our previous implementation was that it evaluated every gaussian blob for every pixel. This is extremely inefficient since most gaussians only affect a small region of pixels. We can do much better by breaking this into three logical steps:
 
-Recall that when we called our `perPixelLoss` function in the last post, we provided a 2 dimensional grid shape for the invocation. That shape communicates what work we want to be done together– essentially, we want to calculate neighboring pixels at the same time. So if we know we are working on a small set of neighboring pixels, then we can reduce the list of gaussian blobs we need to calculate, by creating a short list of only the gaussian blobs that intersect the set of pixels we’re currently working on.
+1. For each gaussian, determine which tiles of the image it will affect (coarse rasterization)
+2. For each tile, sort its affecting gaussians back-to-front
+3. For each pixel in the tile, accumulate the color contributions only from gaussians that affect that tile (fine rasterization)
 
-We can then think of our final calculated image as being separated into some number of tiles, where each tile is a set of neighboring pixels being calculated by a single workgroup. Each thread in the workgroup can collaborate to help identify which blobs are relevant to the tile, and then the calculation of the pixel’s value needs only to look at the shorter list of relevant blobs. Here’s how this is done in the Slang code (note that I’m excerpting a few non-contiguous but relevant portions of the code – you can take a look at the entire thing in situ here):
+While we could implement these as separate compute kernels, we can achieve better performance by combining them into a single kernel using workgroup-level collaboration between threads. Let's look at how this works.
+
+## Tile-based Rasterization with Workgroups
+
+The core optimization in our approach is to divide the image into tiles, where each tile is processed by a compute workgroup - a collection of threads that execute together and can share data efficiently. This allows us to:
+
+1. Build a per-tile shortlist of only the gaussians that affect that tile
+2. Sort just those gaussians that affect the tile
+3. Process pixels within the tile using only the relevant gaussians
+
+A workgroup is a collection of threads that execute simultaneously on the same compute unit. These threads can collaborate using special operations and share data quickly through a small amount of on-chip memory. We'll use this capability to efficiently build and process our per-tile gaussian lists.
+
+Here's how the implementation works in Slang:
 
 ```slang
 // ----- Constants and definitions --------
@@ -75,7 +88,7 @@ FilledShortList coarseRasterize(InitializedShortList sList, Blobs blobset, OBB t
     return { 0 };
 }
 ```
-Up at the top of this block, we define a few constants. `WG_X` and `WG_Y` describe the dimensions of our workgroup– we’re going to process blocks 8 pixels wide, and 4 pixels tall. These dimensions are chosen because most GPUs can execute 32 or 64 threads simultaneously. The maximum number of blobs we’ll add to the short list for each workgroup is set somewhat arbitrarily – we found 512 was a threshold that gave a good balance between performance and image quality.
+Up at the top of this block, we define a few constants. `WG_X` and `WG_Y` describe the dimensions of our workgroup– we're going to process blocks 8 pixels wide, and 4 pixels tall. These dimensions are chosen because most GPUs can execute 32 or 64 threads simultaneously. The maximum number of blobs we'll add to the short list for each workgroup is set somewhat arbitrarily – we found 512 was a threshold that gave a good balance between performance and image quality.
 
 
 You’ll also see that the `coarseRasterize` function takes an `InitializedShortList` parameter, but doesn’t appear to do anything with it. That’s because this implementation uses a set of sentinel struct types to enforce the correct ordering of the steps in the rasterization algorithm – essentially, this helps us catch bugs at compile time rather than runtime. It doesn’t affect how our gaussian splatting implementation works, so I won’t go deeper into it here.
@@ -120,7 +133,7 @@ groupshared uint blobCount;
 groupshared uint blobs[GAUSSIANS_PER_BLOCK];
 ```
 
-Using the `groupshared` identifier tells Slang that these variables need to be in the fast local memory available to all the threads in a workgroup. This shared memory space is much faster to access than global GPU memory, but it’s very limited in space– sometimes only on the order of tens of kilobytes. 
+Using the `groupshared` identifier tells Slang that these variables need to be in the fast local memory available to all the threads in a workgroup. This shared memory space is much faster to access than global GPU memory, but it's very limited in space– sometimes only on the order of tens of kilobytes. 
 
 Importantly, we declare the index incrementor, `blobCountAT`, to be atomic– this ensures that only one thread has access to read or write the variable at a time, preventing multiple threads from trying to simultaneously increment it.
 
