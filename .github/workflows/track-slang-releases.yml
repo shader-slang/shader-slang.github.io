@@ -1,0 +1,88 @@
+name: Track Slang Releases
+
+on:
+  schedule:
+    # Runs daily at 01:00 UTC
+    - cron: '0 1 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update-stable-branch:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0 # Fetch all history
+          submodules: true # Initialize submodules
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} # Personal access token with repo scope
+      
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+      
+      - name: Get latest Slang release
+        id: get-latest-release
+        run: |
+          # Get the latest release tag
+          LATEST_RELEASE=$(curl -s "https://api.github.com/repos/shader-slang/slang/releases/latest" | jq -r '.tag_name')
+          echo "latest_release=${LATEST_RELEASE}" >> $GITHUB_OUTPUT
+          echo "Latest Slang release is: $LATEST_RELEASE"
+      
+      - name: Update stable branch
+        run: |
+          LATEST_RELEASE="${{ steps.get-latest-release.outputs.latest_release }}"
+          echo "Latest Slang release is: $LATEST_RELEASE"
+          
+          # Get default branch name
+          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+          echo "Default branch is: $DEFAULT_BRANCH"
+          
+          # Fetch all branches
+          git fetch origin
+          
+          # Create or update stable branch from default branch
+          if git ls-remote --heads origin stable | grep -q stable; then
+            echo "Stable branch exists, updating it from $DEFAULT_BRANCH"
+            git checkout stable
+            git reset --hard "origin/$DEFAULT_BRANCH"
+          else
+            echo "Stable branch doesn't exist, creating it from $DEFAULT_BRANCH"
+            git checkout -b stable "origin/$DEFAULT_BRANCH"
+          fi
+          
+          # Update the slang submodule to point to the latest release
+          if [ -d "docs/external/slang" ]; then
+            echo "Updating slang submodule to $LATEST_RELEASE"
+            pushd docs/external/slang
+            git fetch --tags origin
+            # Try to checkout the exact tag, if it fails try with 'v' prefix/suffix variations
+            if git checkout "$LATEST_RELEASE" 2>/dev/null; then
+              echo "Checked out tag $LATEST_RELEASE successfully"
+            elif git checkout "v$LATEST_RELEASE" 2>/dev/null; then
+              echo "Checked out tag v$LATEST_RELEASE successfully"
+            elif git checkout "${LATEST_RELEASE#v}" 2>/dev/null; then
+              echo "Checked out tag ${LATEST_RELEASE#v} successfully (removed 'v' prefix)"
+            else
+              echo "Warning: Could not find exact matching tag for $LATEST_RELEASE, using latest"
+              git pull origin master || git pull origin main
+            fi
+            popd
+          else
+            echo "Warning: docs/external/slang directory not found, skipping submodule update"
+          fi
+          
+          # Create/update version file
+          echo "# Slang Stable Branch" > SLANG_RELEASE_VERSION
+          echo "This branch is the same as $DEFAULT_BRANCH but uses Slang release $LATEST_RELEASE" >> SLANG_RELEASE_VERSION
+          
+          # Commit and push the stable branch
+          git add SLANG_RELEASE_VERSION docs/external/slang || git add SLANG_RELEASE_VERSION
+          if git diff --cached --quiet; then
+            echo "No changes to stable branch needed"
+          else
+            git commit -m "Update stable branch to use Slang release $LATEST_RELEASE"
+            git push -f origin stable
+          fi 

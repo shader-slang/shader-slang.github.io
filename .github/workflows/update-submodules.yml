@@ -1,0 +1,100 @@
+name: Update Submodules
+
+on:
+  schedule:
+    # Runs at midnight UTC every day
+    - cron: '0 0 * * *'
+  workflow_dispatch: # Allow manual triggering
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }} # Personal access token with repo scope
+      
+      - name: Initialize submodules
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          
+          # First just initialize the submodules without fetching content
+          git submodule init
+      
+      - name: Debug submodule configuration
+        run: |
+          echo "Submodule configuration from .gitmodules:"
+          cat .gitmodules
+      
+      - name: Update stdlib-reference
+        run: |
+          # Create the submodule directory
+          mkdir -p docs/external/stdlib-reference
+          cd docs/external/stdlib-reference
+          
+          # Initialize git repo and set correct remote
+          git init
+          git remote remove origin 2>/dev/null || true
+          git remote add origin https://github.com/aidanfnv/stdlib-reference.git
+          
+          # Fetch and checkout the branch
+          git fetch origin
+          if git ls-remote --heads origin fix/readthedocs-tests | grep -q fix/readthedocs-tests; then
+            echo "Branch fix/readthedocs-tests exists, checking out"
+            git checkout -b fix/readthedocs-tests origin/fix/readthedocs-tests
+          else
+            echo "Branch fix/readthedocs-tests does not exist, using default branch"
+            git remote set-head origin -a
+            git checkout $(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's#origin/##')
+          fi
+          
+          cd ../../..
+      
+      - name: Update slang submodule
+        run: |
+          # Create the slang submodule directory
+          mkdir -p docs/external/slang
+          cd docs/external/slang
+          
+          # Initialize git repo and set correct remote
+          git init
+          git remote remove origin 2>/dev/null || true
+          git remote add origin https://github.com/shader-slang/slang.git
+          
+          # Fetch and checkout the default branch
+          git fetch origin
+          git remote set-head origin -a || true
+          git checkout $(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's#origin/##')
+          
+          cd ../../..
+      
+      - name: Update slangpy submodule
+        run: |
+          # Create the slangpy submodule directory
+          mkdir -p docs/external/slangpy
+          cd docs/external/slangpy
+          
+          # Initialize git repo and set correct remote
+          git init
+          git remote remove origin 2>/dev/null || true
+          git remote add origin https://github.com/shader-slang/slangpy.git
+          
+          # Fetch and checkout the default branch
+          git fetch origin
+          git remote set-head origin -a || true
+          git checkout $(git symbolic-ref --short refs/remotes/origin/HEAD | sed 's#origin/##')
+          
+          cd ../../..
+      
+      - name: Commit and push if submodules changed
+        run: |
+          if [[ -n $(git status --porcelain) ]]; then
+            git add .
+            git commit -m "Update submodules"
+            git push
+          else
+            echo "No changes in submodules"
+          fi
