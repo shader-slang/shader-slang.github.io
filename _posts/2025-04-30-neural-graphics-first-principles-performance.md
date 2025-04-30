@@ -33,7 +33,7 @@ A workgroup is a collection of threads that execute simultaneously on the same c
 
 Here's how the implementation works in Slang:
 
-```slang
+```hlsl
 // ----- Constants and definitions --------
 
 static const int GAUSSIANS_PER_BLOCK = 512;
@@ -101,13 +101,13 @@ Thread 1 checks blobs 1, 33, 65, …
 And so on…
 
 Whenever a blob is identified that intersects with the current tile, it’s added to the shortlist using this line:
-```slang
+```hlsl
         blobs[blobCountAT++] = i;
 ```
  
 The shortlist `blobs` and its index incrementor `blobCountAT` didn’t appear in the excerpt above – that’s because they’re using workgroup shared memory, so they’re declared a bit differently, like this:
 
-```slang
+```hlsl
 // ----- Shared memory declarations --------
 
 // Note: In Slang, the 'groupshared' identifier is used to define
@@ -149,7 +149,7 @@ There’s a second problem that was causing poor performance in our simplified e
 
 Looking back at the simplified implementation, the differentiable function we used to calculate blob colors was `simpleSplatBlobs()`:
 
-```slang
+```hlsl
 /* simpleSplatBlobs() is a naive implementation of the computation of color for a pixel.
  * It will iterate over all of the Gaussians for each pixel, to determine their contributions
  * to the pixel color, so this will become prohibitively slow with a very small number of 
@@ -181,7 +181,7 @@ Because this function is differentiable, we need to be able to propagate its var
 
 We can avoid needing to do all of this storage of intermediate values if, instead, we provide a way for Slang to recalculate the values as it progresses through the backward propagation. To do this, we provide a user-defined backwards form for part of our rasterization algorithm.
 
-```slang
+```hlsl
 /*
  * fineRasterize() produces the per-pixel final color from a sorted list of blobs that overlap the current tile.
  *
@@ -264,7 +264,7 @@ Manually providing a backwards derivative form might seem like it defeats the pu
 
 So, in the code above, the backward form of `fineRasterize()` loops backward over all of our blobs, evaluates each one, and performs an “undo” operation, which we define in `undoPixelState`.
 
-```slang
+```hlsl
 /*
  * undoPixelState() reverses the alpha blending operation and restores the previous pixel
  * state.
@@ -300,7 +300,7 @@ float4 undoAlphaBlend(float4 pixel, float4 gval)
 
 One thing to note about undoing an alpha blend: because alpha values are all within the range [0.0, 1.0], our undo is only possible if the pixel never becomes fully opaque. This is handled inside the `transformPixelState` function called by `fineRasterize`:
 
-```slang
+```hlsl
 /*
  * transformPixelState() applies the alpha blending operation to the pixel state &
  * updates the counter accordingly.
@@ -326,7 +326,7 @@ There’s one other notable difference between the simplified and full versions 
 
 In the simplified version, we initiated the backward derivative propagation with this line of SlangPy:
 
-```Python
+```python
 module.perPixelLoss.bwds(per_pixel_loss,
                          spy.grid(shape=(input_image.width,input_image.height)),
                          blobs, input_image)
@@ -336,7 +336,7 @@ Recall that the `spy.grid()` function is a generator, which produces a grid-shap
 
 By contrast, in this more complex version, we want to ensure that the `coarseRasterize()` and `bitonicSort()` functions can operate collaboratively on a set of pixels within a workgroup, so we create a mapping of pixels to thread IDs:
 
-```Python
+```python
 def calcCompressedDispatchIDs(x_max: int, y_max: int, wg_x: int, wg_y: int):
     local_x = np.arange(0, wg_x, dtype=np.uint32)
     local_y = np.arange(0, wg_y, dtype=np.uint32)
@@ -358,7 +358,7 @@ def calcCompressedDispatchIDs(x_max: int, y_max: int, wg_x: int, wg_y: int):
 
 What’s happening here is that we’re using some utility functions from NumPy to construct a grid of IDs manually, rather than asking SlangPy to generate it for us. We’re also providing the values in a single array, because, behind the scenes, SlangPy currently only supports a 1D dispatch shape– more general dispatch support is planned to be added soon. `x_max` and `y_max` represent the size of the full image, while `wg_x` and `wg_y` are the dimensions of the tile (and the workgroup that will calculate the pixel values within that tile). The IDs we create tell each thread both where it’s located within its workgroup, and which workgroup it belongs to within the full work dispatch, and from those, what pixel coordinates it’s responsible for calculating. We can then provide this set of IDs directly to our `perPixelLoss` function at dispatch:
 
-```Python
+```python
 module.perPixelLoss.bwds(per_pixel_loss, dispatch_ids, blobs, input_image)
 ```
 
