@@ -5,7 +5,7 @@ overview:
     link_label: "User Guide"
   - title: "Standard Modules Reference"
     description: "The reference of the standard modules that comes with the Slang compiler."
-    link_url: "https://shader-slang.com/stdlib-reference/"
+    link_url: "https://slang-documentation.readthedocs.io/page/external/stdlib-reference/index.html"
     link_label: "Modules Reference"
   - title: "Language Specification"
     description: "The formal specification of the Slang programming language. Work in progress.."
