@@ -2,7 +2,7 @@
 layout: post
 title: "Neural Graphics in an Afternoon"
 date: 2025-04-04 17:00:00
-categories: [ "blog", "featured" ]
+categories: [ "blog" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/2025-04-04-splatterjeep.webp
@@ -27,7 +27,7 @@ Our concrete example, which you can see in action on the [Slang playground](http
 - Sigma (how fuzzy/spread out it is)
 - Color
 
-Why are Gaussian splats so powerful? Their mathematical properties make them particularly well-suited for representing visual information. Each Gaussian splat naturally creates smooth gradients from its center outward, which is perfect for capturing how light and color blend in real-world scenes. And because of this smoothness, they are well suited to optimization techniques like the one we are about to explore. In more advanced applications, these properties allow Gaussian splats to represent complex 3D scenes with remarkably high visual quality while maintaining real-time performance – a sweet spot that's made them increasingly popular in computer graphics applications from virtual production to AR/VR.
+Why are Gaussian splats so powerful? Their mathematical properties make them particularly well-suited for representing visual information. Each Gaussian splat naturally creates smooth gradients from its center outward, which is perfect for capturing how light and color blend in real-world scenes. And because of this smoothness, they are well suited to optimization techniques like they one we are about to explore. In more advanced applications, these properties allow Gaussian splats to represent complex 3D scenes with remarkably high visual quality while maintaining real-time performance – a sweet spot that's made them increasingly popular in computer graphics applications from virtual production to AR/VR.
 
 The challenge is: how do we determine the right parameters for thousands of splats to recreate a specific image? To do this, we can use a technique common in machine learning called gradient descent. Gradient descent can be used to find an optimal solution to a problem by making small adjustments to its inputs and checking whether they bring the result closer to our desired output. The basic idea is that we start with random splat properties, and define a “loss function”, which measures how different the resulting image is from what we want it to be, and then use gradient descent to adjust the splat properties until the difference is minimized.
 
@@ -47,7 +47,7 @@ Slang makes this entire process much easier, because it can automatically calcul
 
 Let’s take a look at what it looks like to do this in the code. I’ll first go through a simplified version of the 2D Gaussian splatting example, so it’s very clear how the mechanism works. You can find this example in the SlangPy repository [here](https://github.com/shader-slang/slangpy/tree/main/examples/simplified-splatting). First, we’ll check out the Python side of things. With SlangPy, this code is pretty succinct.
 
-```python
+```Python
 # SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
 
 import slangpy as spy
@@ -146,7 +146,7 @@ for iter in range(iterations):
 
 This is the entire Python file for setting up, initializing a set of 2D Gaussian blobs, and kicking off the derivative propagation that calculates the ideal values for all those blob parameters. The setup should be fairly straightforward and explained by the comments, so let’s take a closer look at the “meat” of this file, iterating through our gradient descent.
 
-```python
+```Python
 iterations = 10000
 for iter in range(iterations):
     # Back-propagage the unit per-pixel loss with auto-diff.
@@ -164,14 +164,14 @@ What the `module.perPixelLoss.bwds()` call is doing is going into the Slang modu
 
 When this call finishes, per_pixel_loss will contain values representing the results of the loss function for each pixel based on the “calculated image” that results from all of our current blob parameters, and blobs will have a gradient associated with each blob, indicating which direction the parameters should move in order to get closer to the target. The input image will be unchanged.
   
-```python
+```Python
     # Update the parameters using the Adam algorithm
     module.adamUpdate(blobs, blobs.grad_out, adam_first_moment, adam_second_moment)
 ```
 
 This line calls into a Slang function in our module which provides an [optimized algorithm](https://optimization.cbe.cornell.edu/index.php?title=Adam) for updating our blobs based on the information stored in the blob gradients. It calculates moving averages of these gradients, so that we can update our blob parameters efficiently. You can read more about how Adam works in [the paper](https://arxiv.org/pdf/1412.6980) that introduced it, and you’ll see the implementation in our Slang module in a moment. Don’t worry– it’s less than thirty lines of Slang code!
 
-```python
+```Python
     # Every 50 iterations, render the blobs out to a texture, and hand it off to tev
     # so that you can visualize the iteration towards ideal
     if iter % 50 == 0:
@@ -188,7 +188,7 @@ Ok! Now, for the Slang side of things.
 
 There’s a bit more to the Slang code, but let’s first take a look at the functions that we called out to from SlangPy just a moment ago. The workhorse of the module is that `perPixelLoss()` function and its helpers:
 
-```slang
+```hlsl
 // simpleSplatBlobs() is a naive implementation of the computation of color for a pixel.
 // It will iterate over all of the Gaussians for each pixel, to determine their contributions
 // to the pixel color, so this will become prohibitively slow with a very small number of
@@ -272,7 +272,7 @@ You might wonder if iterating over our entire list of Gaussians for each pixel i
   
 This set of functions is responsible for calculating all of the output pixels, as well as the difference between those values and our ideal target image, so they’re invoked not just for propagating loss derivatives (the `module.perPixelLoss.bwds` call we made in Python), but also during the rendering of our output texture, via `renderBlobsToTexture`, which looks like this:
 
-```slang
+```hlsl
 void renderBlobsToTexture(
     RWTexture2D<float4> output,
     GradInOutTensor<float, 1> blobsBuffer,
@@ -288,7 +288,7 @@ As you can see, this function just takes the result of `simpleSplatBlobs`, and w
 
 The other piece of the equation is the Adam update algorithm:
 
-```slang
+```hlsl
 void adamUpdate(inout float val,
                 inout float dVal,
                 inout float firstMoment,
