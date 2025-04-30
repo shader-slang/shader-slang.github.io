@@ -6,4 +6,5 @@
 	url = https://github.com/shader-slang/slangpy.git
 [submodule "docs/external/stdlib-reference"]
 	path = docs/external/stdlib-reference
-	url = https://github.com/shader-slang/stdlib-reference.git
+	url = https://github.com/aidanfnv/stdlib-reference.git
+	branch = fix/readthedocs-tests
