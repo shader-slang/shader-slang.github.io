@@ -1,0 +1,10 @@
+[submodule "docs/external/slang"]
+	path = docs/external/slang
+	url = https://github.com/shader-slang/slang.git
+[submodule "docs/external/slangpy"]
+	path = docs/external/slangpy
+	url = https://github.com/shader-slang/slangpy.git
+[submodule "docs/external/stdlib-reference"]
+	path = docs/external/stdlib-reference
+	url = https://github.com/aidanfnv/stdlib-reference.git
+	branch = fix/readthedocs-tests
