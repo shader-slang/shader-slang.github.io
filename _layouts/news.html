@@ -55,42 +55,6 @@ bodyClass: "news-events"
 </div>
 {% endif %}
 
-{% assign category_posts = site.posts | where_exp: "post", "post.categories contains 'video'" %}
-{% if category_posts and category_posts.size > 0 %}
-<div class="section">
-    <div class="container">
-        <div class="row">
-            <h3>Presentations
-                <hr>
-            </h3>
-
-            <div class="grid gridNews">
-                {% for post in category_posts limit:6 %}
-                <div class="g-col-12 g-col-sm-6 g-col-md-4">
-                    <div class="card shadow">
-                        {% if post.image %}
-                        <img src="{{ post.image }}" class="card-img-top img-fluid" alt="#">
-                        {% else %}
-                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid" alt="#">
-                        {% endif %}
-                        <div class="card-body">
-                            <div class="card-text">{{ post.date | date: "%B %d, %Y" }}</div>
-                            <div class="card-tagline">{{ post.tagline }}</div>
-                            <div class="card-title">
-                                <h4>{{ post.title }}</h4>
-                            </div>
-                            <a class="btn btn-primary" href="{{ post.source_url }}">View Presentation</a>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
-        </div>
-    </div>
-</div>
-{% endif %}
-
 {% assign category_posts = site.categories.blog %}
 {% if category_posts and category_posts.size > 0 %}
 <div class="section">
@@ -130,8 +94,44 @@ bodyClass: "news-events"
 </div>
 {% endif %}
 
+{% assign category_posts = site.posts | where_exp: "post", "post.categories contains 'video'" %}
+{% if category_posts and category_posts.size > 0 %}
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <h3>Presentations
+                <hr>
+            </h3>
+
+            <div class="grid gridNews">
+                {% for post in category_posts limit:6 %}
+                <div class="g-col-12 g-col-sm-6 g-col-md-4">
+                    <div class="card shadow">
+                        {% if post.image %}
+                        <img src="{{ post.image }}" class="card-img-top img-fluid" alt="#">
+                        {% else %}
+                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid" alt="#">
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-text">{{ post.date | date: "%B %d, %Y" }}</div>
+                            <div class="card-tagline">{{ post.tagline }}</div>
+                            <div class="card-title">
+                                <h4>{{ post.title }}</h4>
+                            </div>
+                            <a class="btn btn-primary" href="{{ post.source_url }}">View Presentation</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
 
 {% assign upcoming_and_ongoing_events = site.events | where_exp: "event", "event.end_date > site.time" %}
+{% if upcoming_and_ongoing_events and upcoming_and_ongoing_events.size > 0 %}
 <div class="section">
     <div class="container">
         <div class="row">
@@ -165,4 +165,5 @@ bodyClass: "news-events"
         </div>
     </div>
 </div>
+{% endif %}
 

@@ -30,7 +30,6 @@ def setup(app):
     # Connect the handler to the 'source-read' event
     app.connect('source-read', source_read_handler)
 
-
 project = 'Slang Documentation'
 author = 'Chris Cummings, Benedikt Bitterli, Sai Bangaru, Yong Hei, Aidan Foster'
 release = '0.1.0'

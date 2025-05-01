@@ -46,3 +46,4 @@ exclude:
   - LICENSE
   - README.md
   - docs/external/
+  - docs/index.rst

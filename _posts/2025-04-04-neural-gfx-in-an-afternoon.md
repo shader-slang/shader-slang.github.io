@@ -2,12 +2,14 @@
 layout: post
 title: "Neural Graphics in an Afternoon"
 date: 2025-04-04 17:00:00
-categories: [ "blog" ]
+categories: [ "blog", "featured" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/2025-04-04-splatterjeep.webp
 human_date: "April 4, 2025"
 ---
+
+(For the next article in this series, click [here](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/))
 
 The intersection of computer graphics and machine learning is creating exciting new possibilities, from scene reconstruction with NeRFs and Gaussian splats to learning complex material properties. But getting started with neural graphics can seem daunting. Between understanding graphics APIs, shader programming, and automatic differentiation, there’s a lot to learn. That’s why the Slang team is introducing [SlangPy](https://slangpy.shader-slang.org/en/latest/), a new Python package that makes it dramatically easier to build neural graphics applications with Slang. With just a few lines of Python code, you can now:
 
@@ -206,15 +208,15 @@ float4 simpleSplatBlobs(GradInOutTensor<float, 1> blobsBuffer, uint2 pixelCoord,
     for (uint i = 0; i < SIMPLE_BLOBCOUNT; i++)
     {
         // first, calculate the color of the current blob
-		Gaussian2D gaussian = Gaussian2D.load(blobs, i);
-		blobColor = gaussian.eval(pixelCoord * (1.0/texSize));
-		
-		// then, blend with the blobs we've accumulated so far
-		result = alphaBlend(result, blobColor);
-	}
-	
-	// Blend with background
-	return float4(result.rgb * (1.0 - result.a) + result.a, 1.0);
+        Gaussian2D gaussian = Gaussian2D.load(blobs, i);
+        blobColor = gaussian.eval(pixelCoord * (1.0/texSize));
+    
+        // then, blend with the blobs we've accumulated so far
+        result = alphaBlend(result, blobColor);
+    }
+    
+    // Blend with background
+    return float4(result.rgb * (1.0 - result.a) + result.a, 1.0);
 }
 
 //
@@ -224,27 +226,27 @@ float4 simpleSplatBlobs(GradInOutTensor<float, 1> blobsBuffer, uint2 pixelCoord,
 [Differentiable]
 float loss(uint2 pixelCoord, int2 imageSize, Blobs blobs, Texture2D<float4> targetTexture)
 {
-	int texWidth;
-	int texHeight;
-	targetTexture.GetDimensions(texWidth, texHeight);
-	int2 texSize = int2(texWidth, texHeight);
-	
-	// Splat the blobs and calculate the color for this pixel.
-	float4 color = simpleSplatBlobs(blobs.blobsBuffer, pixelCoord, imageSize);
-	float4 targetColor;
-	
-	float weight;
-	if (pixelCoord.x >= imageSize.x || pixelCoord.y >= imageSize.y)
-	{
-		return 0.f;
-	}
-	else
-	{
-		targetColor = no_diff targetTexture[pixelCoord];
-		return dot(color.rgb - targetColor.rgb, color.rgb - targetColor.rgb);
-	}
-	
-	return 0.f;
+    int texWidth;
+    int texHeight;
+    targetTexture.GetDimensions(texWidth, texHeight);
+    int2 texSize = int2(texWidth, texHeight);
+
+    // Splat the blobs and calculate the color for this pixel.
+    float4 color = simpleSplatBlobs(blobs.blobsBuffer, pixelCoord, imageSize);
+    float4 targetColor;
+    
+    float weight;
+    if (pixelCoord.x >= imageSize.x || pixelCoord.y >= imageSize.y)
+    {
+        return 0.f;
+    }
+    else
+    {
+        targetColor = no_diff targetTexture[pixelCoord];
+        return dot(color.rgb - targetColor.rgb, color.rgb - targetColor.rgb);
+    }
+    
+    return 0.f;
 }
 
 // Differentiable function to compute per-pixel loss
@@ -255,20 +257,20 @@ float loss(uint2 pixelCoord, int2 imageSize, Blobs blobs, Texture2D<float4> targ
 
 [Differentiable]
 void perPixelLoss(GradInOutTensor<float4, 2> output,
-				  uint2 pixelCoord,
-				  GradInOutTensor<float, 1> blobsBuffer,
-				  Texture2D<float4> targetTexture)
+                  uint2 pixelCoord,
+                  GradInOutTensor<float, 1> blobsBuffer,
+                  Texture2D<float4> targetTexture)
 {
-	uint2 imageSize;
-	targetTexture.GetDimensions(imageSize.x, imageSize.y);
-	output.set( {pixelCoord.x, pixelCoord.y},
-		loss(pixelCoord, imageSize, {blobsBuffer}, targetTexture));
+    uint2 imageSize;
+    targetTexture.GetDimensions(imageSize.x, imageSize.y);
+    output.set( {pixelCoord.x, pixelCoord.y},
+    loss(pixelCoord, imageSize, {blobsBuffer}, targetTexture));
 }
 ```
 
 You can see in this code block that `simpleSplatBlobs()` is doing most of the work: iterating over our entire list of Gaussian blobs, and accumulating their contributions to the color of the pixel we are currently calculating. Keep in mind that `perPixelLoss()` is going to be invoked once for each pixel in the output image, so the function is figuring out the loss value for just a single pixel. 
 
-You might wonder if iterating over our entire list of Gaussians for each pixel in the image might be slow. It is. There are some clever things that we can do to speed up this calculation considerably, which I’ll cover in a follow-up blog post, but for now, let’s just focus on the simple– but slow– version.  
+You might wonder if iterating over our entire list of Gaussians for each pixel in the image might be slow. It is. There are some clever things that we can do to speed up this calculation considerably, which I’ll cover in a [follow-up blog post](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/), but for now, let’s just focus on the simple– but slow– version.  
   
 This set of functions is responsible for calculating all of the output pixels, as well as the difference between those values and our ideal target image, so they’re invoked not just for propagating loss derivatives (the `module.perPixelLoss.bwds` call we made in Python), but also during the rendering of our output texture, via `renderBlobsToTexture`, which looks like this:
 
@@ -290,9 +292,9 @@ The other piece of the equation is the Adam update algorithm:
 
 ```hlsl
 void adamUpdate(inout float val,
-				inout float dVal,
-				inout float firstMoment,
-				inout float secondMoment)
+                inout float dVal,
+                inout float firstMoment,
+                inout float secondMoment)
 {
     // Read & reset the derivative
     float g_t = dVal;
