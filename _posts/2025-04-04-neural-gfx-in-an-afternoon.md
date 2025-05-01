@@ -9,7 +9,7 @@ image: /images/posts/2025-04-04-splatterjeep.webp
 human_date: "April 4, 2025"
 ---
 
-(For the next article in this series, click [here](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/)
+(For the next article in this series, click [here](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/))
 
 The intersection of computer graphics and machine learning is creating exciting new possibilities, from scene reconstruction with NeRFs and Gaussian splats to learning complex material properties. But getting started with neural graphics can seem daunting. Between understanding graphics APIs, shader programming, and automatic differentiation, there’s a lot to learn. That’s why the Slang team is introducing [SlangPy](https://slangpy.shader-slang.org/en/latest/), a new Python package that makes it dramatically easier to build neural graphics applications with Slang. With just a few lines of Python code, you can now:
 
