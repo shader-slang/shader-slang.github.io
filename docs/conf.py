@@ -8,8 +8,26 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 import os
 import sys
+import re
+
 sys.path.insert(0, os.path.abspath('.'))  # For finding _ext
 sys.path.insert(0, os.path.abspath('..'))
+
+def source_read_handler(app, docname, source):
+    content = source[0]
+    # Regex to find the comment block and extract its content
+    pattern = re.compile(r'<!-- RTD-TOC-START\s*(.*?)\s*RTD-TOC-END -->', re.DOTALL)
+    
+    def uncomment_toc(match):
+        return match.group(1) # Return only the content inside the comments
+
+    # Replace the comment block with its uncommented content
+    new_content = pattern.sub(uncomment_toc, content)
+    source[0] = new_content
+
+def setup(app):
+    # Connect the handler to the 'source-read' event
+    app.connect('source-read', source_read_handler)
 
 project = 'Slang Documentation'
 author = 'Chris Cummings, Benedikt Bitterli, Sai Bangaru, Yong Hei, Aidan Foster'
