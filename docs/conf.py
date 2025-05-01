@@ -14,7 +14,6 @@ sys.path.insert(0, os.path.abspath('.'))  # For finding _ext
 sys.path.insert(0, os.path.abspath('..'))
 
 def source_read_handler(app, docname, source):
-    # Check if building on Read the Docs
     content = source[0]
     # Regex to find the comment block and extract its content
     pattern = re.compile(r'<!-- RTD-TOC-START\s*(.*?)\s*RTD-TOC-END -->', re.DOTALL)
