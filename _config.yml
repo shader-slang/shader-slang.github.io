@@ -45,3 +45,4 @@ exclude:
   - LICENSE.md
   - LICENSE
   - README.md
+  - docs/external/
