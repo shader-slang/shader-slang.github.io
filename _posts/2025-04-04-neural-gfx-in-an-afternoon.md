@@ -2,12 +2,14 @@
 layout: post
 title: "Neural Graphics in an Afternoon"
 date: 2025-04-04 17:00:00
-categories: [ "blog" ]
+categories: [ "blog", "featured" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/2025-04-04-splatterjeep.webp
 human_date: "April 4, 2025"
 ---
+
+(For the next article in this series, click [here](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/)
 
 The intersection of computer graphics and machine learning is creating exciting new possibilities, from scene reconstruction with NeRFs and Gaussian splats to learning complex material properties. But getting started with neural graphics can seem daunting. Between understanding graphics APIs, shader programming, and automatic differentiation, there’s a lot to learn. That’s why the Slang team is introducing [SlangPy](https://slangpy.shader-slang.org/en/latest/), a new Python package that makes it dramatically easier to build neural graphics applications with Slang. With just a few lines of Python code, you can now:
 
@@ -268,7 +270,7 @@ void perPixelLoss(GradInOutTensor<float4, 2> output,
 
 You can see in this code block that `simpleSplatBlobs()` is doing most of the work: iterating over our entire list of Gaussian blobs, and accumulating their contributions to the color of the pixel we are currently calculating. Keep in mind that `perPixelLoss()` is going to be invoked once for each pixel in the output image, so the function is figuring out the loss value for just a single pixel. 
 
-You might wonder if iterating over our entire list of Gaussians for each pixel in the image might be slow. It is. There are some clever things that we can do to speed up this calculation considerably, which I’ll cover in a follow-up blog post, but for now, let’s just focus on the simple– but slow– version.  
+You might wonder if iterating over our entire list of Gaussians for each pixel in the image might be slow. It is. There are some clever things that we can do to speed up this calculation considerably, which I’ll cover in a [follow-up blog post](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/), but for now, let’s just focus on the simple– but slow– version.  
   
 This set of functions is responsible for calculating all of the output pixels, as well as the difference between those values and our ideal target image, so they’re invoked not just for propagating loss derivatives (the `module.perPixelLoss.bwds` call we made in Python), but also during the rendering of our output texture, via `renderBlobsToTexture`, which looks like this:
 
