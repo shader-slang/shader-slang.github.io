@@ -11,9 +11,9 @@ The `ParameterBlock<>` type in the Slang core library can be used to implement e
 
 This article will introduce parameter blocks and the problem they solve, provide guidelines for how to use them in a shader codebase, and show how the Slang reflection API can be used to conveniently interface with such shader code from a host application.
 
-# Background
+## Background
 
-## Ordinary and Opaque Types
+### Ordinary and Opaque Types
 
 The uniform parameters of a GPU shader may include data of both *ordinary* and *opaque* types.
 
@@ -24,7 +24,7 @@ Opaque types are those that might be passed via mechanisms that are specific to 
 On some hardware, shader parameters of opaque type might be passed via GPU hardware state registers or other architecture-specific means.
 Even when data of an opaque type is stored in memory, the exact representation (and sometimes even the *size*) of that data is not known to application code, so that access to that data must be mediated by driver software.
 
-## Descriptor Sets, Tables, etc.
+### Descriptor Sets, Tables, etc.
 
 Many performance-oriented GPU APIs include a construct that can be used to group together shader parameter data of opaque type:
 
@@ -43,12 +43,12 @@ GPU shader programmers are encouraged to group parameters based on their expecte
 Most of these APIs support defining some form of *pipeline layout*: an API object that defines the groups and their contents, independent on any particular shader program.
 Groups that are bound using a given pipeline layout can be re-used across multiple shader programs/pipelines, so long as they all agree on the layout.
 
-## Challenges
+### Challenges
 
 While grouping of parameter data can help improve efficiency for applications that issue many draw calls, adoption of these mechanisms in production shader codebases has been limited.
 There are several challenges that arise when developers try to leverage parameter groups and how they were exposed in languages like GLSL and HLSL
 
-### Not all targets support groups
+#### Not all targets support groups
 
 On some targets, such as CPUs and CUDA/OptiX, everything is "just memory" and all types are ordinary.
 There is no need for an API-/driver-mediated grouping construct, because GPU-accessible buffers are sufficient.
@@ -62,7 +62,7 @@ Note that the way support for descriptor sets was added to GLSL (HLSL makes simi
 The basic idea is that grouping is only indicated via `layout` modifiers (`register` modifiers in HLSL), and applications can use preprocessor techniques to select between different modifiers based on the target (e.g., hiding the `layout(set=...)` modifiers when compiling for OpenGL).
 While this design choice was expedient, requiring minimal changes to the shading language and enabling simple porting of existing code, it creates its own challenges.
 
-### Pervasive manual annotation is required
+#### Pervasive manual annotation is required
 
 When compiling GLSL code for Vulkan, every shader parameter that goes into a descriptor set other than `set=0` *requires* a `layout` modifier.
 In practice, most shader codebases that intend to make use of groups for Vulkan, D3D12, etc. rely on manual annotation of *every* shader parameter.
@@ -114,7 +114,7 @@ Developers typically group parameters that belong in the same `set` together tex
 
 Maintaining manual annotations is straightforward but tedious--exactly the kind of work that we should offload onto our tools.
 
-### Grouping constructs have different rules per-platform
+#### Grouping constructs have different rules per-platform
 
 Some platform-specific differences are relatively minor:
 
@@ -174,7 +174,7 @@ Because of the differences in how Vulkan and D3D12 count, cross-platform HLSL co
 
 Note that both the `dxc` and `slangc` compilers support a variety of command line options (e.g., `-fvk-b-shift`, `-fvk-t-shift`, etc.) that can be used to derive set and binding indices for Vulkan (and WebGPU) from D3D-style `register` modifiers, but these options are not easy to work with and we do *not* recommend them as a general-purpose solution for portable codebases.
 
-# Parameter Blocks
+## Parameter Blocks
 
 Slang provides *parameter blocks* as an alternative to all the headaches of manual annotation.
 Taking the recurring example we have used and translating it to idiomatic Slang yields:
@@ -208,7 +208,7 @@ Rather than manually annotating many global shader parameters to put them in the
 Note that despite the absence of any manual annotations in this Slang code, it produces *exactly* the same pipeline layout as the heavily-annotated HLSL at the end of the previous section, for both D3D12 and Vulkan.
 In addition, this code can work across *all* of the targets that the Slang compiler supports, including targets that do not have a built-in grouping construct.
 
-## Automatic Layout and Binding
+### Automatic Layout and Binding
 
 The Slang compiler is responsible for *binding* the parameters of a shader program to their locations for a particular target (where locations can include registers, bindings, slots, etc.).
 The number (and kind) of locations used by a parameter depends on the *layout* of its type for the target.
@@ -231,7 +231,7 @@ The relative order in which entry points are visited is deterministic, based on 
 Typically, a `ParameterBlock<>` declaration will claim the next available group index (e.g., a Vulkan `set` index or a D3D12 `space` index).
 There are, however, a few details that are worth going into.
 
-### A Simple Case
+#### A Simple Case
 
 Consider the `Material` type from our running example:
 
@@ -256,7 +256,7 @@ ParameterBlock<Material> material;
 the fields within the `struct` will all be bound to the same `set` index (here `set=0`), and each will have a `binding` based on its relative offset.
 For example, `material.specularMap` will be bound to a location equivalent to `layout(set=0, binding=1)`.
 
-### Ordinary Data
+#### Ordinary Data
 
 The `Environment` type from our running example is more complicated than `Material`, in that it mixes both ordinary- and opaque-type fields:
 
@@ -288,7 +288,7 @@ Because the contents of the block include ordinary data (96 bytes worth), the Sl
 The automatically-introduced constant buffer for `environment` will get `binding` zero in the set, and all the other opaque-type fields inside the block will have their relative `binding`s adjusted to account for this.
 For example, the `environment.envMap` field will be bound as if `layout(set=1,binding=3)` was used, despite the relative offset of `envMap` in `Environment` being only two `binding`s.
 
-### Empty Blocks
+#### Empty Blocks
 
 As a corner case, a parameter block may be declared using an empty type for its content:
 
@@ -299,7 +299,7 @@ ParameterBlock<Empty> empty;
 
 In this case, the type `Empty` contains nothing: no bytes, no `binding`s. There is no need to allocate a full `set` index for nothing, so the Slang compiler does not do so.
 
-### Nested Blocks
+#### Nested Blocks
 
 It is valid in Slang code to nest one parameter block inside another. For example:
 
@@ -316,11 +316,11 @@ ParameterBlock<Outer> outer;
 Most of the targets that Slang supports do not allow a group to contain references to other groups, so the Slang compiler legalizes such declarations by "flattening" them.
 For example, given the above code as input, the Slang compiler would assign `set=0` to the parameter `outer`, and the nested block `outer.inner` would get `set=1`.
 
-### Targets Without Groups
+#### Targets Without Groups
 
 For targets that do not have a built-in construct for grouping opaque-type parameters, the Slang compiler will treat a `ParameterBlock<Whatever>` exactly the same as a `ConstantBuffer<Whatever>`.
 
-#### Older Targets
+##### Older Targets
 
 On an older target like D3D11/DXBC, we can think of the Slang compiler taking code like this:
 
@@ -363,18 +363,18 @@ Texture2D material_specularMap;
 SamplerState material_sampler;
 ```
 
-#### "It's all just memory" targets
+##### "It's all just memory" targets
 
 For targets where all types are ordinary, such as CPU and CUDA/OptiX, a `ParameterBlock<Thing>` is equivalent to a `ConstantBuffer<Thing>` but, more importantly, both are represented as just a pointer to a `Thing` (more or less a `Thing const*` in C notation).
 
 These targets do not require automatically-introduced constant buffers (ordinary buffers can mix types like `float4` and `Texture2D`, since both are ordinary), nor do they require any flattening (nested parameter blocks are directly supported, since `ParameterBlock<Whatever>` is itself an ordinary type).
 
-# Guidelines for Shader Programmers
+## Guidelines for Shader Programmers
 
 The Slang language and compiler support a wide variety of idioms for declaring and using shader parameters, because so many different approaches are found in production shader codebases.
 However, there are guidelines that we recommend for developers who are writing new shader codebases in Slang, or who are refactoring an existing codebase to be cleaner and more maintainable.
 
-## Avoid Manual Annotations
+### Avoid Manual Annotations
 
 Whenever possible, developers should declare shader parameters in a simple, readable fashion and then allow the Slang compiler's automatic and deterministic binding rules to apply.
 Manual annotations are impractical to maintain at the scale of real-time rendering codebases we are now seeing as path tracing and machine-learning-based approaches become more widespread.
@@ -382,14 +382,14 @@ Manual annotations are impractical to maintain at the scale of real-time renderi
 Typically, developers who decide to drop manual annotations end up adopting run-time reflection as part of their application codebase, but this is not the only option.
 Because the binding and layout algorithm used by Slang is deterministic, it is also possible for applications to use the Slang reflection API as part of an offline code generation step, to produce code or data that drives run-time application logic for setting shader parameters.
 
-## Avoid Polluting the Global Scope
+### Avoid Polluting the Global Scope
 
 It is common in many shader codebases to put global shader parameters next to the code that operates on them.
 For example, a `material.h` file might combine the shader parameters for a material with code to evaluate it:
 
 ```c++
 // material.h
-#pragma once
+##pragma once
 
 Texture2D material_albedoMap;
 Texture2D material_specularMap;
@@ -420,7 +420,7 @@ float4 evalMaterial(Material m, ...) { ... }
 
 This kind of design allows the programmer who is writing shader entry points to decide how parameters should be grouped (or not).
 
-## For Compute Shaders, Use Entry-Point Parameters
+### For Compute Shaders, Use Entry-Point Parameters
 
 It is common practice to define multiple compute entry points in a single file.
 For example, these might be entry points that work together to implement some algorithm that requires multiple dispatches.
@@ -463,7 +463,7 @@ A better solution is to properly scope uniform shader parameters to the entry po
 In this revised code, it is not possible for the `depthTestObjects` function to accidentally reference the uniform shader parameters of `computeMinMaxDepthTiles`; those parameters are (correctly) out of scope.
 Furthermore, when compiling this file with the Slang compiler, automatic binding will not include parameters from one entry point in the pipeline layout of the other.
 
-### Aside: Push Constants
+#### Aside: Push Constants
 
 Note that when compiling for Vulkan, any `uniform` entry-point parameters of ordinary type are automatically bound to push-constant data.
 For example:
@@ -497,7 +497,7 @@ struct AddParams
 {...}
 ```
 
-## For Multi-Stage Pipelines, Use Global Parameter Blocks
+### For Multi-Stage Pipelines, Use Global Parameter Blocks
 
 When writing programs for a multi-stage pipeline such as rasterization or ray-tracing, we recommend that developers put all of the entry points that will be used together in one file (when it is practical to do so), and declare uniform shader parameters at global scope in that file. For example:
 
@@ -521,7 +521,7 @@ Note that even though this approach makes use of the global scope, it intentiona
 Note that if the code for a shader program declares *any* global-scope uniform parameters that aren't themselves `ParameterBlock<>`s, then the automatic binding algorithm will claim a group to hold those parameters; this will generally always be a group with index zero (e.g., `set=0` for Vulkan).
 Developers are advised to know whether they intend to declare all of their parameters using parameter blocks (in which case their explicit blocks will start at index zero), or they play to mix other global scope parameters (group index zero) with parameter blocks (indices one and up).
 
-### Aside: Shader Records
+#### Aside: Shader Records
 
 When compiling ray tracing entry points for Vulkan, any `uniform` parameters of an entry point are automatically bound to the "shader record." For example:
 
@@ -535,23 +535,23 @@ void closestHitMain(
 
 In this case, the `closestHitMain` entry point will fetch the `materialIndex` parameter from the shader record.
 
-# Using Parameter Blocks With Reflection
+## Using Parameter Blocks With Reflection
 
 In this section, we will demonstrate how an application that uses parameter blocks in its shader code can utilize the Slang reflection API to help in setting up the data structures used by a GPU API like Vulkan.
 
-## Scope
+### Scope
 
 The approach we will describe here is only appropriate for applications that abide by *one* key constraint: The shader codebase for the application must not use manual binding annotations (e.g., `layout(...)`, `register(...)`, or `[[vk::binding(...)]]`).
 In the absence of manual annotation, the Slang compiler will bind parameters to locations in a deterministic fashion, and an application can simply mirror that deterministic logic in its own code in order to derive the locations that parameters have been bound to.
 
 Applications that need to support the fully general case (including shader code with manual binding annotations) can still make use of parameter blocks.
-In such cases, developers are encouraged to read the other [documentation](slang/user-guide/reflection) that exists for the Slang reflection API.
+In such cases, developers are encouraged to read the other [documentation](user-guide/reflection) that exists for the Slang reflection API.
 
 This section will also restrict itself to the Vulkan API, for simplicity.
 We cover the creation of descriptor set layouts and pipeline layouts using reflection, but *not* the task of writing to them.
-Developers interested in using the Slang reflection API for *writing* to descriptor sets are encouraged to read the [documentation](docs/shader-cursors) that we have provided on the "shader cursor" idiom.
+Developers interested in using the Slang reflection API for *writing* to descriptor sets are encouraged to read the [documentation](shader-cursors) that we have provided on the "shader cursor" idiom.
 
-## What Goes Into a Pipeline Layout?
+### What Goes Into a Pipeline Layout?
 
 Given a Slang shader program that has been compiled and then reflected as a `slang::ProgramLayout`, our goal is ultimately to create a `VkPipelineLayout` that is compatible with that program.
 
@@ -591,7 +591,7 @@ VkPipelineLayout PipelineLayoutBuilder::finishBuilding()
 }
 ```
 
-## What Goes Into a Descriptor Set Layout?
+### What Goes Into a Descriptor Set Layout?
 
 In order to fill in the `setLayouts` array, we will clear need to create some `VkDescriptorSetLayout`s.
 Similarly to the case for pipeline layouts, this amounts to filling in a `VkDescriptorSetLayoutCreateInfo` so that we can call `vkCreateDescriptorSetLayout()`.
@@ -627,7 +627,7 @@ void DescriptorSetLayoutBuilder::finishBuilding()
 }
 ```
 
-## Parameter Blocks
+### Parameter Blocks
 
 In typical cases, a `ParameterBlock<>` in Slang shader code will translate into a descriptor set added to the pipeline layout, with one or more descriptor ranges added to that descriptor set based on the element type of the parameter block.
 We can summarize this logic as something like:
@@ -644,7 +644,7 @@ void PipelineLayoutBuilder::addDescriptorSetParameterBlock(
 }
 ```
 
-### Automatically-Introduced Uniform Buffer
+#### Automatically-Introduced Uniform Buffer
 
 The most important detail that needs to be accounted for is that if the element type of the parameter block (the `Thing` in `ParameterBlock<Thing>`) has any amount of ordinary data in it (that is, `Thing` consumes one or more bytes), then the Slang compiler automatically introduces a uniform buffer to pass that data.
 The automatically-introduced uniform buffer will only be present if it was needed (that is, when the element type has a non-zero size in bytes) and it will always precede any other bindings for the parameter block.
@@ -687,7 +687,7 @@ The most important detail to note here is that the Vulkan `binding` index for th
 Instead, this code simply takes the next available `binding` index in the descriptor set layout.
 This code is an example of how an application can streamline its interactions with the Slang reflection API when its shader code eschews the complexity of manual binding annotations.
 
-### Ordering of Nested Parameter Blocks
+#### Ordering of Nested Parameter Blocks
 
 When parameter blocks end up nested within one another, the Slang compiler always assigns outer blocks Vulkan `set` indices before those of inner blocks.
 If we naively traverse the hierarchy of parameter blocks in a depth-first order, adding them to the `descriptorSetLayouts` array when we are done with each, then they will end up in the wrong order.
@@ -726,7 +726,7 @@ void DescriptorSetLayoutBuilder::finishBuilding()
 }
 ```
 
-### Empty Parameter Blocks
+#### Empty Parameter Blocks
 
 Most parameter blocks will map to a Vulkan descriptor set, but it is possible to have a block that contains nothing but other blocks, in which case a descriptor set for the outer block would contain no descriptor ranges and thus be irrelevant.
 The application code we show here uses a simple strategy to account for such cases.
@@ -762,7 +762,7 @@ VkPipelineLayout PipelineLayoutBuilder::finishBuilding()
 }
 ```
 
-## Descriptor Ranges
+### Descriptor Ranges
 
 Typically, a leaf field of opaque type (each `Texture2D`, `SamplerState`, etc.) in the element type of a parameter block will translate into a range of descriptors in the resulting descriptor set layout that share a single `binding` (represented as a `VkDescriptorSetLayoutBinding`).
 We could write logic in the application to recursively traverse the element type and find all of these leaf fields, but getting that logic right can be tricky.
@@ -844,7 +844,7 @@ VkDescriptorType mapSlangBindingTypeToVulkanDescriptorType(slang::BindingType bi
 }
 ```
 
-### Some Ranges Need to Be Skipped
+#### Some Ranges Need to Be Skipped
 
 The Slang reflection API exposes ranges for all of the non-ordinary data in a type, independent of what API-specific mechanism is used for those ranges.
 For example, the reflected ranges for a type may include both ranges that should map to a `binding` in a Vulkan descriptor set and ranges that should map to push constants.
@@ -867,7 +867,7 @@ void DescriptorSetLayoutBuilder::addDescriptorRange(
 
 We will account for push-constant ranges in the next section.
 
-## Sub-Object Ranges
+### Sub-Object Ranges
 
 The Slang reflection API methods we've used so far are used to query what data a type (logically) contains directly in its storage.
 But types can also *indirectly* reference other storage, such as when a field of type `ParameterBlock<>` is nested within another parameter block.
@@ -917,7 +917,7 @@ void DescriptorSetLayoutBuilder::addRanges(
 }
 ```
 
-### Nested Parameter Blocks
+#### Nested Parameter Blocks
 
 Any nested parameter blocks will be reflected as a sub-object range.
 The content of such a nested block will not be added to the current descriptor set layout, and will instead result in an additional descriptor set being added to the pipeline layout:
@@ -933,7 +933,7 @@ case slang::BindingType::ParameterBlock:
 break;
 ```
 
-### Push Constant Ranges
+#### Push Constant Ranges
 
 In Slang shader code, a push-constant range can be defined in either of two ways:
 
@@ -979,7 +979,7 @@ Note that this code accounts for the corner case where shader code has declared 
 A key thing to observe here is that currently the Slang compiler only supports having a single `ConstantBuffer<>` with the `[[vk::push_constant]]` attribute being in scope for each entry point (meaning either a single global buffer for all stages, or distinct per-entry-point buffers).
 Because there can only be a single push-constant range for each entry point, the code here can assume that each range starts at an offset of zero.
 
-## Creating a Pipeline Layout for a Program
+### Creating a Pipeline Layout for a Program
 
 At this point we have covered how to use the Slang reflection API to account for the contributions of a `ParameterBlock<>` to a Vulkan pipeline layout.
 What remains is to show the top-down process for creating a pipeline layout for an entire Slang shader program.
@@ -1012,7 +1012,7 @@ VkPipelineLayout createPipelineLayout(
 Note how this logic builds a *default* descriptor set.
 Any top-level shader parameters that aren't themselves explicit `ParameterBlock<>`s will be added into that descriptor set.
 
-### Global Scope
+#### Global Scope
 
 The global-scope shader parameters of a program can be handled using the building blocks we have already presented:
 
@@ -1034,7 +1034,7 @@ The main new detail to note here is that we set up the `_currentStageFlags` vari
 
 Applications that want to set more precise stage flags, taking into account which data is accessed by which stages in the compiled program binary, are encouraged to look at the more comprehensive documentation on the reflection API.
 
-### Entry Points
+#### Entry Points
 
 Adding the entry-parameters of a program amounts to adding the parameters of each entry point in turn:
 
@@ -1080,7 +1080,7 @@ VkShaderStageFlags getShaderStageFlags(SlangStage stage)
 }
 ```
 
-## Conclusion
+### Conclusion
 
 In this article we have attempted to cover parameter blocks from multiple perspectives:
 

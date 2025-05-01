@@ -7,9 +7,9 @@ intro_image_absolute: true
 intro_image_hide_on_mobile: false
 ---
 
-# Understanding Slang Generics
+## Understanding Slang Generics
 
-## Introduction
+### Introduction
 
 When writing shader code, we often need to write similar logic that works with
 different types. For example, we might have different kinds of lights in our
@@ -23,7 +23,7 @@ be verified at the definition site rather than when the code is used. This
 leads to clearer error messages and faster compilation times, as the compiler
 doesn't need to repeatedly verify the same code for each use case.
 
-## Generics, Traits, and Type Classes
+### Generics, Traits, and Type Classes
 
 Slang's generics system shares similarities with several modern programming
 language features: Swift's protocols, Rust's traits, and Haskell's type
@@ -37,7 +37,7 @@ capabilities." This distinction leads to more flexible and composable code, as
 types can implement multiple interfaces without the complexity of multiple
 inheritance.
 
-## A Motivating Example
+### A Motivating Example
 
 Let's start with a common scenario in graphics programming - implementing
 different types of lights:
@@ -132,7 +132,7 @@ In short, overloaded functions can only be used when the types are fully known
 at the call site. Overloading can also obscure the programmer's intentions,
 giving poorer error messages and code understandability.
 
-### Here's how we can improve this with generics and interfaces:
+#### Here's how we can improve this with generics and interfaces:
 
 We can define an interface, to which lights must conform.
 
@@ -244,7 +244,7 @@ This generic solution provides several benefits:
   objects which aren't light will tell the programmer exactly that, rather than
   some error message within the implementation of `cullLights`
 
-## Performance and Compilation
+### Performance and Compilation
 
 Like Rust traits and C++ templates, Slang's generics are completely resolved at
 compile time through a process called monomorphization ([except when using existential types](https://github.com/shader-slang/slang/blob/master/docs/design/existential-types.md)). This means that for
@@ -266,7 +266,7 @@ specialized for `PointLight` and one for `SpotLight`. This results in:
 - Full optimization opportunities for each specific type
 - Larger binary size when many specializations are needed
 
-## From C++ Templates to Slang Generics
+### From C++ Templates to Slang Generics
 
 While C++ templates and Slang generics can solve similar problems, their
 approaches differ significantly. The lighting example, for example:
@@ -330,7 +330,7 @@ interface.
 float addValue<T>(T v0, T v1) where T : IArithmetic { return v0 + v1; }
 ```
 
-## Generic programming over Scalars and Vectors
+### Generic programming over Scalars and Vectors
 
 It is still possible to write functions which can generically operate over
 scalars and vectors, for example using the
@@ -339,9 +339,9 @@ or
 [`IFloat`](https://shader-slang.com/stdlib-reference/interfaces/ifloat-01/index.html)
 interfaces.
 
-## Advanced Generic Features
+### Advanced Generic Features
 
-### Associated Types
+#### Associated Types
 
 Sometimes we need to work with types that are related to our generic parameter.
 For example, different lights might use different parameter types, which we
@@ -372,7 +372,7 @@ struct SpotLight : ILight
 }
 ```
 
-### Generic Value Parameters
+#### Generic Value Parameters
 
 Sometimes we need to parameterize by compile-time values, for example
 abstracting over a compile-time integer is shown here:
@@ -392,7 +392,7 @@ struct LightArray<T, let N : int> where T : ILight
 }
 ```
 
-## Further Reading
+### Further Reading
 
 - [Interfaces in Slang](https://github.com/shader-slang/slang/blob/master/docs/design/interfaces.md)
 - [Existential types in Slang](https://github.com/shader-slang/slang/blob/master/docs/design/existential-types.md) 
