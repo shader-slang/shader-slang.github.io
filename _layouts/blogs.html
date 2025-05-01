@@ -14,14 +14,14 @@ bodyClass: "news-events"
     </div>
 </div>
 
-{% assign featured_posts = site.posts | where: "categories", "featured" %}
+{% assign featured_posts = site.posts | where: "featured", true %}
 {% assign category_posts = featured_posts | where: "categories", "blog" %}
 {% if category_posts and category_posts.size > 0 %}
 <div class="section">
     <div class="container">
         <div class="row">
             <h3>Featured Blog
-                <hr>
+                <hr> 
             </h3>
 
             <div class="">
