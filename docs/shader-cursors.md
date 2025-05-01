@@ -7,26 +7,26 @@ intro_image_absolute: true
 intro_image_hide_on_mobile: false
 ---
 
-# Introduction
+## Introduction
 
 This document describes a comprehensive strategy for handling *parameter-passing* for GPU shader code. The presented approach is able to scale to large shader codebases which implement many different features across multiple modules. The Slang reflection API was intentionally designed to support this approach and to make it practical to adopt.
 
-## Target Audience(s)
+### Target Audience(s)
 
 Our primary audience for this document is developers who are building and maintaining a large GPU shader codebase, and who have the freedom or opportunity to consider their high-level architecture for shader parameter passing. These developers may find that the approach outlined here is a good fit for their requirements, and we hope that they will consider adopting it. Developers who are already locked in to an architectural approach may find this material enlightening or aspirational, but not immediately actionable.
 
 A second audience for this document is any developer who wants to better understand the motivations behind the design of the Slang reflection API -- especially developers who are considering contributing to the Slang project such that they might need to make changes to the interface or implementation of reflection. Because the engine approach described here motivates many of the design choices in the API, an understanding of the material in this document should help inform understanding of the reflection API design.
 
-## This is not the only valid approach!
+### This is not the only valid approach!
 
 It is important to emphasize that this document only describes *one* approach to parameter-passing. Other approaches are possible and can yield good results; indeed, these other approaches are quite common in production shader codebases.
 
 The approach we describe here was developed in collaboration with early adopters of Slang, based on their requirements and the challenges they face. We believe that this is a good general-purpose approach, and that developers can benefit from understanding it even if they do not adopt it.  
 Developers who are not interested in the approach described here are invited to utilize other documentation on the Slang reflection API instead.
 
-# Background: Shader Parameter Passing
+## Background: Shader Parameter Passing
 
-## The Challenge
+### The Challenge
 
 In typical programming languages, a developer does not often have to think about *parameter passing*; one function simply calls another, and the values given as arguments automatically show up as the values of parameters in the called function. Things are not so simple for GPU graphics programmers, for a few key reasons.
 
@@ -36,11 +36,11 @@ Second, the underlying mechanisms for passing parameter data from the CPU “cal
 
 Furthermore, different target platforms and GPU APIs may use drastically different mechanisms for the same type of parameter. For example, a simple global-scope texture parameter is passed via an API-defined slot in Metal, via a descriptor set for Vulkan, and as ordinary data inside a buffer for OptiX.
 
-## Typical Approaches
+### Typical Approaches
 
 Before describing our approach to shader parameter passing, we will survey how the above challenges are tackled in many existing applications and engines.
 
-### Encapsulate Shader Features as Files
+#### Encapsulate Shader Features as Files
 
 A large shader codebase is usually decomposed into a variety of different *features*: logical units of shader code that can be combined together as part of larger programs. The features of a real-time ray-tracing codebase might include various types of light sources, material models, path-tracing strategies, and reconstruction filters.
 
@@ -62,7 +62,7 @@ float3 evaluateSkyLighting(...);
 
 A particular set of entry points for a rendering pass would then `#include` the files that define the features that will be used in that pass (perhaps conditionally, if certain features are optional and can be enabled/disabled for the given pass).
 
-### Define Shader Parameters as Global Variables
+#### Define Shader Parameters as Global Variables
 
 A given feature will typically have its own shader parameters. For example the sky lighting feature shown above might have a parameter to represent the color and intensity of the light from the sun, while the CSM feature would have parameters for shadow map textures. A typical application would declare those parameters at global scope, using code similar to the following:
 
@@ -95,11 +95,11 @@ cbuffer SkyUniforms
 float3 evaluateSkyLighting(...);
 ```
 
-### Determine Where Each Global Parameter is Bound
+#### Determine Where Each Global Parameter is Bound
 
 Here we find a split in how typical codebases approach shader parameter passing. In order for host application code to set the value for a shader parameter like `shadowCascadeSampler` above, it needs to know both the API-specific mechanism used to set parameters of that type (e.g., a descriptor written into a descriptor set for Vulkan) and the location that the parameter is *bound* to for that mechanism (e.g., for Vulkan the location would include the descriptor set index and binding index).
 
-#### Manually Bind Parameters to API-Specific Locations
+##### Manually Bind Parameters to API-Specific Locations
 
 Historically, shading languages like HLSL and GLSL have supported a wide variety of annotations that can be manually attached to shader parameters to specify how those parameters should be bound to locations for API-specific mechanisms. For example, an HLSL programmer might use a `register` annotation to manually specify what register and space a texture should bind to for D3D12, and a `[[vk::binding]]` annotation to manually specify what binding index and descriptor set it should bind to for Vulkan:
 
@@ -120,7 +120,7 @@ Note that the Slang compiler supports manual binding annotations like the above;
 
 While manual specification is a superficially simple idea, it does not scale well to large shader codebases that need to run on many different platforms. Manual binding of parameters to locations is effectively a global register-allocation problem that must be done by hand; any two features that might be used together must not specify overlapping locations. Further, because of differences in the mechanisms used by different GPU APIs, and their related rules and restrictions, additional annotations are often needed for each target platform/API.
 
-#### Use Reflection to Query How Parameters are Bound
+##### Use Reflection to Query How Parameters are Bound
 
 A more scalable approach, in terms of software development effort, than manual specification of binding is to allow the compiler for GPU shader code to automatically bind shader parameters to their per-target-API locations, and then to use *reflection* to query the location that was assigned to each parameter.
 
@@ -130,13 +130,13 @@ Because all of the parameters of *all* features are declared at the same (global
 
 Furthermore, most GPU compilers make few or no guarantees about the consistency of how parameters are automatically bound to locations when the same features (and thus the same parameters) are used in multiple programs, or when code is conditionally enabled/disabled (even just code in function bodies). The lack of such guarantees further impedes applications from efficiently using and *re-using* API constructs like descriptor sets across GPU operations.
 
-### Summary
+#### Summary
 
 We have described the way shader parameter passing is implemented today in typical codebases, and highlighted how these approaches typically suffer from either poor scalability in software-development effort, or poor runtime efficiency. Next we describe an approach that allows application developers to circumvent this trade-off.
 
-# Use Types to Encapsulate Shader Features
+## Use Types to Encapsulate Shader Features
 
-## Each Feature Becomes a Struct in Slang
+### Each Feature Becomes a Struct in Slang
 
 The essence of our approach is *type-based encapsulation*. Put simply, for each shader feature that a developer introduces, they should take *all* of its parameters and group them into a Slang `struct` type. This type will then be used to define the parameter-passing interface between the host application and GPU code. For example, to revisit our example of a cascaded shadow map feature:
 
@@ -159,7 +159,7 @@ Encapsulating parameters into `struct` types avoids polluting the global scope w
 
 One reason why (ab)use of global variables may have been popular in shader code is that it provides the operations of a feature (like evaluateCSM() in the earlier code examples) implicit access to the shader parameters of that feature. In the revised code we show above, the global-scope function evaluateCSM() has been turned into an evaluate() method on the CascadedShadowMap type itself. The body of that method enjoys the same kind of convenient access to the parameters of the feature, through the implicit this parameter of the method.
 
-### Nest Types When it Makes Sense
+#### Nest Types When it Makes Sense
 
 When one feature depends on another (as our example sky light feature depends on the CSM feature), and there is a “has-a” relationship between those features, we encourage developers to model this relationship by nesting the relevant types:
 
@@ -181,7 +181,7 @@ struct SkyLight
 
 Note here how the `SkyLight type` includes a field, `csm`, of type `CascadedShadowMap`. Because a single `struct` type like `CascadedShadowMap` can encapsulate all of the parameters of a feature, independent of their types, the sky light feature can be insulated from the implementation details of the CSM feature; adding or removing parameters from the CSM feature does not require changing the code in `SkyLight.slang`.
 
-## Each Feature Also Gets a Host Type
+### Each Feature Also Gets a Host Type
 
 The next key to our approach is to define a type in the host application that corresponds to each feature in the GPU shader codebase. For our running example, a host application written in C++ might define something like:
 
@@ -204,7 +204,7 @@ Just as the Slang struct type defined earlier encapsulates the logical feature i
 
 Note that the host type does *not* need to declare the exact same members with the exact same types as the GPU code. As a simple example, the `shadowCascadeDistances` are a vector in the GPU code and an array in the CPU code. All that matters is that this host type logically owns the data that needs to be passed to the parameters of the GPU feature.
 
-### Nesting Should be Mirrored in the Host Code
+#### Nesting Should be Mirrored in the Host Code
 
 In cases where features in the GPU shader codebase logically nest, the corresponding host types should also make use of nesting:
 
@@ -227,7 +227,7 @@ private:
 
 Here we see that the host-side representation of the sky light feature owns an object of the host-side `CascadedShadowMap` type. The nesting relationship in the shader code is mirrored in the host code.
 
-## Encapsulate Parameter Passing in a Method
+### Encapsulate Parameter Passing in a Method
 
 The next essential ingredient for our approach is a method belonging to the host type, that is responsible for writing parameter data for the corresponding GPU feature. For our running example, this would be something like:
 
@@ -259,7 +259,7 @@ void CascadedShadowMap::writeInto(MyEngine::ShaderCursor cursor)
 
 Conceptually, this code takes a cursor, representing the destination to write to, and uses it to navigate to the individual parameters (fields of the `CascadedShadowMap` struct in the shader code) and write to them. Much of the remainder of this document is dedicated to showing how to (easily) implement the relevant operations on `ShaderCursor` such as `field()`, `element()`, and `write()`.
 
-### When Features Nest, Re-Use the Methods
+#### When Features Nest, Re-Use the Methods
 
 One of the benefits of our type-based approach to encapsulation is that we can easily re-use the logic for writing parameter data in a hierarchical fashion, when types nest. For example, the `writeInto()` method for the sky light feature might look like:
 
@@ -277,7 +277,7 @@ void SkyLight::writeInto(MyEngine::ShaderCursor cursor)
 
 Here we see that the `SkyLight::writeInto()` method leverages the `CascadedShadowMap::writeInto()` method to write the parameter data for the `csm` field. We see again that our approach allows the CSM feature to fully encapsulate its implementation details; the sky light feature need not have any knowledge of the fields of CascadedShadowMap or their types.
 
-## Declare Parameter Blocks on Entry Points
+### Declare Parameter Blocks on Entry Points
 
 At this point a reader may be left asking where this approach actually bottoms out; it can’t be `struct`s all the way down.
 
@@ -304,31 +304,31 @@ For example, when compiling code like this for Vulkan/D3D12, the parameter `skyL
 
 For simple compute entry points we recommend declaring `ParameterBlock<>`s  as `uniform` parameters of the entry point. For other pipelines like rasterization and ray-tracing, where programs are composed from multiple entry points, `ParameterBlock<>`s should currently be declared as global-scope uniform parameters.
 
-## What have we gained?
+### What have we gained?
 
 The approach we are proposing here is so simple that it may appear naive, or like it cannot possibly provide any benefits over the existing approaches that we surveyed. In truth, however, the apparent simplicity in the application code comes from the way that this approach takes advantage of carefully designed aspects of the Slang language, compiler, and reflection API.
 
-### Compared to Manual Binding
+#### Compared to Manual Binding
 
 Compared to the approach of declaring individual global-scope shader parameters with manual binding annotations, our approach keeps the code for shader features simple and uncluttered, and supports software development practices that scale to large codebases with many features that support many target platforms. Our approach *retains* the key benefit of manual binding: the ability to group logically-related parameters for efficient parameter passing via target-specific mechanisms like descriptor sets.
 
-### Compared to Existing Reflection-Based Approaches
+#### Compared to Existing Reflection-Based Approaches
 
 Compared to the approach of declaring individual global-scope shader parameters and then using reflection to discover how those parameters were bound, our approach can support more efficient use of parameter-passing mechanisms like descriptor sets/tables.
 
 It is vital to note that the layout for the members of a struct type in Slang is stable for a given platform, so long as the contents of the struct do not change. This means that when the same `struct` type is used in different shader programs, or different variants of the same program, it will always be laid out the same. For example, because the layout of a `struct` like `SkyLight` is stable, a GPU descriptor set/table that has been allocated and filled in using `SkyLight::writeInto()` can be re-used across GPU program invocations, even for different programs or variants.
 
-# Implementing a Shader Cursor Using Slang
+## Implementing a Shader Cursor Using Slang
 
 We have shown examples of how the features in an application’s shader codebase can be encapsulated to make shader parameter passing logic clean and composable. These examples fundamentally rely on the `MyEngine::ShaderCursor` type, so we now shift our focus to showing how such a type can be implemented easily and efficiently in an application or engine codebase.
 
 As a temporary simplification to keep the presentation as simple as possible, the `ShaderCursor` type we build in this section will be specific to the Vulkan API. A later section will discuss how the approach presented here can be extended to work with *all* of the target platforms and APIs that Slang supports.
 
-## Public Interface
+### Public Interface
 
 Our earlier code examples, notably the `writeInto()` method bodies, have already given us an idea of the operations that a shader cursor needs to support.
 
-### Navigation
+#### Navigation
 
 Given a cursor that points to a location with some aggregate type (a `struct` or array), an application needs a way to navigate to a part of that aggregate: a field of a `struct` or an element of an array. The corresponding operations are:
 
@@ -346,7 +346,7 @@ public:
 
 The `field()` operations form a cursor to a field of a `struct`, based on either the name or index of the field. The `element()` operation forms a cursor to an element of an array.
 
-### Writing
+#### Writing
 
 Once a cursor has been formed that points to a small enough piece of parameter data, such as an individual texture, an application needs a way to write a value for that parameter. The corresponding operations are:
 
@@ -367,9 +367,9 @@ public:
 
 In this example shader cursor implementation, different overloads of the `write()` operation deal with values of ordinary types and values of opaque types. The client of this interface does not need to think about the details of how different types of parameters might be passed on different target platforms and GPU APIs.
 
-## State
+### State
 
-### Location
+#### Location
 
 A shader cursor logically represents a location to which the values of shader parameters can be written. Different GPU APIs expose different mechanisms for parameter-passing, and a given feature in a shader codebase might include parameters that get bound to any or all of those mechanisms. 
 
@@ -399,7 +399,7 @@ uint32_t 		m_bindingArrayIndex;
 
 Here our example `ShaderCursor` type has members to represent a location for each of the two parameter-passing mechanisms mentioned above. For ordinary data, there is a buffer and a byte offset into the buffer, representing a location within the buffer. For descriptors, there is a descriptor set, the index of a binding in that descriptor set, and an array index into the bindings at that index; together these fields represent a location within the descriptor set.
 
-### Type
+#### Type
 
 A shader cursor acts much like a pointer, but the type of the data being pointed to is determined dynamically rather than statically. Thus rather than having a type template parameter like a C++ smart pointer would, this shader cursor implementation stores the type (and layout) as a field:
 
@@ -415,17 +415,17 @@ private:
 };
 ```
 
-## Implementing the Operations
+### Implementing the Operations
 
 We will now go through the operations in the public interface for the example `ShaderCursor` type, and show how each can be implemented with the help of Slang’s reflection API.
 
 Note that for simplicity of presentation, the implementation shown here does not include error checks, such as checking that a structure field actually exists or that an array element index is in bounds.
 
-### Writing
+#### Writing
 
 The implementation of writing data to a shader cursor is, in general, specific to a given GPU API, and also can depend on the type of data being written (ordinary data, textures, samplers, etc.).
 
-#### Ordinary Data
+##### Ordinary Data
 
 For the Vulkan API, shader parameters of ordinary types are passed via buffer memory. Writing such a parameter to a cursor entails writing that data to the underlying buffer:
 
@@ -453,7 +453,7 @@ Developers are encouraged to carefully evaluate the performance trade-offs of us
 
 For the purposes of this document, the important thing to note is that all of the information needed to write to the buffer is readily available.
 
-#### Opaque Types
+##### Opaque Types
 
 For the Vulkan API, textures and other opaque types are passed via descriptor sets. Writing a texture to a cursor entails writing a descriptor into a descriptor set:
 
@@ -480,11 +480,11 @@ void ShaderCursor::write(MyEngine::Texture* texture)
 
 Here most of the code is just the boilerplate required to set up a call to `vkUpdateDescriptorSets()`. The essential thing to note is that all of the fields of the `VkWriteDescriptorSet` type can be determined from either the state of the shader cursor, or from the texture image itself.
 
-### Navigation
+#### Navigation
 
 The operations above for writing using a shader cursor have been simple because the shader cursor tracks exactly the information that the corresponding Vulkan API operations need. The most important task remaining is to show how to compute this information correctly (and efficiently) when using a cursor to navigate to a structure field or array element.
 
-#### Fields
+##### Fields
 
 The task of navigating to a structure field by name can be reduced to the task of navigating by the field index:
 
@@ -517,7 +517,7 @@ The byte offset of the field is the byte offset of the aggregate plus the offset
 
 The starting binding index of the field is the starting binding index of the aggregate plus the offset of the field in binding indices. This code explicitly queries the offset of the field using the `slang::ParameterCategory` that corresponds to Vulkan binding indices.
 
-#### Elements
+##### Elements
 
 Navigating a shader cursor to an array element is only slightly more complicated than navigating to a structure field:
 
@@ -544,7 +544,7 @@ The byte offset of an array element is computed in an unsurprising manner: an ad
 
 Note that for many of the targets Slang supports the stride of a type layout is not the same as its size, whereas in C/C++ the stride between consecutive elements in an array of `T` is always `sizeof(T)`.
 
-##### Computing the index into a binding array
+###### Computing the index into a binding array
 
 While computing the byte offset of an array element is straightforward, the logic for indexing into the array elements of a descriptor set binding may require some explanation. The step where the desired element index is added to the existing index is intuitive, but the previous step where the existing index is multiplied by the element count of the array may not immediately make sense.
 
@@ -565,7 +565,7 @@ If we start with a cursor pointing to `t`, with `m_bindingArrayElement` equal to
 * The `.element(x)` operation is indexing into a 3-element array, and will yield a new cursor with `m_bindingArrayElement` equal to `0*3 + x = x` 
 * The `.element(y)` operation is indexing into a 5-element array, and will yield a new cursor with `m_bindingArrayElement` equal to `x*5 + y`, which is the desired result
 
-# Reflecting on What Has Been Covered So Far
+## Reflecting on What Has Been Covered So Far
 
 So far, this document has presented:
 
@@ -582,11 +582,11 @@ The remainder of this document is dedicated to bridging the gaps between what ha
 * The Vulkan-specific shader cursor needs to be revised to support multiple platforms  
 * An application needs to be able to allocate constant buffers and parameter blocks based on reflection data, and to kick off the parameter-passing logic for top level shader parameters (such as parameter blocks)
 
-# Making a Multi-Platform Shader Cursor
+## Making a Multi-Platform Shader Cursor
 
 Above we showed an example implementation of an engine-specific ShaderCursor type, that only supported the Vulkan API. In this section we will show how to revise that implementation to support multiple targets, with help from the Slang reflection API.
 
-## What is the challenge?
+### What is the challenge?
 
 In order for the Vulkan-specific ShaderCursor to present a clean and easy-to-use interface, it was important that it stored a representation of a location to be written to for *each* of the parameter-passing mechanisms that Vulkan supports (namely: ordinary bytes in a buffer, and descriptors in a descriptor set). When navigating a cursor to a field of a struct or element of an array, the ShaderCursor implementation needed to compute proper offsets to apply for each of these mechanisms.
 
@@ -596,7 +596,7 @@ The full diversity of parameter-passing mechanisms for target GPU APIs can be se
 
 Trying to tackle this problem head-on by storing additional offsets/indices in an engine-specific `ShaderCursor` leads to messier and more complicated code, with a lot of target-specific logic mixed up with the core work that the `ShaderCursor` is meant to perform.
 
-## Simplifying the problem with *binding ranges*
+### Simplifying the problem with *binding ranges*
 
 The Slang reflection API provides an additional decomposition of type layouts in terms of target-independent *binding ranges*. Each binding range corresponds to a “leaf” in the layout of a type, where that leaf has a type that is opaque for at least some type. As a contrived example:
 
@@ -621,9 +621,9 @@ In this example, the type `Material` contains two binding ranges:
 
 Every type layout can be broken down as zero or more bytes of ordinary data, and zero or more binding ranges. All of the binding ranges of a type are grouped together for counting and indexing, so that no matter how complicated of a type an application is working with a `ShaderCursor` implementation need only track two things: a byte offset for ordinary data, and an index for a binding range.
 
-## Applying this to the example ShaderCursor implementation
+### Applying this to the example ShaderCursor implementation
 
-### Representation of Location
+#### Representation of Location
 
 Our Vulkan-specific shader cursor implementation used the following state to represent the location being written to:
 
@@ -665,7 +665,7 @@ struct ShaderCursor
 
 We now turn our attention to how that object being written into should be represented.
 
-### RHI ShaderObject Interface
+#### RHI ShaderObject Interface
 
 An application/engine that supports many target GPU APIs will typically define an *RHI* (rendering hardware interface) that abstracts over the essential API- or hardware-specific operations. Looking at the Vulkan-specific ShaderCursor implementation above, the various write() operations include direct Vulkan API calls, and thus need to be put behind an RHI in a portable engine.
 
@@ -692,11 +692,11 @@ void ShaderCursor::write(MyEngine::Texture* texture)
 }
 ```
 
-## Target-Independent ShaderCursor Navigation
+### Target-Independent ShaderCursor Navigation
 
 With a new representation for the index/offset information in a location, the core `ShaderCursor` operations `field()` and `element()` need to be updated. It turns out, however, that the new target-independent versions are similarly clean and simple compared to the earlier Vulkan-specific versions.
 
-### Fields
+#### Fields
 
 Here is the target-independent code for navigating to a field by index:
 
@@ -716,7 +716,7 @@ ShaderCursor ShaderCursor::field(int index)
 
 The only substantive difference here is that instead of updating a Vulkan-specific binding index using a query for just `slang::ParameterCategory::DescriptorSlot`, the code instead uses a separate binding-range oriented part of the reflection API: `slang::TypeLayoutReflection::getFieldBindingRangeOffset()`.
 
-### Elements
+#### Elements
 
 In contrast the case for structure fields, the logic for array elements does not really change *at all*:
 
@@ -738,11 +738,11 @@ ShaderCursor ShaderCursor::element(int index)
 
 Astute readers might have noted that nothing about the array-indexing case shown previously had appeared Vulkan-specific, and that is indeed the case. All that has changed here is renaming to account for the new `ShaderOffset` type.
 
-### That’s Really It
+#### That’s Really It
 
 The above changes to the `field()` and `element()` operations are sufficient to make the navigation operations on `ShaderCursor` target-independent. The remaining work is all in the RHI implementation of a shader object for each target.
 
-## Target-Specific ShaderObject Implementation
+### Target-Specific ShaderObject Implementation
 
 The target-API-specific shader object implementation is responsible for interacting with the underlying GPU API, and is also the place where the target-independent binding range abstraction needs to be translated over to the target-specific concepts.
 
@@ -816,7 +816,7 @@ This RHI code is able to remain simple and clean because the Slang reflection AP
 * The `slang::TypeLayoutReflection::getBindingRangeIndexOffset()` method translates the target-independent binding range index into the Vulkan binding index  
 * The `slang::TypeLayoutReflection::getBindingRangeType()` method provides information about the binding range that can be mapped directly to the `VkDescriptorType`
 
-## Is that really all the code that is needed?
+### Is that really all the code that is needed?
 
 Yet again, we have arrived at a solution so simple it might seem like nothing has been done. We took a Vulkan-specific shader cursor and split it into a target-independent shader cursor that uses the concept of binding ranges as exposed by the Slang reflection API, and then showed how the parts of the old implementation that interacted with the Vulkan API can be moved under an RHI.
 
@@ -824,9 +824,9 @@ At this point RHI `ShaderObject` implementations comparable to `VulkanShaderObje
 
 What has been (intentionally) glossed over thus far is how to allocate `ShaderObjects` corresponding to constant buffers and parameter blocks, and how to handle the top-level shader parameters corresponding to such buffers and blocks.
 
-# Buffers, Blocks, and Top-Level Shader Parameters
+## Buffers, Blocks, and Top-Level Shader Parameters
 
-## When to use buffers, blocks, or just plain structs
+### When to use buffers, blocks, or just plain structs
 
 The Slang core library includes two constructs that allow a developer to control how shader parameters are passed: `ConstantBuffer<>` and `ParameterBlock<>`. Both of these constructs work best when shader features organize their parameters into struct types, as this document recommends. While, e.g., both `ConstantBuffer<SkyLight>` and `ParameterBlock<SkyLight>` are allowed and meaningful, their meanings differ in a few key ways.
 
@@ -841,7 +841,7 @@ struct Aggregate
 }
 ```
 
-### Targets with Descriptor Sets
+#### Targets with Descriptor Sets
 
 For a targets like Vulkan, D3D12, or WebGPU, which support descriptor sets or something equivalent:
 
@@ -853,7 +853,7 @@ For a targets like Vulkan, D3D12, or WebGPU, which support descriptor sets or so
 
 A developer who is aggregating/nesting types in their shader code can thus pick between these three options as needed in order to match their desired policies for how shader parameter data will be re-used or not. Each successive option above introduces more indirection than the option before it, which can enable more buffers and/or descriptor sets to be re-used, but may come with other trade-offs.
 
-### Other Targets
+#### Other Targets
 
 Not all of the compilation targets that Slang supports have behavior akin to Vulkan/D3D12/WebGPU, and these additional targets have their own layout behaviors:
 
@@ -863,13 +863,13 @@ Not all of the compilation targets that Slang supports have behavior akin to Vul
 
 Developers of portable codebases are encouraged to pick between the three options illustrated above (by-value nesting, constant buffers, or parameter blocks) based on performance considerations for targets like Vulkan/D3D12; doing so will tend to result in good performance on these other targets as well.
 
-## Allocating Shader Objects
+### Allocating Shader Objects
 
 An attentive reader may have had a lurking question from when we presented our first (Vulkan-specific) shader cursor implementation: how is one supposed to allocate a `VkDescriptorSetLayout` to correspond to some type in their Slang shader code? For example, given a `ParameterBlock<SkyLight>` shader parameter, how does one allocate a descriptor set based on the type `SkyLight`?
 
 We have intentionally deferred discussion of this question until *after* presenting a multi-platform implementation of shader cursors, because it turns out that the binding ranges reflected by Slang provide a convenient answer to this question.
 
-### What Information Is Needed?
+#### What Information Is Needed?
 
 We are going to focus primarily on the needs of Vulkan and D3D12 here. Other target platforms and APIs tend to have similar considerations, or are simpler to work with.
 
@@ -890,7 +890,7 @@ The more interesting challenge is the descriptor set/table. Consider the Vulkan 
 
 The first of those steps is the one where support from the Slang reflection API is clearly needed.
 
-### The Hard Way: Recursively Walking Reflected Type Layouts
+#### The Hard Way: Recursively Walking Reflected Type Layouts
 
 In order to enumerate all of the bindings in an arbitrary `slang::TypeLayoutReflection`, an application needs to recursively traverse the structure of types. This can be accomplished with a helper type like:
 
@@ -986,13 +986,13 @@ case slang::TypeReflection::Kind::Struct:
 	break;
 ```
 
-#### An Important Assumption
+##### An Important Assumption
 
 The above code is doing something subtle, that readers should note. Rather than use the Slang reflection API to query the binding indices that were assigned by the Slang compiler, this code is simply incrementing the `m_bindingIndex` member every time a suitable leaf field is encountered. This approach works because the application code shown here is mirroring the same simple and deterministic way that the Slang compiler traverses types to automatically compute layout. Such a simple approach will not work in codebases that deviate from the approach that this document advocates for, and who make heavy use of manually-specified binding.
 
 Note that these assumptions are valid in part because the Slang compiler, as a matter of policy, does not eliminate unused shader parameters (whether as top-level parameters, or nested within structures) prior to computing layout and assigning binding locations. This design choice is in contrast to most existing GPU shader compilers, which aggressively eliminate unused textures, and other parameters of opaque types, and then only perform layout and reflect the parameters that remain.
 
-### The Easy Way: Using Binding Ranges
+#### The Easy Way: Using Binding Ranges
 
 The concept of binding ranges in the Slang is closely linked to the way that descriptor sets are organized for Vulkan/D3D12/etc. Using the Slang reflection API for binding ranges makes it possible to write a non-recursive version of the above logic:
 
@@ -1018,7 +1018,7 @@ Note that making use of binding ranges not only eliminates the need for recursio
 
 Note also that even when using binding ranges to simplify this code, an application still needs to apply logic as shown in `addBindingsForParameterBlock()` to account for a constant-buffer binding, in the case where a type includes ordinary data. As in the earlier example, we are keeping the code simple by computing binding indices directly in the host code (`m_bindingIndex++`), in a way that will match Slang’s automatic layout rules; this simple logic might not work for a codebase that employs manual binding annotations.
 
-## Cache and Re-Use Shader Object Layouts
+### Cache and Re-Use Shader Object Layouts
 
 Given the way that, e.g., the Vulkan API distinguishes between `VkDescriptorSets` and `VkDescriptorSetLayouts`, we advocate that the RHI for an applicaiton/engine should make a distinction between `ShaderObject`s and `ShaderObjectLayout`s. The relevant parts of the RHI might look something like:
 
@@ -1036,11 +1036,11 @@ class RHI
 
 We encourage applications to cache and re-use `ShaderObjectLayout`s, to avoid redundantly creating multiple RHI objects corresponding to the same Slang reflection information.
 
-## Writing to a Top-Level Shader Parameter
+### Writing to a Top-Level Shader Parameter
 
 When application shader code has been written so that top-level shader parameters are all `ParameterBlock<>`s, it can be very easy to kick off parameter passing. This section will show the logic an application can use to construct and fill in a fresh parameter block for a top-level shader parameter, using the RHI design already shown.
 
-### When Using Globals
+#### When Using Globals
 
 In the case where the shader parameter in question is declared as a global:
 
@@ -1065,7 +1065,7 @@ void appCodeToRenderSomething(
 
 In this example, the application code has determined the `descriptorSetIndex` that the `gSkyLightParameter` maps to for Vulkan (or, equivalently, the register space that the parameter maps to for D3D12).
 
-### When Using Entry-Point Parameters
+#### When Using Entry-Point Parameters
 
 In the case where the shader parameter in question is declared as a parameter of a compute entry point:
 
@@ -1097,7 +1097,7 @@ Just as in the case for a global parameter, we have extracted the `skyLightParam
 
 Note that this code assumes that *all* of the shader parameters are being declared as uniform entry-point parameters. Cases that mix global and entry-point shader parameters need some additional logic that is beyond what that document has space to cover.
 
-### Creating a Shader Object and Initial Cursor
+#### Creating a Shader Object and Initial Cursor
 
 Regardless of how the reflection-data for the top-level parameter is queried, the next major task is to create a shader object based on the type of the type of the data in the parameter block, and to start filling it in:
 
@@ -1124,7 +1124,7 @@ Next the code allocates a shader object to match the type layout for `SkyLight`,
 
 Once the shader object is allocated, the code invokes the `SkyLight::writeInto()` operation to write the state of the CPU-side `SkyLight `object into the GPU-side `SkyLight` structure, and then sets the shader object as a descriptor set using the application/engine’s RHI.
 
-### Creating a Shader Cursor from a ShaderObject
+#### Creating a Shader Cursor from a ShaderObject
 
 The key missing piece in the preceding code example is the operation to create a shader cursor from a shader object, but this turns out to be a simple matter. The desired operation in the `ShaderCursor` API is:
 
@@ -1146,7 +1146,7 @@ ShaderCursor::ShaderCursor(ShaderObject* object)
 {}
 ```
 
-# Conclusion
+## Conclusion
 
 Our goal with this document has been to illustrate an idiomatic approach that an application/engine can use to achieve GPU shader code and host-side logic for shader parameter-passing that is both practical and scalable to large codebases.
 
