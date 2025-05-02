@@ -52,5 +52,5 @@ jobs:
         if: steps.check_changes.outputs.changes == 'true'
         run: |
           git add -A
-          git commit -m "Auto-update submodules [skip ci]"
+          git commit -m "Auto-update submodules"
           git push origin ${{ steps.default_branch.outputs.name }} 
