@@ -7,8 +7,7 @@ intro_image_absolute: true
 intro_image_hide_on_mobile: false
 ---
 
-Using the Slang Compilation API
-===============================
+## Using the Slang Compilation API
 
 This tutorial explains the flow of calls needed to use the Slang Compilation API. The overall sequence is described in [Basic Compilation](#basic-compilation) followed by a discussion on more advanced topics.
 
@@ -16,8 +15,7 @@ Using the compilation API offers much more control over compilation compared to 
 
 The Slang compilation API is provided as a dynamic library. Linking to it, you have access to the compilation API which is organized in a Component Object Model (COM) fashion.  The Slang [User Guide](https://shader-slang.com/slang/user-guide/compiling.html#using-the-compilation-api) describes Slang's "COM-lite" interface a bit more.
 
-Table of Contents
-=================
+## Table of Contents
 
 * [Basic Compilation](#basic-compilation)
 * [Precompiled Modules](#precompiled-modules)
@@ -28,8 +26,7 @@ Table of Contents
 * [Post-Compilation Reflection](#post-compilation-reflection)
 * [Complete Example](#complete-example)
 
-Basic Compilation
------------------
+### Basic Compilation
 
 This is the overall flow needed to compile even the simplest applications.
 
@@ -41,8 +38,8 @@ This is the overall flow needed to compile even the simplest applications.
 6. [Link Program](#link)
 7. [Get Target Kernel Code](#get-target-kernel-code)
 
-## Step-by-step
-### Includes
+### Step-by-step
+#### Includes
 The main header file is `slang.h`, though you also need `slang-com-ptr.h` to have the definition of Slang::ComPtr used throughout the API. `slang-com-helper.h` is nice to have, since it provides helpers for checking API return values and otherwise using COM.
 ```cpp
 #include "slang.h"
@@ -50,7 +47,7 @@ The main header file is `slang.h`, though you also need `slang-com-ptr.h` to hav
 #include "slang-com-helper.h"
 ```
 
-### Create Global Session
+#### Create Global Session
 The global API call to `createGlobalSession` is always going to be the first runtime step, since it establishes a connection to the Slang API implementation.
 
 ```cpp
@@ -58,7 +55,7 @@ The global API call to `createGlobalSession` is always going to be the first run
     createGlobalSession(globalSession.writeRef());
 ```
 
-### Create Session
+#### Create Session
 To read more about what sessions are all about, see [About Sessions](#about-sessions).
 Creating a session sets the configuration for what you are going to do with the API.
 
@@ -72,7 +69,7 @@ The `SessionDesc` object holds all the configuration for the Session.
     slang::SessionDesc sessionDesc = {};
 ```
 
-#### List of enabled compilation targets
+##### List of enabled compilation targets
 
 Here, only one target is enabled, `spirv_1_5`. You can enable more targets, for example, if you need to be able to compile the same source to DXIL as well as SPIRV.
 ```cpp
@@ -84,7 +81,7 @@ Here, only one target is enabled, `spirv_1_5`. You can enable more targets, for 
     sessionDesc.targetCount = 1;
 ```
 
-#### Preprocessor defines
+##### Preprocessor defines
 
 Slang supports using the preprocessor.
 ```cpp
@@ -97,7 +94,7 @@ Slang supports using the preprocessor.
     sessionDesc.preprocessorMacroCount = preprocessorMacroDesc.size();
 ```
 
-#### Compiler options
+##### Compiler options
 
 Here is where you can specify Session-wide options. Check the [User Guide](https://shader-slang.com/slang/user-guide/compiling.html#compiler-options) for info on available options.
 
@@ -113,7 +110,7 @@ Here is where you can specify Session-wide options. Check the [User Guide](https
     sessionDesc.compilerOptionEntryCount = options.size();
 ```
 
-#### Create the session
+##### Create the session
 
 With a fully populated `SessionDesc`, the session can be created.
 
@@ -122,7 +119,7 @@ With a fully populated `SessionDesc`, the session can be created.
     globalSession->createSession(sessionDesc, session.writeRef());
 ```
 
-### Load Modules
+#### Load Modules
 
 Modules are the granularity of shader source code that can be compiled in Slang. When using the compilation API, there are two main functions to consider.
 
@@ -145,11 +142,11 @@ Modules are the granularity of shader source code that can be compiled in Slang.
     }
 ```
 
-#### Life Time of Modules
+##### Life Time of Modules
 
 Modules are owned by the slang Session. Once loaded, they are valid as long as the Session is valid.
 
-### Query Entry Points
+#### Query Entry Points
 
 Slang shaders may contain many entry points, and it's necessary to be able to identify them programatically in the Compilation API in order to select which entry points to compile.
 
@@ -173,7 +170,7 @@ A common way to query an entry-point is by using the `IModule::findEntryPointByN
 It is also possible to query entry-points by index, and work backwards to check the name of the entry-points that are returned at different indices.
 Check the [User Guide](https://shader-slang.com/slang/user-guide/reflection.html#program-reflection) for info.
 
-### Compose Modules and Entry Points
+#### Compose Modules and Entry Points
 
 Up to this point, modules have been loaded, and entry points have been identified, but to move forward with defining a GPU program, the relevant subset need to be selected for _composition_ into a unified program.
 
@@ -197,7 +194,7 @@ Up to this point, modules have been loaded, and entry points have been identifie
     }
 ```
 
-### Link
+#### Link
 
 Ensure that there are no missing dependencies in the composed program by using `link()`.
 
@@ -213,7 +210,7 @@ Ensure that there are no missing dependencies in the composed program by using `
     }
 ```
 
-### Get Target Kernel Code
+#### Get Target Kernel Code
 
 Finally, it's time to compile the linked Slang program to the target format.
 
@@ -269,7 +266,7 @@ Both methods cache results within the session and will return a pre-compiled blo
 About Sessions
 --------------
 
-### What's a session?
+#### What's a session?
 
 A session is a scope for caching and reuse. As you use the Slang API, the session caches everything that is loaded in it.
 
@@ -281,7 +278,7 @@ It's strongly recommended to use as few session objects as possible in applicati
 
 Using long-lived sessions with Slang API is a big advantage over compiling with the standalone `slangc` compiler executable, since each invocation of `slangc` creates a new session object by necessity.
 
-### When do I need a new Session?
+#### When do I need a new Session?
 
 A session does have some global state in it which currently makes it unable to cache and reuse artifacts, namely, the `#define` configurations. Unique combinations of preprocessor `#defines` used in your shaders will require unique session objects.
 
@@ -299,16 +296,16 @@ API methods for module precompilation are described in the [User Guide](https://
 Specialization
 --------------
 
-### Link-time Constants
+#### Link-time Constants
 
 This form of specialization involves placing relevant constant definitions in a separate Module that can be selectively included. For example, if you have two variants of a shader that differ in constants that they use, you can create two different Modules for the constants, one for each variant. When composing one variant or the other, just select the right constants module in createCompositeComponentType(). This is described also in the [User Guide](https://shader-slang.com/slang/user-guide/link-time-specialization.html#link-time-constants)
 
-### Link-time Types
+#### Link-time Types
 
 Similar to Link-time Constants. This form of specialization simply puts different versions of user types in separate modules so that the needed implementation can be selected when creating the CompositeComponentType.
 [User Guide](https://shader-slang.com/slang/user-guide/link-time-specialization.html#link-time-types)
 
-### Generics Specialization
+#### Generics Specialization
 
 Say you have a shader that has a feature in it that can be in one of two states, "High Quality" and "Low Quality". One way to support both modes of operation is to use generics. Put the logic for the two modes into two structs, both conforming to an interface (e.g. `IQuality`) that can be consistently used by callers.
 
@@ -572,7 +569,7 @@ void computeMain(uint3 threadId_0 : SV_DispatchThreadID)
 
 Notice in particular the switch case added in the function `float U_S11specialized8IQuality8getValuep0pf_0(uint2 _S1)`.
 
-### Supporting both specialization and dynamic dispatch
+#### Supporting both specialization and dynamic dispatch
 
 In the prior example, `HighQuality` and `LowQuality` are both supported in a single uber-shader, compiled to support dynamic dispatch on the call to `getValue()`. To achieve this, two `ITypeConformance` objects were added to the composite component.
 
@@ -816,7 +813,7 @@ int main()
 }
 ```
 
-### Compile it (g++ directions)
+#### Compile it (g++ directions)
 * Assumes Slang is installed in the current directory at `slang`.
 * Assumes program is saved to "shortest.cpp".
 * Assumes a release build of Slang.
@@ -827,7 +824,7 @@ If any of the above assumptions are wrong in your case, adjust the paths below t
 g++ -I./slang/include --std=c++14 shortest.cpp -L./slang/build/Release/lib/ -l:libslang.so
 ```
 
-### Run it
+#### Run it
 
 ```bat
 LD_LIBRARY_PATH=slang/build/Release/lib ./a.out

@@ -74,6 +74,7 @@ include_patterns = ['index.rst', '*.md',
                     "external/stdlib-reference/global-decls/**",
                     "external/stdlib-reference/interface/**",
                     "external/stdlib-reference/types/**",
+                    "external/slangpy/docs/**",
 ]
 
 # Configure myst-parser for markdown files
@@ -94,6 +95,7 @@ myst_title_to_header = True
 
 html_theme = "furo"
 html_title = "Slang Documentation"
+html_static_path = ['_static']
 html_css_files = ["theme_overrides.css"]
 html_theme_options = {
     "light_css_variables": {
