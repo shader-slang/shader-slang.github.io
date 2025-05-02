@@ -389,7 +389,7 @@ For example, a `material.h` file might combine the shader parameters for a mater
 
 ```c++
 // material.h
-##pragma once
+#pragma once
 
 Texture2D material_albedoMap;
 Texture2D material_specularMap;
