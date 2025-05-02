@@ -62,4 +62,4 @@ jobs:
         run: |
           curl -X POST \
                -H "Authorization: token $RTD_WEBHOOK_SECRET" \
-               https://readthedocs.org/api/v2/webhook/shader-slanggithubio-aidanfnv-wip/295699/ 
+               https://readthedocs.org/api/v2/webhook/slang-documentation/296117/
