@@ -1,0 +1,56 @@
+name: Update Submodules
+
+on:
+  schedule:
+    # Run at 2:00 AM UTC every day
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          # Fetch all history for all branches and tags
+          fetch-depth: 0
+          # Get submodules
+          submodules: 'recursive'
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+
+      - name: Get default branch
+        id: default_branch
+        run: |
+          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+          echo "name=$DEFAULT_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Checkout default branch
+        run: |
+          git checkout ${{ steps.default_branch.outputs.name }}
+
+      - name: Update submodules
+        run: |
+          git submodule update --remote --recursive
+      
+      - name: Check if submodules changed
+        id: check_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git add -A
+          git commit -m "Auto-update submodules [skip ci]"
+          git push origin ${{ steps.default_branch.outputs.name }} 
