@@ -63,7 +63,18 @@ intersphinx_mapping = {
 intersphinx_disabled_domains = ['std']
 
 templates_path = ['_templates']
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'index.md']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'index.md',
+                    'external/slang/docs/stdlib-doc.md',
+                    'external/slang/external',
+]
+include_patterns = ['index.rst', '*.md',
+                    "external/slang/docs/user-guide/*.md",
+                    "external/stdlib-reference/index.md",
+                    "external/stdlib-reference/attributes/**",
+                    "external/stdlib-reference/global-decls/**",
+                    "external/stdlib-reference/interface/**",
+                    "external/stdlib-reference/types/**",
+]
 
 # Configure myst-parser for markdown files
 myst_enable_extensions = [
@@ -81,7 +92,7 @@ myst_title_to_header = True
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "furo"
+html_theme = "sphinx_rtd_theme"
 html_title = "Slang Documentation"
 html_css_files = ["theme_overrides.css"]
 html_theme_options = {
@@ -94,4 +105,4 @@ html_theme_options = {
 }
 
 # Use default Furo sidebar configuration - remove custom sidebar
-# html_sidebars = {}  # Let Furo use its defaults
+html_sidebars = { '**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'] }
