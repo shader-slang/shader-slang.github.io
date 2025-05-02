@@ -92,7 +92,7 @@ myst_title_to_header = True
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "sphinx_rtd_theme"
+html_theme = "furo"
 html_title = "Slang Documentation"
 html_css_files = ["theme_overrides.css"]
 html_theme_options = {
@@ -103,6 +103,3 @@ html_theme_options = {
         "color-api-background": "#1e1e1e",
     },
 }
-
-# Use default Furo sidebar configuration - remove custom sidebar
-html_sidebars = { '**': ['globaltoc.html', 'relations.html', 'sourcelink.html', 'searchbox.html'] }
