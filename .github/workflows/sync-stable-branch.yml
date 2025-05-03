@@ -1,0 +1,76 @@
+name: Sync Stable Branch with Main
+
+on:
+  schedule:
+    # Run at 3:00 AM UTC every day
+    - cron: '0 3 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  sync-stable-branch:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout main branch
+        uses: actions/checkout@v4
+        with:
+          ref: main # Explicitly checkout main
+          # Fetch all history for all branches and tags
+          fetch-depth: 0
+          # Get submodules, but don't update them yet
+          submodules: 'recursive'
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Get latest slang release tag
+        id: slang_latest_tag
+        run: |
+          LATEST_TAG=$(curl -s -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/shader-slang/slang/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          if [ -z "$LATEST_TAG" ]; then
+            echo "Failed to fetch latest slang release tag"
+            exit 1
+          fi
+          echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          echo "Fetched latest slang tag: $LATEST_TAG"
+
+      - name: Update slang submodule to latest release tag
+        run: |
+          cd docs/external/slang
+          git fetch --tags origin
+          git checkout ${{ steps.slang_latest_tag.outputs.tag }}
+          cd ../../.. # Back to repo root
+          echo "Checked out tag ${{ steps.slang_latest_tag.outputs.tag }} in docs/external/slang"
+
+      - name: Update other submodules
+        run: |
+          git submodule update --remote --recursive docs/external/slangpy docs/external/stdlib-reference
+          echo "Updated other submodules (slangpy, stdlib-reference)"
+
+      - name: Check if submodules changed
+        id: check_changes
+        run: |
+          if [[ -n "$(git status --porcelain)" ]]; then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "changes=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push changes to stable branch
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git commit -m "Sync stable: Update submodules (slang@${{ steps.slang_latest_tag.outputs.tag }})"
+          # Force push the current HEAD (main + submodule updates) to stable
+          git push origin HEAD:stable --force
+
+      - name: Trigger Read the Docs Build on stable branch update
+        if: steps.check_changes.outputs.changes == 'true'
+        env:
+          RTD_WEBHOOK_SECRET: ${{ secrets.RTD_WEBHOOK_SECRET }}
+        run: |
+          curl -X POST \
+               -H "Authorization: token $RTD_WEBHOOK_SECRET" \
+               https://readthedocs.org/api/v2/webhook/shader-slanggithubio-aidanfnv-wip/295699/
