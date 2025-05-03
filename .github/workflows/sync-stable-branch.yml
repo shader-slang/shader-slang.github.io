@@ -50,21 +50,25 @@ jobs:
           git submodule update --remote --recursive docs/external/slangpy docs/external/stdlib-reference
           echo "Updated other submodules (slangpy, stdlib-reference)"
 
-      - name: Check if submodules changed
+      - name: Check for changes
         id: check_changes
         run: |
+          git add -A
           if [[ -n "$(git status --porcelain)" ]]; then
             echo "changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected."
           else
             echo "changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected."
           fi
 
       - name: Commit and push changes to stable branch
         if: steps.check_changes.outputs.changes == 'true'
         run: |
+          git add -A
           git commit -m "Sync stable: Update submodules (slang@${{ steps.slang_latest_tag.outputs.tag }})"
-          # Force push the current HEAD (main + submodule updates) to stable
           git push origin HEAD:stable --force
+          echo "Committed and force-pushed updates to stable branch."
 
       - name: Trigger Read the Docs Build on stable branch update
         if: steps.check_changes.outputs.changes == 'true'
@@ -73,4 +77,5 @@ jobs:
         run: |
           curl -X POST \
                -H "Authorization: token $RTD_WEBHOOK_SECRET" \
-               https://readthedocs.org/api/v2/webhook/shader-slanggithubio-aidanfnv-wip/295699/
+               https://readthedocs.org/api/v2/webhook/slang-documentation/296117/
+          echo "Triggered Read the Docs build."
