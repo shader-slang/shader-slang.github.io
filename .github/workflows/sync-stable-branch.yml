@@ -28,10 +28,12 @@ jobs:
 
       - name: Get latest slang release tag
         id: slang_latest_tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Provide token explicitly for gh
         run: |
-          LATEST_TAG=$(curl -s -H "Accept: application/vnd.github.v3+json" "https://api.github.com/repos/shader-slang/slang/releases/latest" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+          LATEST_TAG=$(gh release view --repo shader-slang/slang --json tagName --jq .tagName)
           if [ -z "$LATEST_TAG" ]; then
-            echo "Failed to fetch latest slang release tag"
+            echo "Failed to fetch latest slang release tag using gh"
             exit 1
           fi
           echo "tag=$LATEST_TAG" >> $GITHUB_OUTPUT
@@ -45,28 +47,28 @@ jobs:
           popd
           echo "Checked out tag ${{ steps.slang_latest_tag.outputs.tag }} in docs/external/slang"
 
-      - name: Update other submodules
-        run: |
-          git submodule update --remote --recursive docs/external/slangpy docs/external/stdlib-reference
-          echo "Updated other submodules (slangpy, stdlib-reference)"
-
       - name: Check for changes
         id: check_changes
         run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
+          # Only stage the slang submodule, as the others are already updated
+          git add docs/external/slang
+          
+          # Check if the index differs from HEAD
+          # git diff --cached --quiet exits 0 if no diff, 1 if diff
+          if ! git diff --cached --quiet; then
+            echo "Changes detected in submodule references."
             echo "changes=true" >> $GITHUB_OUTPUT
-            echo "Changes detected."
           else
+            echo "No changes detected in submodule references."
             echo "changes=false" >> $GITHUB_OUTPUT
-            echo "No changes detected."
+            # If no changes, reset the index in case unrelated changes were staged
+            git reset HEAD --quiet
           fi
 
       - name: Commit and push changes to stable branch
         if: steps.check_changes.outputs.changes == 'true'
         run: |
-          # Explicitly stage the updated submodule references
-          git add docs/external/slang docs/external/slangpy docs/external/stdlib-reference
-          git commit -m "Sync stable: Update submodules (slang@${{ steps.slang_latest_tag.outputs.tag }})"
+          git commit -m "Sync stable to release (slang@${{ steps.slang_latest_tag.outputs.tag }})"
           git push origin HEAD:stable --force
           echo "Committed and force-pushed updates to stable branch."
 
