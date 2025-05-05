@@ -72,7 +72,7 @@ include_patterns = ['index.rst', '*.md',
                     "external/stdlib-reference/index.md",
                     "external/stdlib-reference/attributes/**",
                     "external/stdlib-reference/global-decls/**",
-                    "external/stdlib-reference/interface/**",
+                    "external/stdlib-reference/interfaces/**",
                     "external/stdlib-reference/types/**",
                     "external/slangpy/docs/**",
 ]
