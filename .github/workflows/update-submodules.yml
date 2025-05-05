@@ -42,7 +42,7 @@ jobs:
       - name: Check if submodules changed
         id: check_changes
         run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
+          if [[ -n "$(git diff --submodule=diff HEAD)" ]]; then
             echo "changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected."
           else
@@ -53,8 +53,7 @@ jobs:
       - name: Commit and push changes
         if: steps.check_changes.outputs.changes == 'true'
         run: |
-          # Explicitly stage the updated submodule references
-          git add docs/external/slang docs/external/slangpy docs/external/stdlib-reference
+          git add -A
           git commit -m "Auto-update submodules"
           git push origin ${{ steps.default_branch.outputs.name }}
 
