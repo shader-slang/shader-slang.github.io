@@ -1,7 +1,7 @@
 ---
 title: The Slang Shading Language
 layout: home
-description: Empowering real-time graphics developers with advanced language features.
+description: Empowering real-time graphics developers with advanced language features and machine learning capabilities.
 ---
 
 
