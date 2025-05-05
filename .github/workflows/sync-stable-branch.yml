@@ -39,10 +39,10 @@ jobs:
 
       - name: Update slang submodule to latest release tag
         run: |
-          cd docs/external/slang
+          pushd docs/external/slang
           git fetch --tags origin
           git checkout ${{ steps.slang_latest_tag.outputs.tag }}
-          cd ../../.. # Back to repo root
+          popd
           echo "Checked out tag ${{ steps.slang_latest_tag.outputs.tag }} in docs/external/slang"
 
       - name: Update other submodules
@@ -53,7 +53,6 @@ jobs:
       - name: Check for changes
         id: check_changes
         run: |
-          git add -A
           if [[ -n "$(git status --porcelain)" ]]; then
             echo "changes=true" >> $GITHUB_OUTPUT
             echo "Changes detected."
@@ -65,7 +64,8 @@ jobs:
       - name: Commit and push changes to stable branch
         if: steps.check_changes.outputs.changes == 'true'
         run: |
-          git add -A
+          # Explicitly stage the updated submodule references
+          git add docs/external/slang docs/external/slangpy docs/external/stdlib-reference
           git commit -m "Sync stable: Update submodules (slang@${{ steps.slang_latest_tag.outputs.tag }})"
           git push origin HEAD:stable --force
           echo "Committed and force-pushed updates to stable branch."

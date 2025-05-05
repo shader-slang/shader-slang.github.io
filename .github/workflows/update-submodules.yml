@@ -44,14 +44,17 @@ jobs:
         run: |
           if [[ -n "$(git status --porcelain)" ]]; then
             echo "changes=true" >> $GITHUB_OUTPUT
+            echo "Changes detected."
           else
             echo "changes=false" >> $GITHUB_OUTPUT
+            echo "No changes detected."
           fi
 
       - name: Commit and push changes
         if: steps.check_changes.outputs.changes == 'true'
         run: |
-          git add -A
+          # Explicitly stage the updated submodule references
+          git add docs/external/slang docs/external/slangpy docs/external/stdlib-reference
           git commit -m "Auto-update submodules"
           git push origin ${{ steps.default_branch.outputs.name }}
 
