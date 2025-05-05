@@ -7,14 +7,14 @@ intro_image_absolute: true
 intro_image_hide_on_mobile: false
 ---
 
-# Overview
+## Overview
 This guide provides a reference for migrating GLSL shaders to Slang.
 
-# Type and Syntax Reference
+## Type and Syntax Reference
 
 When converting GLSL shaders to Slang, you'll need to translate GLSL types and syntax to their Slang equivalents.
 
-## Scalar Types
+### Scalar Types
 
 | GLSL Type | Slang Type | Description |
 |-----------|------------|-------------|
@@ -31,7 +31,7 @@ When converting GLSL shaders to Slang, you'll need to translate GLSL types and s
 | `int64_t` | `int64_t`  | 64-bit signed integer |
 | `uint64_t`| `uint64_t` | 64-bit unsigned integer |
 
-## Vector Types
+### Vector Types
 
 | GLSL Type | Slang Type | Description |
 |-----------|------------|-------------|
@@ -54,7 +54,7 @@ When converting GLSL shaders to Slang, you'll need to translate GLSL types and s
 | `dvec3`   | `double3`  | 3-component double vector |
 | `dvec4`   | `double4`  | 4-component double vector |
 
-## Matrix Types
+### Matrix Types
 
 | GLSL Type | Slang Type | Description |
 |-----------|------------|-------------|
@@ -77,7 +77,7 @@ When converting GLSL shaders to Slang, you'll need to translate GLSL types and s
 | `f16mat4x2` | `half4x2` | 4×2 half-precision float matrix |
 | `f16mat4x3` | `half4x3` | 4×3 half-precision float matrix |
 
-## Vector/Matrix Construction
+### Vector/Matrix Construction
 
 GLSL:
 
@@ -103,7 +103,7 @@ float4x4 transform = float4x4(
 );
 ```
 
-## Matrix Operations
+### Matrix Operations
 
 GLSL:
 
@@ -133,7 +133,7 @@ float4 transformed = mul(a, v);  // matrix * column vector
 
 Note: Slang uses the `mul()` function for matrix multiplication rather than the `*` operator. Also, vectors are treated as column vectors in Slang, while they're treated as row vectors in GLSL, so the order of arguments is inverted.
 
-## Shader Inputs and Outputs
+### Shader Inputs and Outputs
 
 GLSL and Slang handle shader inputs and outputs differently. Here's a fragment/pixel shader example:
 
@@ -187,11 +187,11 @@ float4 main(float2 texCoord : TEXCOORD0) : SV_Target0 {
 
 Both Slang methods produce the same result, but Method 1 is more organized for complex shaders with many inputs and outputs, while Method 2 is more concise for simple shaders.
 
-## Built-in Variables
+### Built-in Variables
 
 GLSL provides built-in variables that can be accessed directly in shaders, while Slang requires these variables to be explicitly declared as inputs or outputs in shader entry point functions. Unlike regular shader inputs and outputs which you define yourself, built-in variables provide access to system values like vertex IDs, screen positions, etc.
 
-### Example: Minimal Vertex Shader with Built-in Variables
+#### Example: Minimal Vertex Shader with Built-in Variables
 
 Here's a simplified example showing how built-in variables work in both GLSL and Slang:
 
@@ -236,7 +236,7 @@ Notice the key differences:
 
 For more complex shaders, you can use structures for inputs and outputs as shown in the previous section.
 
-### Built-in Variables Reference
+#### Built-in Variables Reference
 
 The following table maps GLSL built-in variables to their corresponding Slang system value semantics across standard shader stages. In GLSL, these variables are accessed directly as globals, while in Slang they must be declared explicitly in function signatures with appropriate semantic annotations.
 
@@ -277,7 +277,7 @@ The following table maps GLSL built-in variables to their corresponding Slang sy
 | `gl_ViewportIndex` | `SV_ViewportArrayIndex` |
 | `gl_WorkGroupID` | `SV_GroupID` |
 
-### Ray Tracing Built-ins
+#### Ray Tracing Built-ins
 
 Ray tracing built-ins in Slang are accessed through function calls rather than system value semantics. The following table maps GLSL ray tracing built-ins to their corresponding Slang functions:
 
@@ -296,11 +296,11 @@ Ray tracing built-ins in Slang are accessed through function calls rather than s
 | `gl_WorldRayDirectionEXT` | `WorldRayDirection()` |
 | `gl_WorldRayOriginEXT` | `WorldRayOrigin()` |
 
-## Built-in Functions and Operators
+### Built-in Functions and Operators
 
 When porting GLSL shaders to Slang, most common mathematical functions (sin, cos, tan, pow, sqrt, abs, etc.) share identical names in both languages. However, there are several important differences to be aware of, listed below:
 
-### Key Function Differences
+#### Key Function Differences
 
 | GLSL | Slang | Description |
 |------|-------|-------------|
@@ -313,31 +313,31 @@ When porting GLSL shaders to Slang, most common mathematical functions (sin, cos
 | `m1 * m2` (matrix multiply) | `mul(m1, m2)` | Matrix multiplication |
 | `v * m` (row vector) | `mul(m, v)` (column vector) | Vector-matrix multiplication |
 
-# Resource Handling
+## Resource Handling
 
 This section covers how to convert GLSL resource declarations to Slang, including different buffer types, textures, and specialized resources.
 
-## Resource Binding Models
+### Resource Binding Models
 
 Slang supports three different binding syntax options to accommodate both HLSL-style and GLSL-style resource declarations:
 
-### GLSL Binding Model
+#### GLSL Binding Model
 
 ```glsl
 // GLSL uses binding and set numbers
 layout(binding = 0, set = 0) uniform UniformBufferA { ... };
 ```
 
-### Slang Binding Models
+#### Slang Binding Models
 
-#### Option 1: HLSL Register Syntax
+##### Option 1: HLSL Register Syntax
 
 ```hlsl
 // Using register semantics with space (equivalent to set)
 ConstantBuffer<UniformBufferA> bufferA : register(b0, space0);
 ```
 
-#### Option 2: GLSL-style Layout Syntax
+##### Option 2: GLSL-style Layout Syntax
 
 ```hlsl
 // Using GLSL-style binding with [[vk::binding(binding, set)]]
@@ -345,7 +345,7 @@ ConstantBuffer<UniformBufferA> bufferA : register(b0, space0);
 ConstantBuffer<UniformBufferA> bufferA;
 ```
 
-#### Option 3: Direct GLSL Layout Syntax
+##### Option 3: Direct GLSL Layout Syntax
 
 ```hlsl
 // Using layout syntax identical to GLSL
@@ -354,7 +354,7 @@ layout(binding = 0, set = 0) ConstantBuffer<UniformBufferA> bufferA;
 
 All binding syntax options work the same way for all resource types (ConstantBuffer, Texture2D, RWStructuredBuffer, etc.). The GLSL-style options (2 and 3) can be particularly helpful when porting GLSL shaders without changing the binding model.
 
-## Buffer Types
+### Buffer Types
 
 | Resource Type | GLSL | Slang | Description |
 |---------------|------|-------|-------------|
@@ -412,11 +412,11 @@ Key differences to note:
 2. In Slang, structured buffers must be indexed even for a single element (e.g., `data[0].value`)
 3. In Slang, all buffer members are accessed through the buffer variable name (e.g., `params.scale`, `data[0].value`)
 
-## Texture Resources
+### Texture Resources
 
 This section covers the declaration and usage of texture resources in Slang compared to GLSL.
 
-### Combined Texture Samplers
+#### Combined Texture Samplers
 
 GLSL:
 ```glsl
@@ -471,7 +471,7 @@ float4 main(float4 position : SV_Position) : SV_Target0 {
 | `textureGather(sampler, coord)` | `sampler.Gather(coord)` | Gather four texels |
 | `textureGatherOffset(sampler, coord, offset)` | `sampler.GatherOffset(coord, offset)` | Gather with offset |
 
-### Separate Texture Samplers
+#### Separate Texture Samplers
 
 GLSL:
 ```glsl
@@ -501,7 +501,7 @@ float4 main(float4 position : SV_Position) : SV_Target {
 }
 ```
 
-## Image Resources
+### Image Resources
 
 This section covers the declaration and usage of image resources in Slang compared to GLSL, including how to perform image load/store operations.
 
@@ -556,13 +556,13 @@ void main(uint3 dispatchThreadID : SV_DispatchThreadID) {
 | `imageStore(image, coord, value)` | `image[coord] = value` or `image.Store(coord, value)` | Write to image |
 | `imageSize(image)` | `image.GetDimensions(width, height)` | Get image dimensions |
 
-# Shader Entry Point Syntax
+## Shader Entry Point Syntax
 
 GLSL and Slang use fundamentally different approaches for shader entry points. While GLSL always uses a `void main()` function with implicit inputs/outputs through global variables, Slang uses explicitly typed entry points with decorators and function parameters/return values.
 
 This section provides a general overview of the entry point pattern differences. Detailed shader stage-specific conversion information will be covered in a later section.
 
-## Core Entry Point Pattern
+### Core Entry Point Pattern
 
 **GLSL Pattern:**
 ```glsl
@@ -593,7 +593,7 @@ return_type main(parameter_type param : semantic) : return_semantic {
 }
 ```
 
-## Shader Stage Decorators
+### Shader Stage Decorators
 
 | Shader Stage | Slang Decoration |
 |--------------|------------------|
@@ -614,13 +614,13 @@ return_type main(parameter_type param : semantic) : return_semantic {
 
 Note: For detailed conversions of specific shader stages including tessellation, geometry, mesh, and ray tracing shaders, see the "Shader Stage-Specific Conversions" section later in this guide.
 
-# Shader Stage-Specific Conversions
+## Shader Stage-Specific Conversions
 
 This section provides mappings for each shader stage from GLSL to Slang, focusing on essential declarations, attributes, and stage-specific functionality.
 
-## Vertex Shaders
+### Vertex Shaders
 
-### Core Declaration Mapping
+#### Core Declaration Mapping
 
 **GLSL:**
 ```glsl
@@ -638,13 +638,13 @@ float4 main(float3 position : POSITION) : SV_Position {
 }
 ```
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Declaration**: Add `[shader("vertex")]` decoration
 
-## Fragment/Pixel Shaders
+### Fragment/Pixel Shaders
 
-### Core Declaration Mapping
+#### Core Declaration Mapping
 
 **GLSL:**
 ```glsl
@@ -669,15 +669,15 @@ float4 main(float4 position : SV_Position) : SV_Target0 {
 }
 ```
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Declaration**: Add `[shader("pixel")]` decoration
 - **Early Z testing**: Use `[earlydepthstencil]` attribute
 - **Multiple outputs**: Use a struct with multiple fields with `SV_Target0/1/2` semantics
 
-## Compute Shaders
+### Compute Shaders
 
-### Core Declaration Mapping
+#### Core Declaration Mapping
 
 **GLSL:**
 ```glsl
@@ -696,15 +696,15 @@ void main(uint3 dispatchThreadID : SV_DispatchThreadID) {
 }
 ```
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Thread group size**: Replace `layout(local_size_x=X...) in` with `[numthreads(X,Y,Z)]`
 - **Shared memory**: Replace `shared` with `groupshared`
 - **Barriers**: Replace `barrier()` with `GroupMemoryBarrierWithGroupSync()`
 
-## Hull Shader (Tessellation Control)
+### Hull Shader (Tessellation Control)
 
-### Core Declaration Mapping
+#### Core Declaration Mapping
 
 **GLSL:**
 ```glsl
@@ -742,7 +742,7 @@ PatchTessFactors PatchConstantFunction(InputPatch<Vertex, 3> patch) {
 }
 ```
 
-### Key Attribute Mappings
+#### Key Attribute Mappings
 
 | GLSL | Slang | Description |
 |------|-------|-------------|
@@ -752,16 +752,16 @@ PatchTessFactors PatchConstantFunction(InputPatch<Vertex, 3> patch) {
 | *Implicit* | `[outputtopology("triangle_cw/triangle_ccw/line")]` | Output topology |
 | *N/A* | `[patchconstantfunc("FunctionName")]` | Function for tessellation factors |
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Split structure**: Separate the per-control-point calculations from patch-constant calculations
 - **Explicit domain/partitioning**: Add required attributes that are implicit in GLSL
 - **Patch constants**: Create separate function decorated with `[patchconstantfunc]`
 - **Input/Output patches**: Use `InputPatch<T, N>` and return individual control points
 
-## Domain Shader (Tessellation Evaluation)
+### Domain Shader (Tessellation Evaluation)
 
-### Core Declaration Mapping
+#### Core Declaration Mapping
 
 **GLSL:**
 ```glsl
@@ -788,7 +788,7 @@ float4 main(
 }
 ```
 
-### Key Attribute Mappings
+#### Key Attribute Mappings
 
 | GLSL | Slang | Description |
 |------|-------|-------------|
@@ -796,16 +796,16 @@ float4 main(
 | `layout(equal_spacing) in` | *Set in hull shader* | Tessellation spacing |
 | `layout(ccw) in` | *Set in hull shader* | Winding order |
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Domain specification**: Use `[domain("tri/quad/isoline")]` attribute
 - **Tessellation coordinates**: Access via `SV_DomainLocation` parameter
 - **Control points**: Access via `OutputPatch<T, N>` parameter
 - **Patch constants**: Access via a patch constant struct parameter
 
-## Geometry Shader
+### Geometry Shader
 
-### Core Declaration Mapping
+#### Core Declaration Mapping
 
 **GLSL:**
 ```glsl
@@ -834,7 +834,7 @@ void main(
 }
 ```
 
-### Key Attribute Mappings
+#### Key Attribute Mappings
 
 | GLSL | Slang | Description |
 |------|-------|-------------|
@@ -842,7 +842,7 @@ void main(
 | `layout(points/line_strip/triangle_strip) out` | Output stream type | Output primitive type |
 | `layout(max_vertices = N) out` | `[maxvertexcount(N)]` | Maximum output vertices |
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Declaration**: Add `[shader("geometry")]` and `[maxvertexcount(N)]`
 - **Input primitives**: Use primitive type prefix on input array parameter
@@ -850,9 +850,9 @@ void main(
 - **Vertex emission**: Replace `EmitVertex()` with `outputStream.Append(v)`
 - **End primitive**: Replace `EndPrimitive()` with `outputStream.RestartStrip()`
 
-## Amplification Shader (Task Shader)
+### Amplification Shader (Task Shader)
 
-### Core Declaration Mapping
+#### Core Declaration Mapping
 
 **GLSL:**
 ```glsl
@@ -881,16 +881,16 @@ void main(
 }
 ```
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Declaration**: Add `[shader("amplification")]` and `[numthreads(X,Y,Z)]` decorations
 - **Payload**: Replace `taskPayloadSharedEXT` with output parameter
 - **Dispatch**: Replace `EmitMeshTasksEXT` with `DispatchMesh`
 - **Thread IDs**: Access thread IDs through function parameters with semantics
 
-## Mesh Shader
+### Mesh Shader
 
-### Core Declaration Mapping
+#### Core Declaration Mapping
 
 **GLSL:**
 ```glsl
@@ -928,7 +928,7 @@ void main(
 }
 ```
 
-### Key Attribute Mappings
+#### Key Attribute Mappings
 
 | GLSL | Slang | Description |
 |------|-------|-------------|
@@ -936,7 +936,7 @@ void main(
 | `layout(triangles) out` | `[outputtopology("triangle")]` | Output primitive type |
 | `layout(max_vertices = N, max_primitives = M) out` | Output parameters | Maximum vertices/primitives |
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Declaration**: Add `[shader("mesh")]` and `[numthreads(X,Y,Z)]` decorations
 - **Output topology**: Use `[outputtopology("triangle")]` attribute
@@ -944,9 +944,9 @@ void main(
 - **Vertex access**: Replace `gl_MeshVerticesEXT[idx]` with `verts[idx]`
 - **Primitive access**: Replace `gl_PrimitiveTriangleIndicesEXT[idx]` with `prims[idx]`
 
-## Ray Tracing Shaders
+### Ray Tracing Shaders
 
-### Ray Generation Shader
+#### Ray Generation Shader
 
 **GLSL:**
 ```glsl
@@ -975,7 +975,7 @@ void main() {
 }
 ```
 
-### Closest Hit Shader
+#### Closest Hit Shader
 
 **GLSL:**
 ```glsl
@@ -998,7 +998,7 @@ void main(inout PayloadData payload, in BuiltInTriangleIntersectionAttributes at
 }
 ```
 
-### Miss Shader
+#### Miss Shader
 
 **GLSL:**
 ```glsl
@@ -1021,7 +1021,7 @@ void main(inout PayloadData payload) {
 }
 ```
 
-### Key Conversion Points
+#### Key Conversion Points
 
 - **Declaration**: Use appropriate decorator for each shader type
 - **Ray payload**: Pass as `inout` parameter instead of global variable
