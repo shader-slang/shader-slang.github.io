@@ -1,4 +1,4 @@
-name: Sync Stable Branch with Main
+name: Sync Stable Branch with Slang Release
 
 on:
   schedule:
