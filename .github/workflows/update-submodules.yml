@@ -68,5 +68,6 @@ jobs:
           RTD_WEBHOOK_SECRET: ${{ secrets.RTD_WEBHOOK_SECRET }}
         run: |
           curl -X POST \
-               -H "Authorization: token $RTD_WEBHOOK_SECRET" \
+               -d "branches=${{ steps.default_branch.outputs.name }}" -d "token=$RTD_WEBHOOK_SECRET" \
                https://readthedocs.org/api/v2/webhook/slang-documentation/296117/
+          echo "Triggered Read the Docs build for ${{ steps.default_branch.outputs.name }} branch."
