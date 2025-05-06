@@ -1,0 +1,72 @@
+name: Update Submodules
+
+on:
+  schedule:
+    # Run at 2:00 AM UTC every day
+    - cron: '0 2 * * *'
+  workflow_dispatch:  # Allow manual trigger
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+        with:
+          # Fetch all history for all branches and tags
+          fetch-depth: 0
+          # Get submodules
+          submodules: 'recursive'
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'Read the Docs Bot'
+          git config --global user.email 'rtd-bot@shader-slang.com'
+
+      - name: Get default branch
+        id: default_branch
+        run: |
+          DEFAULT_BRANCH=$(git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
+          echo "name=$DEFAULT_BRANCH" >> $GITHUB_OUTPUT
+
+      - name: Checkout default branch
+        run: |
+          git checkout ${{ steps.default_branch.outputs.name }}
+
+      - name: Update submodules
+        run: |
+          git submodule update --remote --recursive
+      
+      - name: Check if submodules changed
+        id: check_changes
+        run: |
+          git add -A
+          
+          # Check if the index differs from HEAD
+          # git diff --cached --quiet exits 0 if no diff, 1 if diff
+          if ! git diff --cached --quiet; then
+            echo "Changes detected in submodule references."
+            echo "changes=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes detected in submodule references."
+            echo "changes=false" >> $GITHUB_OUTPUT
+            # If no changes, reset the index in case unrelated changes were staged
+            git reset HEAD --quiet
+          fi
+
+      - name: Commit and push changes
+        if: steps.check_changes.outputs.changes == 'true'
+        run: |
+          git commit -m "Auto-update submodules"
+          git push origin ${{ steps.default_branch.outputs.name }}
+
+      - name: Trigger Read the Docs Build
+        if: steps.check_changes.outputs.changes == 'true'
+        env:
+          RTD_WEBHOOK_SECRET: ${{ secrets.RTD_WEBHOOK_SECRET }}
+        run: |
+          curl -X POST \
+               -H "Authorization: token $RTD_WEBHOOK_SECRET" \
+               https://readthedocs.org/api/v2/webhook/slang-documentation/296117/
