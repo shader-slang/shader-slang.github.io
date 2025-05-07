@@ -14,6 +14,43 @@ bodyClass: "news-events"
     </div>
 </div>
 
+{% assign upcoming_and_ongoing_events = site.categories.event | where_exp: "event", "event.end_date > site.time" %}
+{% if upcoming_and_ongoing_events and upcoming_and_ongoing_events.size > 0 %}
+<div class="section">
+    <div class="container">
+        <div class="row">
+            <h3>Events
+                <hr>
+            </h3>
+
+            <div class="grid gridNews">
+                {% for event in upcoming_and_ongoing_events %}
+                <div class="g-col-12 g-col-sm-6 g-col-md-4">
+                    <div class="card shadow">
+                        {% if event.image %}
+                        <img src="{{ event.image }}" class="card-img-top img-fluid" alt="{{ event.title }}">
+                        {% else %}
+                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid"
+                            alt="{{ event.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <div class="card-text">{{ event.human_date }}</div>
+                            <div class="card-tagline">{{ event.tagline }}</div>
+                            <div class="card-title">
+                                <h4>{{ event.title }}</h4>
+                            </div>
+                            <a class="btn btn-primary" href="{{ event.url | relative_url }}">View Event</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+</div>
+{% endif %}
+
 {% assign featured_posts = site.posts | where: "featured", true %}
 {% assign category_posts = featured_posts | where: "categories", "news" %}
 {% if category_posts and category_posts.size > 0 %}
@@ -130,40 +167,5 @@ bodyClass: "news-events"
 </div>
 {% endif %}
 
-{% assign upcoming_and_ongoing_events = site.events | where_exp: "event", "event.end_date > site.time" %}
-{% if upcoming_and_ongoing_events and upcoming_and_ongoing_events.size > 0 %}
-<div class="section">
-    <div class="container">
-        <div class="row">
-            <h3>Events
-                <hr>
-            </h3>
 
-            <div class="grid gridNews">
-            {% for event in upcoming_and_ongoing_events %}
-                <div class="g-col-12 g-col-sm-6 g-col-md-4">
-                    <div class="card shadow">
-                        {% if event.image %}
-                        <img src="{{ event.image }}" class="card-img-top img-fluid" alt="{{ event.title }}">
-                        {% else %}
-                        <img src="/images/posts/latest-feature.webp" class="card-img-top img-fluid"
-                            alt="{{ event.title }}">
-                        {% endif %}
-                        <div class="card-body">
-                            <div class="card-text">{{ event.human_date }}</div>
-                            <div class="card-tagline">{{ event.tagline }}</div>
-                            <div class="card-title">
-                                <h4>{{ event.title }}</h4>
-                            </div>
-                            <a class="btn btn-primary" href="{{ event.source_url }}">View Event</a>
-                        </div>
-                    </div>
-                </div>
-                {% endfor %}
-            </div>
-
-        </div>
-    </div>
-</div>
-{% endif %}
 

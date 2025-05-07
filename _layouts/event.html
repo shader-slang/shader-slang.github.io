@@ -1,0 +1,33 @@
+---
+layout: default
+bodyClass: "page-post"
+---
+
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+
+            <p><button class="btn btn-secondary">Virtual Meetup</button></p>
+
+            <h1>{{ page.title }}
+                <hr>
+            </h1>
+            <div class="metadata">
+                <div class="date">
+                {% if page.human_date and page.human_date != '' %}
+                 {{ page.human_date }}
+                {% endif %}
+                {% if page.human_date and page.human_time != '' %}
+                 | {{ page.human_time }}
+                {% endif %}
+                {% if page.human_date and page.session_length != '' %}
+                 | {{ page.session_length }}
+                {% endif %}
+                </div>
+            </div>
+
+
+            {{content}}
+        </div>
+    </div>
+</div>
