@@ -334,9 +334,9 @@ float addValue<T>(T v0, T v1) where T : IArithmetic { return v0 + v1; }
 
 It is still possible to write functions which can generically operate over
 scalars and vectors, for example using the
-[`IArithmetic`](https://shader-slang.com/stdlib-reference/interfaces/iarithmetic-01/index.html)
+[`IArithmetic`](https://docs.shader-slang.org/en/latest/external/core-module-reference/interfaces/iarithmetic-01/index.html)
 or
-[`IFloat`](https://shader-slang.com/stdlib-reference/interfaces/ifloat-01/index.html)
+[`IFloat`](https://docs.shader-slang.org/en/latest/external/core-module-reference/interfaces/ifloat-01/index.html)
 interfaces.
 
 ### Advanced Generic Features

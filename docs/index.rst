@@ -7,7 +7,7 @@ Slang Documentation
    :titlesonly:
 
    User Guide <external/slang/docs/user-guide/index>
-   Standard Modules Reference <external/stdlib-reference/index>
+   Standard Modules Reference <external/core-module-reference/index>
    Language Spec <https://github.com/shader-slang/spec>
    SlangPy User Guide <external/slangpy/docs/index.rst>
    Feature Matureness <feature_matureness>
