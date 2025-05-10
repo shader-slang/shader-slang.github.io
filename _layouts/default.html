@@ -31,13 +31,18 @@
 <body class='page {{layout.bodyClass}}'>
   {% include main-menu-mobile.html %}
   <div id="wrapper">
+    <header class='header'>
     {% include header.html headerClass='header-extra' %}
+    </header>
     <main>
     {{content}}
     </main>
   </div>
+  <div class="divider"></div>
+  <footer class="footer">
   {% include footer.html %}
   {% include sub-footer.html %}
+  </footer>
   <script type="text/javascript" src="{{ '/assets/js/scripts.js' | relative_url }}"></script>
 </body>
 </html>
