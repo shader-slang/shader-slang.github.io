@@ -47,37 +47,8 @@ jobs:
           popd
           echo "Checked out tag ${{ steps.slang_latest_tag.outputs.tag }} in docs/external/slang"
 
-      - name: Check for changes
-        id: check_changes
-        run: |
-          # Only stage the slang submodule, as the others are already updated
-          git add docs/external/slang
-          
-          # Check if the index differs from HEAD
-          # git diff --cached --quiet exits 0 if no diff, 1 if diff
-          if ! git diff --cached --quiet; then
-            echo "Changes detected in submodule references."
-            echo "changes=true" >> $GITHUB_OUTPUT
-          else
-            echo "No changes detected in submodule references."
-            echo "changes=false" >> $GITHUB_OUTPUT
-            # If no changes, reset the index in case unrelated changes were staged
-            git reset HEAD --quiet
-          fi
-
       - name: Commit and push changes to stable branch
-        if: steps.check_changes.outputs.changes == 'true'
         run: |
           git commit -m "Sync stable to release (slang@${{ steps.slang_latest_tag.outputs.tag }})"
           git push origin HEAD:stable --force
           echo "Committed and force-pushed updates to stable branch."
-
-      - name: Trigger Read the Docs Build on stable branch update
-        if: steps.check_changes.outputs.changes == 'true'
-        env:
-          RTD_WEBHOOK_SECRET: ${{ secrets.RTD_WEBHOOK_SECRET }}
-        run: |
-          curl -X POST \
-               -d "branches=stable" -d "token=$RTD_WEBHOOK_SECRET" \
-               https://readthedocs.org/api/v2/webhook/slang-documentation/296117/
-          echo "Triggered Read the Docs build for stable branch."
