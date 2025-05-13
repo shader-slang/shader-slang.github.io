@@ -7,3 +7,6 @@
 [submodule "docs/external/core-module-reference"]
 	path = docs/external/core-module-reference
 	url = https://github.com/shader-slang/stdlib-reference.git
+[submodule "docs/external/stdlib-reference"]
+	path = docs/external/stdlib-reference
+	url = https://github.com/shader-slang/stdlib-reference.git
