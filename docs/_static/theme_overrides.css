@@ -108,9 +108,7 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
 /* Section highlighting styles */
 .goto_highlight {
   animation: highlight-fade-in 0.5s ease-in;
-  background-color: rgba(255, 255, 0, 0.2);
-  border-radius: 4px;
-  padding: 2px 4px;
+  background-color: rgba(255, 255, 128, 0.5);
 }
 
 .goto_highlight_fade_out {

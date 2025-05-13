@@ -23,73 +23,32 @@ def fix_md_links_post_process(app, exception):
     output_dir = app.builder.outdir
     logger.info(f"[DEBUG] Post-processing HTML files in {output_dir}")
 
-    # Specifically focus on stdlib-reference directory
-    stdlib_dir = os.path.join(output_dir, 'external', 'stdlib-reference')
-    if not os.path.exists(stdlib_dir):
-        logger.info(f"[DEBUG] stdlib-reference directory not found: {stdlib_dir}")
-        return
-
     count = 0
     fixed = 0
 
-    # Walk through HTML files
-    for root, _, files in os.walk(stdlib_dir):
+    # Walk through ALL HTML files in the output directory
+    for root, _, files in os.walk(output_dir):
         for filename in files:
             if filename.endswith('.html'):
                 filepath = os.path.join(root, filename)
                 count += 1
-
                 try:
                     with open(filepath, 'r', encoding='utf-8') as f:
                         content = f.read()
-
-                    # Original content for comparison
                     original_content = content
 
-                    # Look for href="#../path/to/file#fragment" pattern
-                    # This is the problematic pattern where a relative path is treated as a fragment
-                    pattern = r'href=(["\'])#(\.\.\/[^"\']+?)#([^"\']+?)\1'
-                    matches = re.findall(pattern, content)
+                    # Fix any href="#something" where something looks like a path (contains / or .html)
+                    pattern = r'href=(["\'])#([^"\']+?)(#[^"\']+)?\1'
+                    def repl(match):
+                        quote, path, fragment = match.group(1), match.group(2), match.group(3) or ''
+                        # Only rewrite if path looks like a file or path, not just a fragment
+                        if '/' in path or '.html' in path:
+                            return f'href={quote}{path}{fragment}{quote}'
+                        else:
+                            return match.group(0)  # leave as is for pure fragments
 
-                    if matches:
-                        logger.info(f"[DEBUG] Found {len(matches)} problematic links in {filepath}")
+                    content = re.sub(pattern, repl, content)
 
-                        # Fix each match
-                        for quote, path, fragment in matches:
-                            # Create the correct path with .html extension
-                            if not path.endswith('/') and '.' not in path.split('/')[-1]:
-                                path_with_html = path + '.html'
-                            else:
-                                path_with_html = path
-
-                            # Replace in content
-                            old = f'href={quote}#{path}#{fragment}{quote}'
-                            new = f'href={quote}{path_with_html}#{fragment}{quote}'
-                            content = content.replace(old, new)
-                            logger.info(f"[DEBUG] Fixed: {old} -> {new}")
-
-                    # Also fix simpler case: href="#../path/to/file"
-                    pattern = r'href=(["\'])#(\.\.\/[^"\'#]+?)\1'
-                    matches = re.findall(pattern, content)
-
-                    if matches:
-                        logger.info(f"[DEBUG] Found {len(matches)} simple problematic links in {filepath}")
-
-                        # Fix each match
-                        for quote, path in matches:
-                            # Create the correct path with .html extension
-                            if not path.endswith('/') and '.' not in path.split('/')[-1]:
-                                path_with_html = path + '.html'
-                            else:
-                                path_with_html = path
-
-                            # Replace in content
-                            old = f'href={quote}#{path}{quote}'
-                            new = f'href={quote}{path_with_html}{quote}'
-                            content = content.replace(old, new)
-                            logger.info(f"[DEBUG] Fixed: {old} -> {new}")
-
-                    # Save the file if changes were made
                     if content != original_content:
                         with open(filepath, 'w', encoding='utf-8') as f:
                             f.write(content)
@@ -98,7 +57,6 @@ def fix_md_links_post_process(app, exception):
 
                 except Exception as e:
                     logger.info(f"[DEBUG] Error processing {filepath}: {e}")
-
     logger.info(f"[DEBUG] Post-processed {count} HTML files, fixed {fixed} files")
 
 
