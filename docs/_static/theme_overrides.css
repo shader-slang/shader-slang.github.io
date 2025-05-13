@@ -27,3 +27,125 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
 .py.property {
     display: block !important;
 }
+
+/* Semantic highlighting styles */
+.highlight .cm, .highlight .cp, .highlight .c1, .highlight .cs,
+.highlight .c, .highlight .ch, .highlight .cd, .highlight .cpf {
+  color: #148b04;
+}
+.highlight .err {
+  color: #a61717;
+  background-color: #e3d2d2;
+}
+.highlight .gd {
+  color: #000000;
+  background-color: #ffdddd;
+}
+.highlight .ge {
+  color: #000000;
+  font-style: italic;
+}
+.highlight .gr {
+  color: #aa0000;
+}
+.highlight .gh {
+  color: #999999;
+}
+.highlight .gi {
+  color: #000000;
+  background-color: #ddffdd;
+}
+.highlight .go {
+  color: #888888;
+}
+.highlight .gp {
+  color: #555555;
+}
+.highlight .gu {
+  color: #aaaaaa;
+}
+.highlight .gt {
+  color: #aa0000;
+}
+.highlight .kc, .highlight .kd, .highlight .kn, .highlight .kp,
+.highlight .kr, .highlight .kt, .highlight .k, .highlight .kv {
+  color: #1243d4;
+}
+.highlight .m, .highlight .mb, .highlight .mx, .highlight .mi, .highlight .mf {
+  color: #7211c2;
+}
+.highlight .sa {
+  color: #000000;
+}
+.highlight .sb, .highlight .sc, .highlight .sd, .highlight .s2,
+.highlight .se, .highlight .sh, .highlight .si, .highlight .sx,
+.highlight .s1, .highlight .s, .highlight .dl {
+  color: #d14;
+}
+.highlight .sr {
+  color: #009926;
+}
+.highlight .ss {
+  color: #990073;
+}
+.highlight .na, .highlight .vc, .highlight .vg, .highlight .vi,
+.highlight .nv, .highlight .vm {
+  color: #008080;
+}
+.highlight .bp {
+  color: #999999;
+}
+.highlight .n {
+  color: black;
+}
+.highlight .nc, .highlight .nt {
+  color: #11abb9;
+}
+.highlight .ow, .highlight .o, .highlight .w, .highlight .p {
+  color: #000000;
+}
+
+/* Section highlighting styles */
+.goto_highlight {
+  animation: highlight-fade-in 0.5s ease-in;
+  background-color: rgba(255, 255, 0, 0.2);
+  border-radius: 4px;
+  padding: 2px 4px;
+}
+
+.goto_highlight_fade_out {
+  animation: highlight-fade-out 2s ease-out;
+}
+
+@keyframes highlight-fade-in {
+  from {
+    background-color: rgba(255, 255, 0, 0);
+  }
+  to {
+    background-color: rgba(255, 255, 0, 0.2);
+  }
+}
+
+@keyframes highlight-fade-out {
+  from {
+    background-color: rgba(255, 255, 0, 0.2);
+  }
+  to {
+    background-color: rgba(255, 255, 0, 0);
+  }
+}
+
+/* Code block styles */
+pre {
+  color: #000000;
+  background: #F8F8F8;
+}
+
+pre code {
+  color: #000000;
+  background-color: #F8F8F8;
+}
+
+.highlight {
+  background: #F8F8F8;
+}
