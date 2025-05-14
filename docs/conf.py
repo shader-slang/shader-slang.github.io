@@ -9,6 +9,7 @@
 import os
 import sys
 import re
+from pathlib import Path
 
 sys.path.insert(0, os.path.abspath('.'))  # For finding _ext
 sys.path.insert(0, os.path.abspath('..'))
@@ -25,9 +26,24 @@ def source_read_handler(app, docname, source):
     new_content = pattern.sub(uncomment_toc, content)
     source[0] = new_content
 
+def handle_utf16le_files(app, docname, source):
+    doc_path = Path(app.env.doc2path(docname))
+
+    with open(doc_path, 'rb') as f:
+        content_bytes = f.read()
+        
+        # Check for UTF-16LE BOM (FF FE)
+        if content_bytes.startswith(b'\xff\xfe'):
+            # Decode from UTF-16LE
+            content = content_bytes.decode('utf-16le')
+            # Strip any BOM characters that might be present as text
+            content = content.replace('\ufeff', '')
+            # Set the source content
+            source[0] = content
+
 def setup(app):
-    # Connect the handler to the 'source-read' event
     app.connect('source-read', source_read_handler)
+    app.connect('source-read', handle_utf16le_files)
 
 project = 'Slang Documentation'
 author = 'Chris Cummings, Benedikt Bitterli, Sai Bangaru, Yong Hei, Aidan Foster'
@@ -69,11 +85,12 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'index.md',
 ]
 include_patterns = ['index.rst', '*.md',
                     "external/slang/docs/user-guide/*.md",
-                    "external/stdlib-reference/index.md",
-                    "external/stdlib-reference/attributes/**",
-                    "external/stdlib-reference/global-decls/**",
-                    "external/stdlib-reference/interfaces/**",
-                    "external/stdlib-reference/types/**",
+                    "external/slang/docs/command-line-slangc-reference.md",
+                    "external/core-module-reference/index.md",
+                    "external/core-module-reference/attributes/**",
+                    "external/core-module-reference/global-decls/**",
+                    "external/core-module-reference/interfaces/**",
+                    "external/core-module-reference/types/**",
                     "external/slangpy/docs/**",
 ]
 

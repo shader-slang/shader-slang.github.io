@@ -61,12 +61,3 @@ jobs:
         run: |
           git commit -m "Auto-update submodules"
           git push origin ${{ steps.default_branch.outputs.name }}
-
-      - name: Trigger Read the Docs Build
-        if: steps.check_changes.outputs.changes == 'true'
-        env:
-          RTD_WEBHOOK_SECRET: ${{ secrets.RTD_WEBHOOK_SECRET }}
-        run: |
-          curl -X POST \
-               -H "Authorization: token $RTD_WEBHOOK_SECRET" \
-               https://readthedocs.org/api/v2/webhook/slang-documentation/296117/
