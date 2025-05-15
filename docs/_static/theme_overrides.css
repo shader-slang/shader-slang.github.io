@@ -27,3 +27,232 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
 .py.property {
     display: block !important;
 }
+
+/* Added from style.scss */
+
+#tocSearchPanel{
+  flex: none;
+  height:25px;
+  padding-top:10px;
+  padding-bottom: 0px;
+  padding-left:10px;
+  padding-right:10px;
+  margin-bottom:5px;
+  display: flex;
+  position: relative; /* Added for positioning tocSearchResult */
+}
+
+#tocSearchPanelInner{
+  flex:1 1 0;
+  padding:5px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center; 
+}
+
+.search_panel_unfocused
+{
+  outline: solid 2px #E0E0E0;
+}
+
+.search_panel_unfocused:hover
+{
+  outline: solid 2px #C0C0C0;
+}
+
+.search_panel_focused
+{
+  outline: solid 2px rgb(228, 109, 85);
+}
+
+#tocSearchResult{
+  position: absolute;
+  /* left:10px; */ /* Adjusted to be relative to tocSearchPanel */
+  left: 0;
+  top: 100%; /* Position below the search panel inner */
+  /* width: 280px; */
+  width: 100%; /* Make it full width of its parent */
+  max-height: 350px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  filter: drop-shadow(2px 2px 4px #30303080);
+  background-color: #F0F0F0;
+  /* display: none; */ /* This will be controlled by JS */
+  z-index: 1000;
+  box-sizing: border-box; /* Added for consistent sizing */
+}
+
+#txtSearch{
+  order: 1;
+  flex: 1 1 0;
+  height: 100%;
+  border: none;
+  outline:none;
+  width: 100%; /* Ensure it takes full width */
+  box-sizing: border-box; /* Added for consistent sizing */
+}
+
+input:focus{
+  border: none;
+  outline:none;
+}
+
+.search_result_item {
+  cursor: pointer;
+  user-select: none;
+  list-style-type: none;
+  padding-left: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+.highlighted_search_selection
+{
+  background-color: #FFE0E0;
+}
+
+/* Ensure the search input is visible within Furo's sidebar */
+/* Might need further adjustment based on Furo's structure */
+
+/* Sidebar search tweaks for Furo */
+
+/* The `search-button__input` is Furo's default search input, which we are replacing. */
+/* We hide it, but a more robust solution might involve Furo theme template customization beyond just `sidebar/search.html` */
+form.sidebar-search-container {
+    display: none !important; /* Hide Furo's default search form if it interferes */
+}
+
+/* If Furo has a specific container for the search part of the sidebar, adjust its properties */
+/* This is a guess, might need to inspect the generated HTML with the new search component */
+
+.sidebar-search-container {
+    padding: 0 !important; /* Remove Furo padding if it misaligns our search */
+}
+
+/* Style the new search input and results panel to fit into Furo */
+
+/* Make sure our custom search panel fits well */
+#tocSearchPanel {
+    padding: 0.5rem var(--sidebar-item-padding-x);
+    margin-bottom: 0.5rem;
+    /* border-bottom: 1px solid var(--color-sidebar-border); */ /* Optional: a separator */
+}
+
+#tocSearchPanelInner {
+    background-color: var(--color-background-secondary);
+    border-radius: var(--sidebar-item-border-radius);
+    border: 1px solid var(--color-sidebar-border);
+    padding: 0.1rem 0.5rem; /* Smaller padding */
+    height: 2rem; /* Adjust height to match Furo's inputs */
+}
+
+#txtSearch {
+    background-color: transparent; /* Match Furo input style */
+    color: var(--color-content-foreground); /* Match Furo text color */
+    font-size: 0.875rem; /* Match Furo input font size */
+    line-height: 1.5rem;
+    padding: 0.25rem 0; /* Minimal padding */
+}
+
+#txtSearch::placeholder {
+    color: var(--color-foreground-muted);
+}
+
+.search_panel_focused {
+    outline: solid 2px var(--color-brand-primary); /* Use Furo's brand color for focus */
+    border-color: var(--color-brand-primary); /* Also change border color on focus */
+}
+
+.search_panel_unfocused {
+    /* Keep original or use Furo's default border */
+    border: 1px solid var(--color-sidebar-border);
+     outline: none; /* Remove original outline */
+}
+.search_panel_unfocused:hover {
+    border-color: var(--color-sidebar-link-text--hover); /* Use Furo's hover color */
+    outline: none; /* Remove original outline */
+}
+
+#tocSearchResult {
+    background-color: var(--color-background-primary);
+    border: 1px solid var(--color-sidebar-border);
+    border-top: none; /* Avoid double border with the panel above */
+    border-radius: 0 0 var(--sidebar-item-border-radius) var(--sidebar-item-border-radius);
+    left: var(--sidebar-item-padding-x);
+    width: calc(100% - (2 * var(--sidebar-item-padding-x))); /* Adjust width to fit padding */
+    top: calc(100% - 5px); /* Adjust based on panel height and desired spacing */
+}
+
+.search_result_item {
+    padding: 0.5rem 1rem;
+    color: var(--color-content-foreground);
+    font-size: 0.875rem;
+}
+
+.search_result_item:hover {
+    background-color: var(--color-background-hover);
+}
+
+.search_result_item.highlighted_search_selection {
+    background-color: var(--color-brand-primary);
+    color: var(--color-background-primary); /* Ensure text is readable on highlight */
+}
+
+/* Hide original search input and related elements more specifically if possible */
+
+/* Attempt to hide Furo's search input more cleanly */
+
+/* Locate Furo's specific search input through its classes */
+.sidebar-search input[type="text"], .sidebar-search button {
+    display: none !important; /* Hide default Furo search elements */
+}
+
+/* You may need to add specific CSS to override Furo's default search styling. */
+/* The Furo theme uses CSS variables extensively, which can be helpful. */
+/* For example, to match Furo's input field styling: */
+#txtSearch {
+    /* ... other styles ... */
+    /* background-color: var(--color-background-secondary); */
+    /* border: 1px solid var(--color-border-muted); */
+    /* border-radius: var(--border-radius-small); */
+    /* color: var(--color-content-foreground); */
+    /* padding: 0.5em; */
+}
+
+/* Adjust the overall search component to fit Furo's sidebar structure */
+/* For instance, Furo wraps sidebar content in <nav class="bd-links"> or similar */
+/* You might need to inspect the final HTML output to fine-tune this. */
+
+/* These are attempts to integrate with Furo's styling */
+/* It's important to test and adjust these based on the actual rendered HTML */
+
+/* Reset some styles that might be inherited from Furo and conflict */
+#tocSearchPanelInner input#txtSearch {
+    border: none !important;
+    box-shadow: none !important;
+    outline: none !important;
+    height: auto; /* Let flexbox control height if possible */
+    min-height: 1.8rem; /* Ensure it's not too small */
+}
+
+/* If the search results appear misplaced or styled incorrectly by Furo theme defaults */
+#tocSearchResult {
+    box-shadow: 0 4px 6px rgba(0,0,0,.1); /* Softer shadow, more Furo-like */
+}
+
+.search_result_item a {
+    color: var(--color-sidebar-link-text);
+    text-decoration: none;
+    display: block; /* Make the whole item clickable */
+}
+
+.search_result_item a:hover {
+    color: var(--color-sidebar-link-text--hover);
+    text-decoration: none;
+}
+
+.search_result_item.highlighted_search_selection a,
+.search_result_item.highlighted_search_selection a:hover {
+    color: var(--color-background-primary); /* Or another contrasting color */
+}
