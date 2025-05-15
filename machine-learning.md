@@ -1,6 +1,6 @@
 ---
 title: Machine Learning with Slang
-layout: page
+layout: ml
 description: Leverage Slang's powerful features for machine learning and neural graphics applications
 ---
 
@@ -146,7 +146,3 @@ Slang is a modern shader language and compiler that extends traditional graphics
                     <li><a href="https://shader-slang.org/slang-playground/">Slang Playground</a> - Experiment with Slang shader code in your browser</li>
                 </ul>
                 <a class="btn btn-primary" href="/docs/getting-started">Get Started with Slang Shaders</a>
-            </div>
-        </div>
-    </div>
-</div> 
