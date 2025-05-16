@@ -256,3 +256,11 @@ form.sidebar-search-container {
 .search_result_item.highlighted_search_selection a:hover {
     color: var(--color-background-primary); /* Or another contrasting color */
 }
+
+/* Hint for custom search keybind */
+#searchKeybindHint {
+    font-size: 0.75em;
+    color: var(--color-foreground-muted);
+    margin-bottom: 4px;
+    text-align: center;
+}

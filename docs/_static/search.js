@@ -2,6 +2,7 @@ var txtSearch = document.getElementById("txtSearch");
 var resultPanel = document.getElementById("tocSearchResult");
 var searchPanelOutline = document.getElementById("tocSearchPanelInner");
 var searchPanel = document.getElementById("tocSearchPanel");
+var searchHint = document.getElementById("searchKeybindHint");
 
 let highlightedIndex = -1;
 
@@ -76,6 +77,7 @@ function getFullText(furoATagElement) {
 
 function txtSearchFocus(event) {
     var searchText = txtSearch.value;
+    if (searchHint) searchHint.style.visibility = "visible";
     if (searchText.length > 0 && resultPanel.children.length > 0 && resultPanel.textContent !== "No results found") {
         resultPanel.style.display = "block";
     }
@@ -101,6 +103,7 @@ function openPanel() {
 }
 
 function txtSearchLostFocus(event) {
+    if (searchHint) searchHint.style.visibility = "hidden";
     if (searchPanelOutline) searchPanelOutline.classList.add("search_panel_unfocused");
     if (searchPanelOutline) searchPanelOutline.classList.remove("search_panel_focused");
 }
