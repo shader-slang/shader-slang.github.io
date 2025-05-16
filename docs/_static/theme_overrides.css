@@ -28,6 +28,22 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
     display: block !important;
 }
 
+/* Pygments Sytnax Highlighting for Furo Theme Override */
+.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr { color: #1243d4 !important; } /* Keywords */
+.highlight .kt, .highlight .nc { color: #11abb9 !important; } /* Types, Class names */
+.highlight .nv { color: #0a1985 !important; } /* Variables, e.g. instance variables */
+.highlight .nb { color: #0a1985 !important; } /* Built-in names, can also be variable-like */
+.highlight .n, .highlight .nn { color: #000000 !important; } /* General names, namespace names - default to black */
+
+.highlight .nf { color: #d14 !important; } /* Function names */
+.highlight .c, .highlight .c1, .highlight .cs, .highlight .cm { color: #149104 !important; } /* Comments - green */
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sd, .highlight .se, .highlight .sh, .highlight .si, .highlight .sx, .highlight .sr { color: #d14 !important; } /* Strings, Regex - using the red/pink */
+.highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo { color: #7211c2 !important; } /* Numbers - purple */
+
+/* Ensure other elements like operators are sensible */
+.highlight .o, .highlight .ow { color: #000000 !important; } /* Operators - black */
+.highlight .p { color: #000000 !important; } /* Punctuation - black */
+
 /* Section highlighting styles */
 .goto_highlight {
   animation: highlight-fade-in 0.5s ease-in;
