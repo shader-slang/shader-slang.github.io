@@ -96,22 +96,48 @@ pre .code_type {
   color: #11abb9 !important; /* Teal/Cyan - for types like 'Array' */
 }
 
+pre .code_param {
+  color: #808080 !important; /* Gray */
+}
+
 pre .code_var {
   color: #0a1985 !important; /* Color for variables like 'N' */
 }
 
-/* Target 'a' tags directly within 'pre' blocks for method names */
-pre a, pre a:visited { /* Added :visited for consistency */
-  color: #d14 !important;   /* Dark Pink/Red - for method names like 'getCount' */
+/* Link styling within <pre> blocks */
+
+/* Default/Method links (e.g., getCount) */
+pre a,
+pre a:link, /* Explicitly for unvisited */
+pre a:visited {
+  color: #d14 !important;   /* Dark Pink/Red - for method names */
   text-decoration: none !important; 
 }
 
-pre a:hover {
-  text-decoration: underline !important;
+/* Type links (e.g., Array) */
+pre a.code_type,
+pre a.code_type:link,
+pre a.code_type:visited { 
+  color: #11abb9 !important; /* Teal/Cyan */
 }
 
-pre a.code_param {
-  color: #808080 !important; /* Gray for parameters */
+/* Parameter links (e.g., a, b in dadd.md) */
+pre a.code_param,
+pre a.code_param:link,
+pre a.code_param:visited {
+  color: #808080 !important; /* Gray */
+}
+
+/* Variable links */
+pre a.code_var,
+pre a.code_var:link,
+pre a.code_var:visited {
+  color: #0a1985 !important; /* Color for variable links */
+}
+
+/* Common hover effect for all these links */
+pre a:hover {
+  text-decoration: underline !important;
 }
 
 /* General text in pre blocks, if not caught by other rules, should be black. */
