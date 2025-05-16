@@ -120,3 +120,56 @@ pre, pre code {
     color: black !important; /* Default code text color */
     /* background-color: #F8F8F8; /* Already set by existing rules */
 }
+
+/* Custom Heading Sizes and Spacing */
+h1 {
+    font-size: 2.0em !important;
+    /* Furo specific line-height might need adjustment if text looks cramped */
+}
+
+h2 {
+    font-size: 1.75em !important;
+}
+
+h3 {
+    font-size: 1.5em !important;
+}
+
+h4 {
+    font-size: 1.25em !important;
+    /* font-weight: bold !important; */
+}
+
+h5 {
+    font-size: 1.0em !important;
+    /* font-weight: bold !important; */
+}
+
+h6 {
+    font-size: 0.75em !important;
+    font-weight: bold !important;
+    color: #555 !important; /* Often H6 is a bit de-emphasized */
+}
+
+/* Heading styles for core-module-reference (Tactile-like) */
+/* Applied using the data-furo-page attribute */
+
+body.core-module-reference-page h1 {
+    font-size: 2.25em !important;
+    font-weight: 700 !important;
+}
+
+body.core-module-reference-page h2 {
+    font-size: 1.5em !important;
+    font-weight: 700 !important;
+}
+
+body.core-module-reference-page h3 {
+    font-size: 1.0em !important; /* Matches Tactile theme */
+    font-weight: 700 !important;
+}
+
+body.core-module-reference-page h4 {
+    font-size: 1.2em !important; /* Matches Tactile theme */
+    font-weight: 700 !important;
+}

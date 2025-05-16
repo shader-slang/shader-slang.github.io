@@ -97,7 +97,10 @@ html_theme = "furo"
 html_title = "Slang Documentation"
 html_static_path = ['_static']
 html_css_files = ["theme_overrides.css"]
-html_js_files = ["section_highlight.js"]
+html_js_files = [
+    "section_highlight.js",
+    "custom_body_classes.js",
+]
 html_theme_options = {
     "light_css_variables": {
         "color-api-background": "#f7f7f7",
