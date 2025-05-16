@@ -28,83 +28,6 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
     display: block !important;
 }
 
-/* Semantic highlighting styles */
-.highlight .cm, .highlight .cp, .highlight .c1, .highlight .cs,
-.highlight .c, .highlight .ch, .highlight .cd, .highlight .cpf {
-  color: #148b04;
-}
-.highlight .err {
-  color: #a61717;
-  background-color: #e3d2d2;
-}
-.highlight .gd {
-  color: #000000;
-  background-color: #ffdddd;
-}
-.highlight .ge {
-  color: #000000;
-  font-style: italic;
-}
-.highlight .gr {
-  color: #aa0000;
-}
-.highlight .gh {
-  color: #999999;
-}
-.highlight .gi {
-  color: #000000;
-  background-color: #ddffdd;
-}
-.highlight .go {
-  color: #888888;
-}
-.highlight .gp {
-  color: #555555;
-}
-.highlight .gu {
-  color: #aaaaaa;
-}
-.highlight .gt {
-  color: #aa0000;
-}
-.highlight .kc, .highlight .kd, .highlight .kn, .highlight .kp,
-.highlight .kr, .highlight .kt, .highlight .k, .highlight .kv {
-  color: #1243d4;
-}
-.highlight .m, .highlight .mb, .highlight .mx, .highlight .mi, .highlight .mf {
-  color: #7211c2;
-}
-.highlight .sa {
-  color: #000000;
-}
-.highlight .sb, .highlight .sc, .highlight .sd, .highlight .s2,
-.highlight .se, .highlight .sh, .highlight .si, .highlight .sx,
-.highlight .s1, .highlight .s, .highlight .dl {
-  color: #d14;
-}
-.highlight .sr {
-  color: #009926;
-}
-.highlight .ss {
-  color: #990073;
-}
-.highlight .na, .highlight .vc, .highlight .vg, .highlight .vi,
-.highlight .nv, .highlight .vm {
-  color: #008080;
-}
-.highlight .bp {
-  color: #999999;
-}
-.highlight .n {
-  color: black;
-}
-.highlight .nc, .highlight .nt {
-  color: #11abb9;
-}
-.highlight .ow, .highlight .o, .highlight .w, .highlight .p {
-  color: #000000;
-}
-
 /* Section highlighting styles */
 .goto_highlight {
   animation: highlight-fade-in 0.5s ease-in;
@@ -146,4 +69,38 @@ pre code {
 
 .highlight {
   background: #F8F8F8;
+}
+
+/* Custom syntax highlighting for Slang-specific classes */
+pre .code_keyword {
+  color: #1243d4 !important; /* Blue - for keywords like 'int' */
+}
+
+pre .code_type {
+  color: #11abb9 !important; /* Teal/Cyan - for types like 'Array' */
+}
+
+pre .code_var {
+  color: #0a1985 !important; /* Color for variables like 'N' */
+}
+
+/* Target 'a' tags directly within 'pre' blocks for method names */
+pre a, pre a:visited { /* Added :visited for consistency */
+  color: #d14 !important;   /* Dark Pink/Red - for method names like 'getCount' */
+  text-decoration: none !important; 
+}
+
+pre a:hover {
+  text-decoration: underline !important;
+}
+
+pre a.code_param {
+  color: #808080 !important; /* Gray for parameters */
+}
+
+/* General text in pre blocks, if not caught by other rules, should be black. */
+/* This might be slightly redundant given existing rules, but ensures our intent. */
+pre, pre code {
+    color: black !important; /* Default code text color */
+    /* background-color: #F8F8F8; /* Already set by existing rules */
 }
