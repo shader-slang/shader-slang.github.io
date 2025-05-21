@@ -1,6 +1,15 @@
-# Optimizing 2D Gaussian Splatting: From Explicit Sorts to Wave-Powered Ballots
+---
+layout: post
+title: "Neural Graphics: Speeding It Up with Wave Intrinsics"
+date: 2025-05-27
+categories: [ "blog" ]
+tags: [slang]
+author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
+image: /images/posts/wave-graphic.webp
+human_date: "May 27, 2025"
+---
 
-In our journey through neural graphics, we started with an "Neural Graphics in an Afternoon," exploring the exciting possibilities of representing and rendering scenes with machine learning approaches. We then delved into "Neural Graphics: First Principles to Performance," laying down some initial strategies for making these techniques practical. Now, we're ready to roll up our sleeves and explore more advanced performance optimizations, using our familiar 2D differentiable Gaussian splatting example as a testbed.
+In our journey through neural graphics, we started with [Neural Graphics in an Afternoon](https://shader-slang.org/blog/featured/2025/04/04/neural-gfx-in-an-afternoon/), exploring the exciting possibilities of representing and rendering scenes with machine learning approaches. We then delved into [Neural Graphics: First Principles to Performance](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/), laying down some initial strategies for making these techniques practical. Now, we're ready to roll up our sleeves and explore more advanced performance optimizations, using our familiar 2D differentiable Gaussian splatting example as a testbed.
 
 Let’s look at the modifications added to a new example in the SlangPy samples repository, `balloted-splatting`. This example starts with the same Python code as its predecessor, `diff-splatting`, which we walked through in our previous blog post. 
 
