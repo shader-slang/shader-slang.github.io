@@ -47,8 +47,6 @@ You can see this in action in the new `cullAndApplyBlobs` function, which effect
  *
  * In Slang, custom derivative functions can be defined using the `[BackwardDerivative(custom_fn)]` attribute.
  */
-[require (subgroup_ballot)]
-[require (subgroup_vote)]
 [BackwardDerivative(fineRasterize_bwd)]
 float4 cullAndApplyBlobs(Blobs blobs, OBB tileBounds, uint localIdx, no_diff float2 uv)
 {
@@ -95,12 +93,12 @@ float4 cullAndApplyBlobs(Blobs blobs, OBB tileBounds, uint localIdx, no_diff flo
     return pixelState.value;
 }
 ```  
-The first thing you’ll likely notice is that this function carries additional annotations compared to the functions in the original diff-splatting example. The `[require (subgroup_ballot)]` and `[require (subgroup_vote)]` annotations use slang’s **capability system** to indicate that this function requires this optional capability to be supported. The Slang compiler is able to identify whether the target it is currently compiling for supports these capabilities, and if not, it will provide a warning. For example, a shader targeting HLSL Shader Model 5 with these capability requirements would result in:
+One thing to note here is that wave intrinsics like WaveActiveBallot are not universally supported by all combinations of graphics hardware and API. Under the hood, Slang keeps track of what capabilities are required in order to use optional features, and it will provide a warning if you attempt to compile for a profile that can't support the necessary capabilities. For example, if you were to compile this shader with '-profile sm_5_0', you'd get this warning:
 
 ```  
 myshader.slang(9): warning 41012: entry point 'computeMain' uses additional capabilities that are not part of the specified profile 'sm_5_0'. The profile setting is automatically updated to include these capabilities: 'sm_6_0'  
 ```  
-So how are we using these new capabilities that we require?
+So how does this shader use wave intrinsics?
 
 Instead of a multi-pass approach– first identifying intersecting blobs for the current tile, sorting them, and then calculating colors from the shorter list of blobs, we’re now using a single pass through the set of Gaussians to process them all, in workgroup-sized chunks. Within each chunk, each lane (a thread within the wave) is assigned a single Gaussian, and tests whether it intersects the current tile bounds. The crucial improvement here is the `WaveActiveBallot(intersects).x` call. This takes the boolean intersection result from each active lane in the wave, and creates a bitmask. All of the lanes in the wave can access the bitmask, and can therefore understand which Gaussians in the chunk being processed are relevant. The code then iterates through the set bits of this mask, which we’ve called `intersectionMask`. For each intersection Gaussian, its contribution is evaluated, and immediately alpha-blended. We still store the indices for the intersecting blobs, because we will still need them during the custom backward pass.  
 One benefit of this approach is that we no longer need to do an explicit workgroup-wide sort. Because we keep the blobs in order during processing, we maintain the needed order for alpha blending. Additionally, we no longer need to use an atomic counter– and thereby introduce the possibility of contention– when we increment the number of intersecting blobs and write the index to the blob list. This might look problematic at first glance, because all of the lanes are writing to the same `intersectingBlobList` in shared memory. But we don’t need to worry about data collisions here because of how we’re coming up with this data. Each lane has its own copy of numIntersectingBlobs, so that variable does not need to be atomically incremented. And each lane also will be operating on the same value in `intersectionMask`, calculated using `WaveActiveBallot`. For this reason, all lanes are storing the same indices in the same order into `intersectingBlobList`, so while technically this is a data race, it’s a benign one.  
@@ -113,6 +111,8 @@ Why undertake this refactoring? The shift to a wave intrinsic-based approach in 
 *   **Reduced Synchronization Overhead:** Wave operations are generally tightly coupled with the hardware and can involve less synchronization overhead than operations requiring coordination across an entire workgroup using shared memory.  
 *   **Eliminating the Bottleneck of Sorting:** Explicitly sorting data in shared memory (like the `bitonicSort`) is computationally intensive and can be a significant performance bottleneck. The ballot-based approach sidesteps this.  
 *   **Better Hardware Utilization:** Wave intrinsics are designed to map directly onto efficient GPU hardware pathways, allowing for faster execution of tasks like voting (balloting), data exchanges (shuffling), and other coordinated operations within a subgroup.
+
+This performance benefit is easily observable when running the `diff-splatting` and `balloted-splatting` examples side-by-side. On my Windows 11 system, equipped with an RTX 2070 Super, the `diff-splatting` example takes 3 minutes, 2 seconds to complete 10000 iterations, peaking somewhere around 54 iterations per second. `balloted-splatting` completes the same number of iterations in 2 minutes, 40 seconds, at 12% reduction in execution time, with a peak around 64 iterations per second.
 
 ## Looking Ahead
 
