@@ -1,4 +1,4 @@
-# Shader-Slang.com website
+# Shader-Slang.org website
 
 This theme is losely based on the Serif theme for Jekyll by [Zerostatic Themes](https://www.zerostatic.io).
 
@@ -34,5 +34,5 @@ bundle exec jekyll build
 
 This theme has been tested to work with Github Pages (and Github Project Pages). When using Github Pages you will need to update the `baseurl` in the `_config.yml` otherwise all the css, images and paths will be broken.
 
-For example the site https://shader-slang.com would have `baseurl: "/"`
+For example the site https://shader-slang.org would have `baseurl: "/"`
 
