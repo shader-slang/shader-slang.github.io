@@ -49,6 +49,7 @@ jobs:
 
       - name: Commit and push changes to stable branch
         run: |
+          git add docs/external/slang
           git commit -m "Sync stable to release (slang@${{ steps.slang_latest_tag.outputs.tag }})"
           git push origin HEAD:stable --force
           echo "Committed and force-pushed updates to stable branch."
