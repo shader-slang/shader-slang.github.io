@@ -41,8 +41,33 @@ def handle_utf16le_files(app, docname, source):
             # Set the source content
             source[0] = content
 
+def latex_block_to_inline(app, docname, source):
+    content = source[0]
+    # Replace $$ with $ for inline math, but only when not part of a block
+    # First find all block math ($$...$$) on their own lines
+    block_matches = re.finditer(r'^\s*\$\$(.*?)\$\$\s*$', content, re.MULTILINE | re.DOTALL)
+    block_positions = [(m.start(), m.end()) for m in block_matches]
+    
+    # Now find all $$ pairs
+    all_matches = list(re.finditer(r'\$\$(.*?)\$\$', content, re.DOTALL))
+    
+    # Filter to only inline matches by checking if they overlap with any block matches
+    def is_inline(match):
+        pos = match.span()
+        return not any(block_start <= pos[0] <= block_end for block_start, block_end in block_positions)
+    
+    inline_matches = [m for m in all_matches if is_inline(m)]
+    
+    # Replace inline $$ with $ working backwards to preserve positions
+    for match in reversed(inline_matches):
+        start, end = match.span()
+        inner = match.group(1)
+        content = content[:start] + '$' + inner + '$' + content[end:]
+    source[0] = content
+
 def setup(app):
     app.connect('source-read', source_read_handler)
+    app.connect('source-read', latex_block_to_inline)
     app.connect('source-read', handle_utf16le_files)
 
 project = 'Slang Documentation'
@@ -86,11 +111,6 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'index.md',
 include_patterns = ['index.rst', '*.md',
                     "external/slang/docs/user-guide/*.md",
                     "external/slang/docs/command-line-slangc-reference.md",
-                    "external/core-module-reference/index.md",
-                    "external/core-module-reference/attributes/**",
-                    "external/core-module-reference/global-decls/**",
-                    "external/core-module-reference/interfaces/**",
-                    "external/core-module-reference/types/**",
                     "external/slangpy/docs/index.rst",
 ]
 
