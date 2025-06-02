@@ -101,6 +101,7 @@ myst_enable_extensions = [
     "smartquotes",
     "replacements",
     "html_image",
+    "dollarmath",
 ]
 
 myst_url_schemes = ["http", "https", "mailto", "ftp"]
