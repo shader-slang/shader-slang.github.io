@@ -2,7 +2,6 @@ var txtSearch = document.getElementById("txtSearch");
 var resultPanel = document.getElementById("tocSearchResult");
 var searchPanelOutline = document.getElementById("tocSearchPanelInner");
 var searchPanel = document.getElementById("tocSearchPanel");
-var searchHint = document.getElementById("searchKeybindHint");
 
 let highlightedIndex = -1;
 
@@ -77,7 +76,6 @@ function getFullText(furoATagElement) {
 
 function txtSearchFocus(event) {
     var searchText = txtSearch.value;
-    if (searchHint) searchHint.style.visibility = "visible";
     if (searchText.length > 0 && resultPanel.children.length > 0 && resultPanel.textContent !== "No results found") {
         resultPanel.style.display = "block";
     }
@@ -103,7 +101,6 @@ function openPanel() {
 }
 
 function txtSearchLostFocus(event) {
-    if (searchHint) searchHint.style.visibility = "hidden";
     if (searchPanelOutline) searchPanelOutline.classList.add("search_panel_unfocused");
     if (searchPanelOutline) searchPanelOutline.classList.remove("search_panel_focused");
 }
@@ -127,9 +124,24 @@ function searchResultItemOnClick(event) {
     if (target && target.tagName === 'A') {
         const link = target.getAttribute('href');
         if (link) {
-            window.location.href = link;
+            if (target.closest('.search_result_item').dataset.type === 'search') {
+                const rtdSearchEvent = new CustomEvent("readthedocs-search-show");
+                document.dispatchEvent(rtdSearchEvent);
+            } else {
+                window.location.href = link;
+            }
         }
     }
+}
+
+function isPerfectMatch(searchText, title) {
+    if (!searchText || !title) return false;
+    searchText = searchText.toLowerCase();
+    title = title.toLowerCase();
+    
+    // Split title into words and check if search text matches any word exactly
+    const words = title.split(/\s+/);
+    return words.some(word => word === searchText);
 }
 
 function txtSearchChange(event) {
@@ -146,6 +158,7 @@ function txtSearchChange(event) {
     }
 
     var matchedResults = [];
+    let hasPerfectMatch = false;
 
     // -------- PHASE 1: TOC-based hierarchical search (existing logic) --------
     const allTocLinks = document.querySelectorAll('.sidebar-tree a.reference.internal');
@@ -198,10 +211,12 @@ function txtSearchChange(event) {
             if(allQueryTokensInDisplayString){
                 const existing = matchedResults.find(r => r.display === displayString && r.href === innermostATag.getAttribute("href"));
                 if (!existing) {
+                    const isPerfect = isPerfectMatch(searchText, displayString);
+                    if (isPerfect) hasPerfectMatch = true;
                     matchedResults.push({
                         display: displayString,
                         href: innermostATag.getAttribute("href"),
-                        score: score,
+                        score: score + (isPerfect ? 1000 : 0),
                         type: 'toc'
                     });
                 }
@@ -209,7 +224,7 @@ function txtSearchChange(event) {
         }
     });
 
-    // -------- PHASE 1: Content search using Search._index --------
+    // -------- PHASE 2: Content search using Search._index --------
     if (typeof Search !== 'undefined' && Search._index && typeof DOCUMENTATION_OPTIONS !== 'undefined') {
         const searchIndex = Search._index;
         let docResults = {}; 
@@ -238,7 +253,7 @@ function txtSearchChange(event) {
                         };
                     }
                     docResults[docIndex].matchCount++;
-                    docResults[docIndex].score += (searchIndex.terms[term] && searchIndex.terms[term].length || 0) > 100 ? 1 : 10; // Check if term exists before accessing length
+                    docResults[docIndex].score += (searchIndex.terms[term] && searchIndex.terms[term].length || 0) > 100 ? 1 : 10;
                     if (searchIndex.titles[docIndex] && searchIndex.titles[docIndex].toLowerCase().includes(originalTerm)) {
                         docResults[docIndex].score += 20;
                     }
@@ -263,10 +278,12 @@ function txtSearchChange(event) {
                     
                     const existing = matchedResults.find(r => r.href === pageUrl);
                     if (!existing) {
+                        const isPerfect = isPerfectMatch(searchText, pageTitle);
+                        if (isPerfect) hasPerfectMatch = true;
                         matchedResults.push({
                             display: pageTitle,
                             href: pageUrl,
-                            score: result.score + 500,
+                            score: result.score + 500 + (isPerfect ? 1000 : 0),
                             type: 'content'
                         });
                     }
@@ -277,7 +294,11 @@ function txtSearchChange(event) {
 
     matchedResults.sort((a, b) => b.score - a.score);
 
-    resultPanel.innerHTML = matchedResults.map(r => 
+    // Add the "Search for..." item at the top
+    resultPanel.innerHTML = `<div class='search_result_item' data-type='search'><a href="search.html?q=${encodeURIComponent(searchText)}"><span>Search Documentation for "${escapeHTML(searchText)}"</span></a></div>`;
+    
+    // Add the rest of the results
+    resultPanel.innerHTML += matchedResults.map(r => 
         `<div class='search_result_item' data-type='${r.type}'><a href='${r.href}'><span>${escapeHTML(r.display)}</span></a></div>`
     ).join("");
 
@@ -285,17 +306,14 @@ function txtSearchChange(event) {
         child.addEventListener("click", searchResultItemOnClick);
     });
 
-    if (matchedResults.length > 0) {
-        highlightedIndex = 0;
+    if (matchedResults.length > 0 || searchText.length > 0) {
+        // If we have a perfect match, highlight the first matching result
+        // Otherwise, highlight the "Search for..." item
+        highlightedIndex = hasPerfectMatch ? 1 : 0;
         openPanel();
     } else {
-        highlightedIndex = -1;
-        if (searchText.length > 0) {
-            resultPanel.innerHTML = "<div class='search_result_item'><span>No results found</span></div>";
-            openPanel();
-        } else {
-            closePanel();
-        }
+        highlightedIndex = 0;
+        closePanel();
     }
     updateItemHighlight();
 }
@@ -306,19 +324,9 @@ if (input) {
     input.addEventListener('keydown', (e) => {
         if (!resultPanel) return;
         const items = resultPanel.children;
-        if (items.length === 0 && !(e.key === 'Escape' || (e.key === 'Enter' && e.ctrlKey))) return;
+        if (items.length === 0 && e.key !== 'Escape') return;
 
-        if (e.key === 'Enter' && e.ctrlKey) {
-            e.preventDefault();
-            console.log("Ctrl+Enter pressed, dispatching readthedocs-search-show event.");
-            const rtdSearchEvent = new CustomEvent("readthedocs-search-show");
-            document.dispatchEvent(rtdSearchEvent);
-            
-            if (txtSearch) txtSearch.value = "";
-            closePanel();
-            if (txtSearch) txtSearch.blur();
-
-        } else if (e.key === 'ArrowDown') {
+        if (e.key === 'ArrowDown') {
             highlightedIndex++;
             if (highlightedIndex >= items.length) highlightedIndex = 0;
             e.preventDefault();
@@ -328,9 +336,14 @@ if (input) {
             e.preventDefault();
         } else if (e.key === 'Enter') {
             if (highlightedIndex > -1 && items[highlightedIndex]) {
-                let selectedATag = items[highlightedIndex].querySelector('a');
-                if (selectedATag && selectedATag.href) {
-                    window.location.href = selectedATag.href;
+                if (items[highlightedIndex].dataset.type === 'search') {
+                    const rtdSearchEvent = new CustomEvent("readthedocs-search-show");
+                    document.dispatchEvent(rtdSearchEvent);
+                } else {
+                    let selectedATag = items[highlightedIndex].querySelector('a');
+                    if (selectedATag && selectedATag.href) {
+                        window.location.href = selectedATag.href;
+                    }
                 }
                 e.preventDefault();
             }
