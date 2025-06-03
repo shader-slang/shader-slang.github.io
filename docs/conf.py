@@ -66,7 +66,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'myst_parser',
-    '_ext.fix_toc',  # Simple extension to set titlesonly=True
+    '_ext.generate_toc_html',
 ]
 
 # Debugging flag for verbose output
