@@ -28,8 +28,6 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
     display: block !important;
 }
 
-/* Added from style.scss */
-
 #tocSearchPanel{
   flex: none;
   height:25px;
@@ -257,10 +255,174 @@ form.sidebar-search-container {
     color: var(--color-background-primary); /* Or another contrasting color */
 }
 
-/* Hint for custom search keybind */
-#searchKeybindHint {
-    font-size: 0.75em;
-    color: var(--color-foreground-muted);
-    margin-bottom: 4px;
-    text-align: center;
+/* Pygments Sytnax Highlighting for Furo Theme Override */
+.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr { color: #1243d4 !important; } /* Keywords */
+.highlight .kt, .highlight .nc { color: #11abb9 !important; } /* Types, Class names */
+.highlight .nv { color: #0a1985 !important; } /* Variables, e.g. instance variables */
+.highlight .nb { color: #0a1985 !important; } /* Built-in names, can also be variable-like */
+.highlight .n, .highlight .nn { color: #000000 !important; } /* General names, namespace names - default to black */
+
+.highlight .nf { color: #d14 !important; } /* Function names */
+.highlight .c, .highlight .c1, .highlight .cs, .highlight .cm { color: #149104 !important; } /* Comments - green */
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sd, .highlight .se, .highlight .sh, .highlight .si, .highlight .sx, .highlight .sr { color: #d14 !important; } /* Strings, Regex - using the red/pink */
+.highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo { color: #7211c2 !important; } /* Numbers - purple */
+
+/* Ensure other elements like operators are sensible */
+.highlight .o, .highlight .ow { color: #000000 !important; } /* Operators - black */
+.highlight .p { color: #000000 !important; } /* Punctuation - black */
+
+/* Section highlighting styles */
+.goto_highlight {
+  animation: highlight-fade-in 0.5s ease-in;
+  background-color: rgba(255, 255, 128, 0.5);
+}
+
+.goto_highlight_fade_out {
+  animation: highlight-fade-out 2s ease-out;
+}
+
+@keyframes highlight-fade-in {
+  from {
+    background-color: rgba(255, 255, 0, 0);
+  }
+  to {
+    background-color: rgba(255, 255, 0, 0.2);
+  }
+}
+
+@keyframes highlight-fade-out {
+  from {
+    background-color: rgba(255, 255, 0, 0.2);
+  }
+  to {
+    background-color: rgba(255, 255, 0, 0);
+  }
+}
+
+/* Code block styles */
+pre {
+  color: #000000;
+  background: #F8F8F8;
+}
+
+pre code {
+  color: #000000;
+  background-color: #F8F8F8;
+}
+
+.highlight {
+  background: #F8F8F8;
+}
+
+/* Custom syntax highlighting for Slang-specific classes */
+pre .code_keyword {
+  color: #1243d4 !important; /* Blue - for keywords like 'int' */
+}
+
+pre .code_type {
+  color: #11abb9 !important; /* Teal/Cyan - for types like 'Array' */
+}
+
+pre .code_param {
+  color: #808080 !important; /* Gray */
+}
+
+pre .code_var {
+  color: #0a1985 !important; /* Color for variables like 'N' */
+}
+
+/* Link styling within <pre> blocks */
+
+/* Default/Method links (e.g., getCount) */
+pre a,
+pre a:link, /* Explicitly for unvisited */
+pre a:visited {
+  color: #d14 !important;   /* Dark Pink/Red - for method names */
+  text-decoration: none !important; 
+}
+
+/* Type links (e.g., Array) */
+pre a.code_type,
+pre a.code_type:link,
+pre a.code_type:visited { 
+  color: #11abb9 !important; /* Teal/Cyan */
+}
+
+/* Parameter links (e.g., a, b in dadd.md) */
+pre a.code_param,
+pre a.code_param:link,
+pre a.code_param:visited {
+  color: #808080 !important; /* Gray */
+}
+
+/* Variable links */
+pre a.code_var,
+pre a.code_var:link,
+pre a.code_var:visited {
+  color: #0a1985 !important; /* Color for variable links */
+}
+
+/* Common hover effect for all these links */
+pre a:hover {
+  text-decoration: underline !important;
+}
+
+/* General text in pre blocks, if not caught by other rules, should be black. */
+/* This might be slightly redundant given existing rules, but ensures our intent. */
+pre, pre code {
+    color: black !important; /* Default code text color */
+    /* background-color: #F8F8F8; /* Already set by existing rules */
+}
+
+/* Custom Heading Sizes and Spacing */
+h1 {
+    font-size: 2.0em !important;
+    /* Furo specific line-height might need adjustment if text looks cramped */
+}
+
+h2 {
+    font-size: 1.75em !important;
+}
+
+h3 {
+    font-size: 1.5em !important;
+}
+
+h4 {
+    font-size: 1.25em !important;
+    /* font-weight: bold !important; */
+}
+
+h5 {
+    font-size: 1.0em !important;
+    /* font-weight: bold !important; */
+}
+
+h6 {
+    font-size: 0.75em !important;
+    font-weight: bold !important;
+    color: #555 !important; /* Often H6 is a bit de-emphasized */
+}
+
+/* Heading styles for core-module-reference (Tactile-like) */
+/* Applied using the data-furo-page attribute */
+
+body.core-module-reference-page h1 {
+    font-size: 2.25em !important;
+    font-weight: 700 !important;
+}
+
+body.core-module-reference-page h2 {
+    font-size: 1.5em !important;
+    font-weight: 700 !important;
+}
+
+body.core-module-reference-page h3 {
+    font-size: 1.0em !important; /* Matches Tactile theme */
+    font-weight: 700 !important;
+}
+
+body.core-module-reference-page h4 {
+    font-size: 1.2em !important; /* Matches Tactile theme */
+    font-weight: 700 !important;
 }

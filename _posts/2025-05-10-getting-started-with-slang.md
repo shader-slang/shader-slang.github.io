@@ -2,7 +2,7 @@
 layout: event
 title: "Getting Started with Slang: Draw Your First Splat"
 date: 2025-04-30 17:00:00
-end_date: 2025-05-10 17:00:00
+end_date: 2025-05-21 17:00:00
 categories: [ "event" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
