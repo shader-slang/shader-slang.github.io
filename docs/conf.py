@@ -42,7 +42,8 @@ def handle_utf16le_files(app, docname, source):
             source[0] = content
 
 def setup(app):
-    app.connect('source-read', source_read_handler)
+    # Processing toctrees is really slow, O(n^2), so we will leave them commented out
+    # app.connect('source-read', source_read_handler)
     app.connect('source-read', handle_utf16le_files)
 
 project = 'Slang Documentation'
