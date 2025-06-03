@@ -124,12 +124,7 @@ function searchResultItemOnClick(event) {
     if (target && target.tagName === 'A') {
         const link = target.getAttribute('href');
         if (link) {
-            if (target.closest('.search_result_item').dataset.type === 'search') {
-                const rtdSearchEvent = new CustomEvent("readthedocs-search-show");
-                document.dispatchEvent(rtdSearchEvent);
-            } else {
-                window.location.href = link;
-            }
+            window.location.href = link;
         }
     }
 }
@@ -336,14 +331,9 @@ if (input) {
             e.preventDefault();
         } else if (e.key === 'Enter') {
             if (highlightedIndex > -1 && items[highlightedIndex]) {
-                if (items[highlightedIndex].dataset.type === 'search') {
-                    const rtdSearchEvent = new CustomEvent("readthedocs-search-show");
-                    document.dispatchEvent(rtdSearchEvent);
-                } else {
-                    let selectedATag = items[highlightedIndex].querySelector('a');
-                    if (selectedATag && selectedATag.href) {
-                        window.location.href = selectedATag.href;
-                    }
+                let selectedATag = items[highlightedIndex].querySelector('a');
+                if (selectedATag && selectedATag.href) {
+                    window.location.href = selectedATag.href;
                 }
                 e.preventDefault();
             }
