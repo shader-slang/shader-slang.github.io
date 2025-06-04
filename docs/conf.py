@@ -111,6 +111,11 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'index.md',
 include_patterns = ['index.rst', '*.md',
                     "external/slang/docs/user-guide/*.md",
                     "external/slang/docs/command-line-slangc-reference.md",
+                    "external/core-module-reference/index.md",
+                    "external/core-module-reference/attributes/**",
+                    "external/core-module-reference/global-decls/**",
+                    "external/core-module-reference/interfaces/**",
+                    "external/core-module-reference/types/**",
                     "external/slangpy/docs/index.rst",
 ]
 
