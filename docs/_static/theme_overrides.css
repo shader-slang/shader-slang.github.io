@@ -59,7 +59,7 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
 #tocSearchResult {
     position: absolute;
     width: calc(100% + 4px);
-    max-height: 1000%;
+    max-height: 50vh;
     overflow-y: scroll;
     filter: drop-shadow(2px 2px 4px #30303080);
     z-index: 1000;
