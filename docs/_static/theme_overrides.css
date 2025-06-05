@@ -1,3 +1,8 @@
+:root {
+    /* Increase sidebar width from default 15em to 20em */
+    --sidebar-width: 20em;
+}
+
 .container {
     width: 100%;
 }
@@ -28,158 +33,86 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
     display: block !important;
 }
 
-#tocSearchPanel{
-  flex: none;
-  height:25px;
-  padding-top:10px;
-  padding-bottom: 0px;
-  padding-left:10px;
-  padding-right:10px;
-  margin-bottom:5px;
-  display: flex;
-  position: relative; /* Added for positioning tocSearchResult */
+.sidebar-container {
+    width: 100%;
+    max-width: var(--sidebar-width);
 }
 
-#tocSearchPanelInner{
-  flex:1 1 0;
-  padding:5px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center; 
-}
-
-.search_panel_unfocused
-{
-  outline: solid 2px #E0E0E0;
-}
-
-.search_panel_unfocused:hover
-{
-  outline: solid 2px #C0C0C0;
-}
-
-.search_panel_focused
-{
-  outline: solid 2px rgb(228, 109, 85);
-}
-
-#tocSearchResult{
-  position: absolute;
-  /* left:10px; */ /* Adjusted to be relative to tocSearchPanel */
-  left: 0;
-  top: 100%; /* Position below the search panel inner */
-  /* width: 280px; */
-  width: 100%; /* Make it full width of its parent */
-  max-height: 350px;
-  overflow-y: auto;
-  border: 1px solid #ccc;
-  filter: drop-shadow(2px 2px 4px #30303080);
-  background-color: #F0F0F0;
-  /* display: none; */ /* This will be controlled by JS */
-  z-index: 1000;
-  box-sizing: border-box; /* Added for consistent sizing */
-}
-
-#txtSearch{
-  order: 1;
-  flex: 1 1 0;
-  height: 100%;
-  border: none;
-  outline:none;
-  width: 100%; /* Ensure it takes full width */
-  box-sizing: border-box; /* Added for consistent sizing */
-}
-
-input:focus{
-  border: none;
-  outline:none;
-}
-
-.search_result_item {
-  cursor: pointer;
-  user-select: none;
-  list-style-type: none;
-  padding-left: 20px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
-.highlighted_search_selection
-{
-  background-color: #FFE0E0;
-}
-
-/* Ensure the search input is visible within Furo's sidebar */
-/* Might need further adjustment based on Furo's structure */
-
-/* Sidebar search tweaks for Furo */
-
-/* The `search-button__input` is Furo's default search input, which we are replacing. */
-/* We hide it, but a more robust solution might involve Furo theme template customization beyond just `sidebar/search.html` */
-form.sidebar-search-container {
-    display: none !important; /* Hide Furo's default search form if it interferes */
-}
-
-/* If Furo has a specific container for the search part of the sidebar, adjust its properties */
-/* This is a guess, might need to inspect the generated HTML with the new search component */
-
-.sidebar-search-container {
-    padding: 0 !important; /* Remove Furo padding if it misaligns our search */
-}
-
-/* Style the new search input and results panel to fit into Furo */
-
-/* Make sure our custom search panel fits well */
 #tocSearchPanel {
-    padding: 0.5rem var(--sidebar-item-padding-x);
-    margin-bottom: 0.5rem;
-    /* border-bottom: 1px solid var(--color-sidebar-border); */ /* Optional: a separator */
+    flex:1 1 0;
+    width: calc(100% - 4px);
+    max-width: calc(var(--sidebar-width) - 4px);
+    display: flex;
+    position: relative;
 }
 
 #tocSearchPanelInner {
+    flex:1 1 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
     background-color: var(--color-background-secondary);
-    border-radius: var(--sidebar-item-border-radius);
-    border: 1px solid var(--color-sidebar-border);
-    padding: 0.1rem 0.5rem; /* Smaller padding */
-    height: 2rem; /* Adjust height to match Furo's inputs */
-}
-
-#txtSearch {
-    background-color: transparent; /* Match Furo input style */
-    color: var(--color-content-foreground); /* Match Furo text color */
-    font-size: 0.875rem; /* Match Furo input font size */
-    line-height: 1.5rem;
-    padding: 0.25rem 0; /* Minimal padding */
-}
-
-#txtSearch::placeholder {
-    color: var(--color-foreground-muted);
-}
-
-.search_panel_focused {
-    outline: solid 2px var(--color-brand-primary); /* Use Furo's brand color for focus */
-    border-color: var(--color-brand-primary); /* Also change border color on focus */
-}
-
-.search_panel_unfocused {
-    /* Keep original or use Furo's default border */
-    border: 1px solid var(--color-sidebar-border);
-     outline: none; /* Remove original outline */
-}
-.search_panel_unfocused:hover {
-    border-color: var(--color-sidebar-link-text--hover); /* Use Furo's hover color */
-    outline: none; /* Remove original outline */
+    border: 2px solid transparent;
 }
 
 #tocSearchResult {
+    position: absolute;
+    width: calc(100% + 4px);
+    max-height: 1000%;
+    overflow-y: scroll;
+    filter: drop-shadow(2px 2px 4px #30303080);
+    z-index: 1000;
+    box-sizing: border-box;
     background-color: var(--color-background-primary);
-    border: 1px solid var(--color-sidebar-border);
-    border-top: none; /* Avoid double border with the panel above */
-    border-radius: 0 0 var(--sidebar-item-border-radius) var(--sidebar-item-border-radius);
-    left: var(--sidebar-item-padding-x);
-    width: calc(100% - (2 * var(--sidebar-item-padding-x))); /* Adjust width to fit padding */
-    top: calc(100% - 5px); /* Adjust based on panel height and desired spacing */
+    box-shadow: 0 4px 6px rgba(0,0,0,.1);
+}
+
+#txtSearch {
+    order: 1;
+    flex: 1 1 0;
+    border: none;
+    outline:none;
+    box-sizing: border-box;
+    background-color: transparent;
+    color: var(--color-content-foreground);
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    padding: 5px;
+}
+
+input:focus {
+    border: none;
+    outline:none;
+}
+
+.search_result_item {
+    cursor: pointer;
+    user-select: none;
+    list-style-type: none;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+.highlighted_search_selection {
+    background-color: #FFE0E0;
+}
+
+form.sidebar-search-container {
+    display: none !important;
+}
+
+.sidebar-search-container {
+    padding: 0 !important;
+}
+
+.search_panel_unfocused {
+    border-color: transparent;
+}
+
+.search_panel_focused {
+    border: 2px solid var(--color-brand-primary) !important;
 }
 
 .search_result_item {
@@ -194,55 +127,13 @@ form.sidebar-search-container {
 
 .search_result_item.highlighted_search_selection {
     background-color: var(--color-brand-primary);
-    color: var(--color-background-primary); /* Ensure text is readable on highlight */
-}
-
-/* Hide original search input and related elements more specifically if possible */
-
-/* Attempt to hide Furo's search input more cleanly */
-
-/* Locate Furo's specific search input through its classes */
-.sidebar-search input[type="text"], .sidebar-search button {
-    display: none !important; /* Hide default Furo search elements */
-}
-
-/* You may need to add specific CSS to override Furo's default search styling. */
-/* The Furo theme uses CSS variables extensively, which can be helpful. */
-/* For example, to match Furo's input field styling: */
-#txtSearch {
-    /* ... other styles ... */
-    /* background-color: var(--color-background-secondary); */
-    /* border: 1px solid var(--color-border-muted); */
-    /* border-radius: var(--border-radius-small); */
-    /* color: var(--color-content-foreground); */
-    /* padding: 0.5em; */
-}
-
-/* Adjust the overall search component to fit Furo's sidebar structure */
-/* For instance, Furo wraps sidebar content in <nav class="bd-links"> or similar */
-/* You might need to inspect the final HTML output to fine-tune this. */
-
-/* These are attempts to integrate with Furo's styling */
-/* It's important to test and adjust these based on the actual rendered HTML */
-
-/* Reset some styles that might be inherited from Furo and conflict */
-#tocSearchPanelInner input#txtSearch {
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
-    height: auto; /* Let flexbox control height if possible */
-    min-height: 1.8rem; /* Ensure it's not too small */
-}
-
-/* If the search results appear misplaced or styled incorrectly by Furo theme defaults */
-#tocSearchResult {
-    box-shadow: 0 4px 6px rgba(0,0,0,.1); /* Softer shadow, more Furo-like */
+    color: var(--color-background-primary);
 }
 
 .search_result_item a {
     color: var(--color-sidebar-link-text);
     text-decoration: none;
-    display: block; /* Make the whole item clickable */
+    display: block;
 }
 
 .search_result_item a:hover {
@@ -252,132 +143,245 @@ form.sidebar-search-container {
 
 .search_result_item.highlighted_search_selection a,
 .search_result_item.highlighted_search_selection a:hover {
-    color: var(--color-background-primary); /* Or another contrasting color */
+    color: var(--color-background-primary);
 }
 
-/* Pygments Sytnax Highlighting for Furo Theme Override */
-.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn, .highlight .kp, .highlight .kr { color: #1243d4 !important; } /* Keywords */
-.highlight .kt, .highlight .nc { color: #11abb9 !important; } /* Types, Class names */
-.highlight .nv { color: #0a1985 !important; } /* Variables, e.g. instance variables */
-.highlight .nb { color: #0a1985 !important; } /* Built-in names, can also be variable-like */
-.highlight .n, .highlight .nn { color: #000000 !important; } /* General names, namespace names - default to black */
-
-.highlight .nf { color: #d14 !important; } /* Function names */
-.highlight .c, .highlight .c1, .highlight .cs, .highlight .cm { color: #149104 !important; } /* Comments - green */
-.highlight .s, .highlight .s1, .highlight .s2, .highlight .sd, .highlight .se, .highlight .sh, .highlight .si, .highlight .sx, .highlight .sr { color: #d14 !important; } /* Strings, Regex - using the red/pink */
-.highlight .m, .highlight .mf, .highlight .mh, .highlight .mi, .highlight .il, .highlight .mo { color: #7211c2 !important; } /* Numbers - purple */
-
-/* Ensure other elements like operators are sensible */
-.highlight .o, .highlight .ow { color: #000000 !important; } /* Operators - black */
-.highlight .p { color: #000000 !important; } /* Punctuation - black */
-
-/* Section highlighting styles */
-.goto_highlight {
-  animation: highlight-fade-in 0.5s ease-in;
-  background-color: rgba(255, 255, 128, 0.5);
-}
-
-.goto_highlight_fade_out {
-  animation: highlight-fade-out 2s ease-out;
-}
-
-@keyframes highlight-fade-in {
-  from {
-    background-color: rgba(255, 255, 0, 0);
-  }
-  to {
-    background-color: rgba(255, 255, 0, 0.2);
-  }
-}
-
-@keyframes highlight-fade-out {
-  from {
-    background-color: rgba(255, 255, 0, 0.2);
-  }
-  to {
-    background-color: rgba(255, 255, 0, 0);
-  }
-}
-
-/* Code block styles */
-pre {
-  color: #000000;
-  background: #F8F8F8;
-}
-
-pre code {
-  color: #000000;
-  background-color: #F8F8F8;
+.sidebar-search input[type="text"], .sidebar-search button {
+    display: none !important;
 }
 
 .highlight {
-  background: #F8F8F8;
+    background: #F8F8F8;
 }
 
-/* Custom syntax highlighting for Slang-specific classes */
+.highlight .bp {
+    color: #999999;
+}
+
+.highlight .c, .highlight .c1, .highlight .cd, .highlight .ch,
+.highlight .cm, .highlight .cp, .highlight .cpf, .highlight .cs {
+    color: #148b04;
+}
+
+.highlight .dl {
+    color: #d14;
+}
+
+.highlight .err {
+    color: #a61717;
+    background-color: #e3d2d2;
+}
+
+.highlight .gd {
+    color: #000000;
+    background-color: #ffdddd;
+}
+
+.highlight .ge {
+    color: #000000;
+    font-style: italic;
+}
+
+.highlight .gh {
+    color: #999999;
+}
+
+.highlight .gi {
+    color: #000000;
+    background-color: #ddffdd;
+}
+
+.highlight .go {
+    color: #888888;
+}
+
+.highlight .gp {
+    color: #555555;
+}
+
+.highlight .gu {
+    color: #aaaaaa;
+}
+
+.highlight .gr, .highlight .gt {
+    color: #aa0000;
+}
+
+.highlight .k, .highlight .kc, .highlight .kd, .highlight .kn,
+.highlight .kp, .highlight .kr, .highlight .kt, .highlight .kv {
+    color: #1243d4;
+}
+
+.highlight .m, .highlight .mb, .highlight .mf,
+.highlight .mi, .highlight .mx {
+    color: #7211c2;
+}
+
+.highlight .n{
+    color: black;
+}
+
+.highlight .na,
+.highlight .nc,
+.highlight .nt {
+    color: #11abb9;
+}
+
+.highlight .nv {
+    color: #008080;
+}
+
+.highlight .o,
+.highlight .ow {
+    color: #000000;
+}
+
+.highlight .p {
+    color: #000000;
+}
+
+.highlight .s, .highlight .s1, .highlight .s2, .highlight .sb,
+.highlight .sc, .highlight .sd, .highlight .se, .highlight .sh,
+.highlight .si, .highlight .sx {
+    color: #d14;
+}
+
+.highlight .sa {
+    color: #000000;
+}
+
+.highlight .sr {
+    color: #009926;
+}
+
+.highlight .ss {
+    color: #990073;
+}
+
+.highlight .vc, .highlight .vg, .highlight .vi, .highlight .vm {
+    color: #008080;
+}
+
+.highlight .w {
+    color: #000000;
+}
+
+/* Highlighting after clicking a link */
+.goto_highlight {
+    animation: highlight-fade-in 0.5s ease-in;
+    background-color: rgba(255, 255, 128, 0.5);
+}
+
+.goto_highlight_fade_out {
+    animation: highlight-fade-out 2s ease-out;
+}
+
+@keyframes highlight-fade-in {
+    from {
+        background-color: rgba(255, 255, 0, 0);
+    }
+    to {
+        background-color: rgba(255, 255, 0, 0.2);
+    }
+}
+
+@keyframes highlight-fade-out {
+    from {
+        background-color: rgba(255, 255, 0, 0.2);
+    }
+    to {
+        background-color: rgba(255, 255, 0, 0);
+    }
+}
+
+/* Code block styles */
+pre, pre code {
+    color: #000000 !important;
+    background: #F8F8F8 !important;
+}
+
+/* Code block styling */
 pre .code_keyword {
-  color: #1243d4 !important; /* Blue - for keywords like 'int' */
+    color: #0000FF !important;
 }
 
 pre .code_type {
-  color: #11abb9 !important; /* Teal/Cyan - for types like 'Array' */
+    color: #267F99 !important;
 }
 
 pre .code_param {
-  color: #808080 !important; /* Gray */
+    color: #808080 !important;
 }
 
 pre .code_var {
-  color: #0a1985 !important; /* Color for variables like 'N' */
+    color: #001080 !important;
 }
 
-/* Link styling within <pre> blocks */
-
-/* Default/Method links (e.g., getCount) */
-pre a,
-pre a:link, /* Explicitly for unvisited */
-pre a:visited {
-  color: #d14 !important;   /* Dark Pink/Red - for method names */
-  text-decoration: none !important; 
+pre .code_function {
+    color: #d14 !important;
 }
 
-/* Type links (e.g., Array) */
-pre a.code_type,
-pre a.code_type:link,
-pre a.code_type:visited { 
-  color: #11abb9 !important; /* Teal/Cyan */
+pre .code_comment {
+    color: #148b04 !important;
 }
 
-/* Parameter links (e.g., a, b in dadd.md) */
-pre a.code_param,
-pre a.code_param:link,
-pre a.code_param:visited {
-  color: #808080 !important; /* Gray */
+pre .code_string {
+    color: #d14 !important;
 }
 
-/* Variable links */
-pre a.code_var,
-pre a.code_var:link,
-pre a.code_var:visited {
-  color: #0a1985 !important; /* Color for variable links */
+pre .code_number {
+    color: #7211c2 !important;
 }
 
-/* Common hover effect for all these links */
+pre .code_name, pre .code_operator, pre .code_punctuation {
+    color: #000000 !important;
+}
+
+/* Code block link styling */
+pre a, pre a:link, pre a:visited {
+    color: #d14 !important;
+    text-decoration: none !important; 
+}
+
+pre a.code_type, pre a.code_type:link, pre a.code_type:visited { 
+    color: #267F99 !important;
+}
+
+pre a.code_param, pre a.code_param:link, pre a.code_param:visited {
+    color: #808080 !important;
+}
+
+pre a.code_var, pre a.code_var:link, pre a.code_var:visited {
+    color: #001080 !important;
+}
+
+pre a.code_function, pre a.code_function:link, pre a.code_function:visited {
+    color: #d14 !important;
+}
+
+pre a.code_comment, pre a.code_comment:link, pre a.code_comment:visited {
+    color: #148b04 !important;
+}
+
+pre a.code_string, pre a.code_string:link, pre a.code_string:visited {
+    color: #d14 !important;
+}
+
+pre a.code_number, pre a.code_number:link, pre a.code_number:visited {
+    color: #7211c2 !important;
+}
+
+pre a.code_name, pre a.code_name:link, pre a.code_name:visited {
+    color: #000000 !important;
+}
+
 pre a:hover {
-  text-decoration: underline !important;
+    text-decoration: underline !important;
 }
 
-/* General text in pre blocks, if not caught by other rules, should be black. */
-/* This might be slightly redundant given existing rules, but ensures our intent. */
-pre, pre code {
-    color: black !important; /* Default code text color */
-    /* background-color: #F8F8F8; /* Already set by existing rules */
-}
-
-/* Custom Heading Sizes and Spacing */
+/* User Guide Heading Sizes */
 h1 {
     font-size: 2.0em !important;
-    /* Furo specific line-height might need adjustment if text looks cramped */
 }
 
 h2 {
@@ -390,23 +394,19 @@ h3 {
 
 h4 {
     font-size: 1.25em !important;
-    /* font-weight: bold !important; */
 }
 
 h5 {
     font-size: 1.0em !important;
-    /* font-weight: bold !important; */
 }
 
 h6 {
     font-size: 0.75em !important;
     font-weight: bold !important;
-    color: #555 !important; /* Often H6 is a bit de-emphasized */
+    color: #555 !important;
 }
 
-/* Heading styles for core-module-reference (Tactile-like) */
-/* Applied using the data-furo-page attribute */
-
+/* Core Module Reference Heading Sizes */
 body.core-module-reference-page h1 {
     font-size: 2.25em !important;
     font-weight: 700 !important;
@@ -418,11 +418,11 @@ body.core-module-reference-page h2 {
 }
 
 body.core-module-reference-page h3 {
-    font-size: 1.0em !important; /* Matches Tactile theme */
+    font-size: 1.0em !important;
     font-weight: 700 !important;
 }
 
 body.core-module-reference-page h4 {
-    font-size: 1.2em !important; /* Matches Tactile theme */
+    font-size: 1.2em !important;
     font-weight: 700 !important;
 }

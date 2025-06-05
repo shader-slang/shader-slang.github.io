@@ -359,7 +359,7 @@ if (input) {
 
 function positDropdown() {
     if (searchPanel && searchPanelOutline && resultPanel) {
-        resultPanel.style.top = `${searchPanel.offsetHeight + 2}px`;
+        resultPanel.style.top = `${searchPanel.offsetHeight}px`;
         resultPanel.style.width = `${searchPanelOutline.offsetWidth}px`;
     }
 }
