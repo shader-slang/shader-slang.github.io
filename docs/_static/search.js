@@ -296,24 +296,29 @@ function txtSearchChange(event) {
 
     // If the URL root is not set (e.g. for local development), get the script path and go up one directory
     if (!urlRoot) {
-        try {
-            const scriptSrc = document.currentScript ? document.currentScript.src : 
-                              (document.scripts[document.scripts.length - 1] ? document.scripts[document.scripts.length - 1].src : '');
-            if (scriptSrc) {
-                const url = new URL(scriptSrc);
-                const pathParts = url.pathname.split('/');
-                pathParts.pop(); // Remove the script filename
-                pathParts.pop(); // Go up one directory from _static
-                urlRoot = url.origin + pathParts.join('/');
-            } else {
+        // If we're already on the search page, use relative path
+        if (window.location.pathname.endsWith('/search.html')) {
+            urlRoot = '';
+        } else {
+            try {
+                const scriptSrc = document.currentScript ? document.currentScript.src : 
+                                (document.scripts[document.scripts.length - 1] ? document.scripts[document.scripts.length - 1].src : '');
+                if (scriptSrc) {
+                    const url = new URL(scriptSrc);
+                    const pathParts = url.pathname.split('/');
+                    pathParts.pop(); // Remove the script filename
+                    pathParts.pop(); // Go up one directory from _static
+                    urlRoot = url.origin + pathParts.join('/') + '/';
+                } else {
+                    urlRoot = '';
+                }
+            } catch (e) {
                 urlRoot = '';
             }
-        } catch (e) {
-            urlRoot = '';
         }
     }
     
-    searchUrl = urlRoot + '/search.html';
+    searchUrl = urlRoot + 'search.html';
     resultPanel.innerHTML = `<div class='search_result_item' data-type='search'><a href="${searchUrl}?q=${encodeURIComponent(searchText)}"><span>Search Documentation for "${escapeHTML(searchText)}"</span></a></div>`;
     
     // Add the rest of the results
