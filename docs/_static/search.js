@@ -290,12 +290,13 @@ function txtSearchChange(event) {
     matchedResults.sort((a, b) => b.score - a.score);
 
     // Add the "Search for..." item at the top
-
     // Get the URL root from the RTD documentation options
     let urlRoot = DOCUMENTATION_OPTIONS.URL_ROOT;
 
     // If the URL root is not set (e.g. for local development), get the script path and go up one directory
-    if (!urlRoot) {
+    if (urlRoot) {
+        urlRoot = urlRoot + '/';
+    } else {
         // If we're already on the search page, use relative path
         if (window.location.pathname.endsWith('/search.html')) {
             urlRoot = '';
