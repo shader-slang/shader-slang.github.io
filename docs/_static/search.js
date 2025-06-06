@@ -290,7 +290,31 @@ function txtSearchChange(event) {
     matchedResults.sort((a, b) => b.score - a.score);
 
     // Add the "Search for..." item at the top
-    resultPanel.innerHTML = `<div class='search_result_item' data-type='search'><a href="search.html?q=${encodeURIComponent(searchText)}"><span>Search Documentation for "${escapeHTML(searchText)}"</span></a></div>`;
+
+    // Get the URL root from the RTD documentation options
+    let urlRoot = DOCUMENTATION_OPTIONS.URL_ROOT;
+
+    // If the URL root is not set (e.g. for local development), get the script path and go up one directory
+    if (!urlRoot) {
+        try {
+            const scriptSrc = document.currentScript ? document.currentScript.src : 
+                              (document.scripts[document.scripts.length - 1] ? document.scripts[document.scripts.length - 1].src : '');
+            if (scriptSrc) {
+                const url = new URL(scriptSrc);
+                const pathParts = url.pathname.split('/');
+                pathParts.pop(); // Remove the script filename
+                pathParts.pop(); // Go up one directory from _static
+                urlRoot = url.origin + pathParts.join('/');
+            } else {
+                urlRoot = '';
+            }
+        } catch (e) {
+            urlRoot = '';
+        }
+    }
+    
+    searchUrl = urlRoot + '/search.html';
+    resultPanel.innerHTML = `<div class='search_result_item' data-type='search'><a href="${searchUrl}?q=${encodeURIComponent(searchText)}"><span>Search Documentation for "${escapeHTML(searchText)}"</span></a></div>`;
     
     // Add the rest of the results
     resultPanel.innerHTML += matchedResults.map(r => 
