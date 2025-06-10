@@ -319,7 +319,6 @@ def generate_toc_html(app, exception):
         /* Style for current page */
         .sidebar-tree .current-page > .reference {{
             font-weight: bold;
-            color: var(--color-brand-primary);
         }}
     </style>
     
@@ -346,35 +345,7 @@ def generate_toc_html(app, exception):
 {html}
     </div>
 </div>
-<script>
-// Initialize all expandable sections to be open by default
-document.addEventListener('DOMContentLoaded', function() {{
-    const checkboxes = document.querySelectorAll('.toctree-checkbox');
-    checkboxes.forEach(function(checkbox) {{
-        checkbox.checked = true; // Start expanded
-    }});
-    
-    // Highlight current page
-    try {{
-        const parentUrl = window.parent.location.href;
-        const links = document.querySelectorAll('.sidebar-tree a.reference');
-        
-        links.forEach(function(link) {{
-            const linkUrl = new URL(link.href, window.location.origin);
-            const parentUrlObj = new URL(parentUrl);
-            
-            // Compare the pathname (ignoring hash and query parameters)
-            if (linkUrl.pathname === parentUrlObj.pathname) {{
-                link.parentElement.classList.add('current-page');
-            }}
-        }});
-    }} catch (e) {{
-        // If we can't access parent URL due to cross-origin restrictions,
-        // try to get it from the referrer or use a different method
-        console.log('Cannot access parent URL:', e);
-    }}
-}});
-</script>
+<script src="toc-highlight.js"></script>
 <script src="search.js"></script>
 </body>
 </html>"""
