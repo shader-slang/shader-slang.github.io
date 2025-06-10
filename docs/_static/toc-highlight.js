@@ -36,40 +36,29 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function expandPathToElement(element) {
-    // Walk up the DOM tree and expand all parent sections
-    let current = element.parentElement;
+    // Start from the current page's list item and walk up the ancestry
+    let currentLi = element.closest('li');
     
-    while (current && current !== document.body) {
-        // Look for a toctree-checkbox in this level or parent levels
-        const checkbox = current.querySelector('.toctree-checkbox');
+    while (currentLi) {
+        // Find the parent ul of this li
+        const parentUl = currentLi.parentElement;
+        if (!parentUl || parentUl.tagName !== 'UL') {
+            break;
+        }
+        
+        // Find the parent li of that ul (this is the section that contains our current path)
+        const parentLi = parentUl.parentElement;
+        if (!parentLi || parentLi.tagName !== 'LI') {
+            break;
+        }
+        
+        // Look for a checkbox specifically in this parent li (not descendants)
+        const checkbox = parentLi.querySelector(':scope > .toctree-checkbox');
         if (checkbox) {
             checkbox.checked = true;
         }
         
-        // Also check if current element is a list item with a checkbox as a sibling
-        if (current.tagName === 'LI') {
-            const prevCheckbox = current.querySelector('.toctree-checkbox');
-            if (prevCheckbox) {
-                prevCheckbox.checked = true;
-            }
-        }
-        
-        // Move up the tree
-        current = current.parentElement;
-    }
-    
-    // Also check for any parent ul elements that might have checkboxes
-    let parentUl = element.closest('ul');
-    while (parentUl) {
-        // Find the parent li of this ul
-        const parentLi = parentUl.parentElement;
-        if (parentLi && parentLi.tagName === 'LI') {
-            const checkbox = parentLi.querySelector('.toctree-checkbox');
-            if (checkbox) {
-                checkbox.checked = true;
-            }
-        }
-        // Move to the next parent ul
-        parentUl = parentUl.parentElement ? parentUl.parentElement.closest('ul') : null;
+        // Move up to the next level
+        currentLi = parentLi;
     }
 } 
