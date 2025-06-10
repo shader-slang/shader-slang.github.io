@@ -275,7 +275,7 @@ def generate_toc_html(app, exception):
             height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden; /* Prevent iframe from being scrollable */
+            overflow: hidden;
             background: var(--color-sidebar-background);
         }}
         
@@ -287,14 +287,7 @@ def generate_toc_html(app, exception):
             background: var(--color-sidebar-background, #f8f9fb);
         }}
         
-        /* Make only the TOC content scrollable */
-        .toc-content {{
-            height: calc(100vh - 60px); /* Adjust based on search panel height */
-            overflow-y: auto;
-            overflow-x: hidden;
-        }}
-        
-        /* Remove container scrolling */
+        /* Use flexbox for proper layout */
         .content-container {{
             height: 100vh;
             display: flex;
@@ -302,18 +295,17 @@ def generate_toc_html(app, exception):
             background: var(--color-sidebar-background);
         }}
         
-        /* Ensure TOC content area has correct background */
-        .toc-content {{
-            background: var(--color-sidebar-background);
+        /* Search panel takes its natural height */
+        #tocSearchPanel {{
+            flex-shrink: 0;
         }}
         
-        /* Ensure sidebar tree uses proper styling */
-        .sidebar-tree {{
-            font-size: var(--sidebar-item-font-size);
-        }}
-        .sidebar-tree .caption,
-        .sidebar-tree .caption-text {{
-            font-size: var(--sidebar-caption-font-size);
+        /* TOC content fills remaining space and scrolls */
+        .toc-content {{
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background: var(--color-sidebar-background);
         }}
         
         /* Style for current page */
