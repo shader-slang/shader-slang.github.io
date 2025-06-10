@@ -44,6 +44,7 @@ https://github.com/readthedocs/sphinx_rtd_theme/issues/1301
     max-width: calc(var(--sidebar-width) - 4px);
     display: flex;
     position: relative;
+    max-height: 32px;
 }
 
 #tocSearchPanelInner {
@@ -100,7 +101,14 @@ input:focus {
 }
 
 form.sidebar-search-container {
+    height: 100%;
     display: none !important;
+}
+
+.custom-nav {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .sidebar-search-container {

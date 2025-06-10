@@ -66,7 +66,8 @@ def latex_block_to_inline(app, docname, source):
     source[0] = content
 
 def setup(app):
-    app.connect('source-read', source_read_handler)
+    # Processing toctrees is really slow, O(n^2), so we will leave them commented out
+    # app.connect('source-read', source_read_handler)
     app.connect('source-read', latex_block_to_inline)
     app.connect('source-read', handle_utf16le_files)
 
@@ -91,7 +92,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.intersphinx',
     'myst_parser',
-    '_ext.fix_toc',  # Simple extension to set titlesonly=True
+    '_ext.generate_toc_html',
 ]
 
 # Debugging flag for verbose output
@@ -116,7 +117,6 @@ include_patterns = ['index.rst', '*.md',
                     "external/core-module-reference/global-decls/**",
                     "external/core-module-reference/interfaces/**",
                     "external/core-module-reference/types/**",
-                    "external/slangpy/docs/index.rst",
 ]
 
 # Configure myst-parser for markdown files
