@@ -173,28 +173,72 @@ def process_document(env, docname, parent_maxdepth=1, processed_docs=None):
     return sections
 
 def render_toc_html_from_doctree(sections):
-    """Render the TOC as HTML from doctree sections."""
-    html = []
+    """Render the TOC as HTML using Sphinx's native toctree structure."""
+    html = ['<div class="sidebar-tree">']
+    checkbox_counter = {'value': 1}  # Use a mutable container to track counter
+    
     for caption, entries in sections:
         if caption:
-            html.append(f'<h3>{caption}</h3>')
-        html.append('<ul>')
-        for entry in entries:
-            html.append(render_entry(entry))
-        html.append('</ul>')
+            html.append(f'  <p class="caption" role="heading"><span class="caption-text">{caption}</span></p>')
+            html.append('<ul>')
+            for entry in entries:
+                html.extend(render_entry(entry, level=1, indent=0, checkbox_counter=checkbox_counter))
+            html.append('</ul>')
+        else:
+            html.append('<ul>')
+            for entry in entries:
+                html.extend(render_entry(entry, level=1, indent=0, checkbox_counter=checkbox_counter))
+            html.append('</ul>')
+    html.append('</div>')
     return '\n'.join(html)
 
-def render_entry(entry):
-    html = f'<li><a href="{entry["link"]}" target="_top">{entry["title"]}</a>'
-    if entry['children']:
-        html += '<ul>'
+def render_entry(entry, level=1, indent=0, checkbox_counter=None):
+    """Render a single TOC entry with Sphinx's native CSS classes and structure."""
+    # Determine if this entry has children
+    has_children = bool(entry['children'])
+    
+    # Build CSS classes
+    classes = [f'toctree-l{level}']
+    if has_children:
+        classes.append('has-children')
+    
+    html = []
+    
+    if has_children:
+        # For entries with children, use single-line compact format like example.html
+        checkbox_id = f'toctree-checkbox-{checkbox_counter["value"]}'
+        checkbox_counter['value'] += 1
+        
+        # Build the complete line in one go
+        if entry['link'].startswith(('http://', 'https://', 'mailto:')):
+            # External link
+            line = f'<li class="{" ".join(classes)}"><a class="reference external" href="{entry["link"]}" target="_parent">{entry["title"]}</a><input class="toctree-checkbox" id="{checkbox_id}" name="{checkbox_id}" role="switch" type="checkbox"/><label for="{checkbox_id}"><div class="visually-hidden">Toggle navigation of {entry["title"]}</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>'
+        else:
+            # Internal link
+            line = f'<li class="{" ".join(classes)}"><a class="reference internal" href="{entry["link"]}" target="_parent">{entry["title"]}</a><input class="toctree-checkbox" id="{checkbox_id}" name="{checkbox_id}" role="switch" type="checkbox"/><label for="{checkbox_id}"><div class="visually-hidden">Toggle navigation of {entry["title"]}</div><i class="icon"><svg><use href="#svg-arrow-right"></use></svg></i></label><ul>'
+        
+        html.append(line)
+        
+        # Add children
         for child_caption, child_entries in entry['children']:
             if child_caption:
-                html += f'<li><strong>{child_caption}</strong></li>'
-            for child in child_entries:
-                html += render_entry(child)
-        html += '</ul>'
-    html += '</li>'
+                html.append(f'<p class="caption" role="heading"><span class="caption-text">{child_caption}</span></p>')
+                for child in child_entries:
+                    html.extend(render_entry(child, level=level+1, indent=0, checkbox_counter=checkbox_counter))
+            else:
+                for child in child_entries:
+                    html.extend(render_entry(child, level=level+1, indent=0, checkbox_counter=checkbox_counter))
+        html.append('</ul>')
+        html.append('</li>')
+    else:
+        # For simple entries without children, use single-line format like example.html
+        if entry['link'].startswith(('http://', 'https://', 'mailto:')):
+            # External link
+            html.append(f'<li class="{" ".join(classes)}"><a class="reference external" href="{entry["link"]}" target="_parent">{entry["title"]}</a></li>')
+        else:
+            # Internal link
+            html.append(f'<li class="{" ".join(classes)}"><a class="reference internal" href="{entry["link"]}" target="_parent">{entry["title"]}</a></li>')
+    
     return html
 
 def generate_toc_html(app, exception):
@@ -211,11 +255,132 @@ def generate_toc_html(app, exception):
     logger.info(f"Found {len(sections)} sections in total")
     html = render_toc_html_from_doctree(sections)
 
-    # Write the TOC to _static/toc.html
+    # Write the TOC to _static/toc.html with sphinx toctree styling
     out_path = os.path.join(app.outdir, '_static', 'toc.html')
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    
+    # Create a complete HTML document with sphinx toctree styling
+    full_html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table of Contents</title>
+    <link rel="stylesheet" href="styles/furo.css">
+    <link rel="stylesheet" href="styles/furo-extensions.css">
+    <link rel="stylesheet" href="theme_overrides.css">
+    <style>
+        /* Make iframe body fill height and be scrollable */
+        html, body {{
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden; /* Prevent iframe from being scrollable */
+            background: var(--color-sidebar-background);
+        }}
+        
+        /* Keep search panel fixed at top */
+        #tocSearchPanel {{
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--color-sidebar-background, #f8f9fb);
+        }}
+        
+        /* Make only the TOC content scrollable */
+        .toc-content {{
+            height: calc(100vh - 60px); /* Adjust based on search panel height */
+            overflow-y: auto;
+            overflow-x: hidden;
+        }}
+        
+        /* Remove container scrolling */
+        .content-container {{
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background: var(--color-sidebar-background);
+        }}
+        
+        /* Ensure TOC content area has correct background */
+        .toc-content {{
+            background: var(--color-sidebar-background);
+        }}
+        
+        /* Ensure sidebar tree uses proper styling */
+        .sidebar-tree {{
+            font-size: var(--sidebar-item-font-size);
+        }}
+        .sidebar-tree .caption,
+        .sidebar-tree .caption-text {{
+            font-size: var(--sidebar-caption-font-size);
+        }}
+        
+        /* Style for current page */
+        .sidebar-tree .current-page > .reference {{
+            font-weight: bold;
+            color: var(--color-brand-primary);
+        }}
+    </style>
+    
+    <!-- SVG symbol definitions for navigation arrows (matching Sphinx/Furo) -->
+    <svg style="display: none;">
+      <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+        <title>Expand</title>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+          <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+      </symbol>
+    </svg>
+</head>
+<body>
+<div class="content-container">
+    <div id="tocSearchPanel">
+        <div id="tocSearchPanelInner">
+            <input type="text" id="txtSearch" placeholder="Search..." autocomplete="off" />
+        </div>
+        <div id="tocSearchResult" style="display: none;"></div>
+    </div>
+    <div class="toc-content">
+{html}
+    </div>
+</div>
+<script>
+// Initialize all expandable sections to be open by default
+document.addEventListener('DOMContentLoaded', function() {{
+    const checkboxes = document.querySelectorAll('.toctree-checkbox');
+    checkboxes.forEach(function(checkbox) {{
+        checkbox.checked = true; // Start expanded
+    }});
+    
+    // Highlight current page
+    try {{
+        const parentUrl = window.parent.location.href;
+        const links = document.querySelectorAll('.sidebar-tree a.reference');
+        
+        links.forEach(function(link) {{
+            const linkUrl = new URL(link.href, window.location.origin);
+            const parentUrlObj = new URL(parentUrl);
+            
+            // Compare the pathname (ignoring hash and query parameters)
+            if (linkUrl.pathname === parentUrlObj.pathname) {{
+                link.parentElement.classList.add('current-page');
+            }}
+        }});
+    }} catch (e) {{
+        // If we can't access parent URL due to cross-origin restrictions,
+        // try to get it from the referrer or use a different method
+        console.log('Cannot access parent URL:', e);
+    }}
+}});
+</script>
+<script src="search.js"></script>
+</body>
+</html>"""
+    
     with open(out_path, 'w', encoding='utf-8') as f:
-        f.write(html)
+        f.write(full_html)
     logger.info(f"Generated {out_path}")
 
 def setup(app):

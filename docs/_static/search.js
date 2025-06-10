@@ -124,7 +124,12 @@ function searchResultItemOnClick(event) {
     if (target && target.tagName === 'A') {
         const link = target.getAttribute('href');
         if (link) {
-            window.location.href = link;
+            // If we're in an iframe, navigate the parent window
+            if (window.parent && window.parent !== window) {
+                window.parent.location.href = link;
+            } else {
+                window.location.href = link;
+            }
         }
     }
 }
@@ -219,107 +224,11 @@ function txtSearchChange(event) {
         }
     });
 
-    // -------- PHASE 2: Content search using Search._index --------
-    if (typeof Search !== 'undefined' && Search._index && typeof DOCUMENTATION_OPTIONS !== 'undefined') {
-        const searchIndex = Search._index;
-        let docResults = {}; 
-        const stemmer = (typeof Stemmer !== 'undefined' && Stemmer.stemWord) ? Stemmer.stemWord : (word => word.toLowerCase());
-        const queryOriginalTokens = searchText.toLowerCase().split(/[\\.:,\s]+/).filter(t => t.length > 0);
-
-        let stemmedSearchTokens = queryOriginalTokens.map(stemmer);
-        
-        stemmedSearchTokens.forEach((term, i) => {
-            let originalTerm = queryOriginalTokens[i];
-            let termDocs = searchIndex.terms[term];
-            if(!termDocs && searchIndex.terms[originalTerm]) {
-                termDocs = searchIndex.terms[originalTerm];
-            }
-
-            if (termDocs) {
-                termDocs.forEach(docInfo => {
-                    let docIndex = Array.isArray(docInfo) ? docInfo[0] : docInfo;
-                    if (!docResults[docIndex]) {
-                        docResults[docIndex] = {
-                            title: searchIndex.titles[docIndex],
-                            filename: searchIndex.filenames[docIndex],
-                            docname: searchIndex.docnames[docIndex],
-                            matchCount: 0,
-                            score: 0
-                        };
-                    }
-                    docResults[docIndex].matchCount++;
-                    docResults[docIndex].score += (searchIndex.terms[term] && searchIndex.terms[term].length || 0) > 100 ? 1 : 10;
-                    if (searchIndex.titles[docIndex] && searchIndex.titles[docIndex].toLowerCase().includes(originalTerm)) {
-                        docResults[docIndex].score += 20;
-                    }
-                });
-            }
-        });
-
-        for (const docIndex in docResults) {
-            const result = docResults[docIndex];
-            if (result.matchCount === stemmedSearchTokens.length) { 
-                if (result.docname && !result.docname.startsWith('external/core-module-reference')) {
-                    const pageTitle = result.title || "Untitled Page";
-                    const urlRoot = DOCUMENTATION_OPTIONS.URL_ROOT || '';
-                    let pageUrl = result.filename;
-                    if (urlRoot.endsWith('/') && pageUrl.startsWith('/')) {
-                        pageUrl = urlRoot + pageUrl.substring(1);
-                    } else if (!urlRoot.endsWith('/') && !pageUrl.startsWith('/') && urlRoot !== '') {
-                        pageUrl = urlRoot + '/' + pageUrl;
-                    } else {
-                        pageUrl = urlRoot + pageUrl;
-                    }
-                    
-                    const existing = matchedResults.find(r => r.href === pageUrl);
-                    if (!existing) {
-                        const isPerfect = isPerfectMatch(searchText, pageTitle);
-                        if (isPerfect) hasPerfectMatch = true;
-                        matchedResults.push({
-                            display: pageTitle,
-                            href: pageUrl,
-                            score: result.score + 500 + (isPerfect ? 1000 : 0),
-                            type: 'content'
-                        });
-                    }
-                }
-            }
-        }
-    }
-
     matchedResults.sort((a, b) => b.score - a.score);
 
     // Add the "Search for..." item at the top
-    // Get the URL root from the RTD documentation options
-    let urlRoot = DOCUMENTATION_OPTIONS.URL_ROOT;
-
-    // If the URL root is not set (e.g. for local development), get the script path and go up one directory
-    if (urlRoot) {
-        urlRoot = urlRoot + '/';
-    } else {
-        // If we're already on the search page, use relative path
-        if (window.location.pathname.endsWith('/search.html')) {
-            urlRoot = '';
-        } else {
-            try {
-                const scriptSrc = document.currentScript ? document.currentScript.src : 
-                                (document.scripts[document.scripts.length - 1] ? document.scripts[document.scripts.length - 1].src : '');
-                if (scriptSrc) {
-                    const url = new URL(scriptSrc);
-                    const pathParts = url.pathname.split('/');
-                    pathParts.pop(); // Remove the script filename
-                    pathParts.pop(); // Go up one directory from _static
-                    urlRoot = url.origin + pathParts.join('/') + '/';
-                } else {
-                    urlRoot = '';
-                }
-            } catch (e) {
-                urlRoot = '';
-            }
-        }
-    }
-    
-    searchUrl = urlRoot + 'search.html';
+    // Construct search URL relative to current page
+    let searchUrl = '../search.html';
     resultPanel.innerHTML = `<div class='search_result_item' data-type='search'><a href="${searchUrl}?q=${encodeURIComponent(searchText)}"><span>Search Documentation for "${escapeHTML(searchText)}"</span></a></div>`;
     
     // Add the rest of the results
@@ -363,7 +272,12 @@ if (input) {
             if (highlightedIndex > -1 && items[highlightedIndex]) {
                 let selectedATag = items[highlightedIndex].querySelector('a');
                 if (selectedATag && selectedATag.href) {
-                    window.location.href = selectedATag.href;
+                    // If we're in an iframe, navigate the parent window
+                    if (window.parent && window.parent !== window) {
+                        window.parent.location.href = selectedATag.href;
+                    } else {
+                        window.location.href = selectedATag.href;
+                    }
                 }
                 e.preventDefault();
             }
