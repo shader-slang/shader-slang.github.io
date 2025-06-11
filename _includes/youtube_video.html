@@ -1,0 +1,15 @@
+{% if include.youtube_id and include.youtube_id != '' %}
+
+<div class="ratio ratio-16x9">
+  <iframe class="embed-responsive-item"
+          src="https://www.youtube.com/embed/{{ include.youtube_id }}"
+          frameborder="0"
+          title="YouTube video"
+          allowfullscreen
+          aria-label="Embedded YouTube video">
+  </iframe>
+</div>
+
+<h3 class="mt-2">Original event:</h3>
+
+{% endif %}
