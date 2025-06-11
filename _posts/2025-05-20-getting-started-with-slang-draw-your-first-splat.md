@@ -7,5 +7,5 @@ categories: [ "video" ]
 tags: [gaussian, splat, neural]
 author: "Shannon Woods"
 image: /images/events/2025-05-20-getting-started-with-slang-draw-your-first-splat.webp
-source_url: "https://www.youtube.com/watch?v=oGAzYih8I3Q" 
+source_url: "/event/2025/04/30/getting-started-with-slang/" 
 ---

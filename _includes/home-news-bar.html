@@ -8,7 +8,21 @@
             </h3>
 
             <div class="grid gridNews">
-                {% for post in site.posts limit:3 %}
+                {% assign today = 'now' | date: '%s' %}
+                {% assign max_display = 3 %}
+                {% assign count = 0 %}
+
+                {% for post in site.posts limit:6 %}
+                {% assign show_post = true %}
+
+                {% if post.categories contains 'event' %}
+                    {% assign event_end_date = post.end_date | date: '%s' %}
+                    {% if event_end_date < today %}
+                        {% assign show_post = false %}
+                    {% endif %}
+                {% endif %}
+
+                {% if show_post and count < max_display %}
                 <div class="g-col-12 g-col-sm-6 g-col-md-4">
                     <div class="card">
                         {% if post.image %}
@@ -39,6 +53,9 @@
                         </div>
                     </div>
                 </div>
+                    {% assign count = count | plus: 1 %}
+                {% endif %}
+
                 {% endfor %}
             </div>
 
