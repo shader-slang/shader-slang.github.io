@@ -5,7 +5,7 @@ date: 2025-06-04 08:00:00
 end_date: 2025-07-08 10:00:00
 categories: [ "event" ]
 tags: [slang]
-author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
+author: ""
 image: /images/events/2025-07-slang-reflections-meetup-thumbnail.webp
 human_date: "🗓️ July 8, 2025"
 human_time: "🕜 8:00 USA PT"
