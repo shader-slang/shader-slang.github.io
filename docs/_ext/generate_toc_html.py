@@ -324,6 +324,7 @@ def generate_toc_html(app, exception):
         </svg>
       </symbol>
     </svg>
+    <script src="iframe_theme_receiver.js"></script>
 </head>
 <body data-theme="auto">
 <div class="content-container">
@@ -337,7 +338,6 @@ def generate_toc_html(app, exception):
 {html}
     </div>
 </div>
-<script src="iframe_theme_receiver.js"></script>
 <script src="toc-highlight.js"></script>
 <script src="search.js"></script>
 </body>
