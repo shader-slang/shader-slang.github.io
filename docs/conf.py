@@ -144,6 +144,7 @@ html_js_files = [
     "search.js",
     "section_highlight.js",
     "custom_body_classes.js",
+    "iframe_theme_sync.js",
 ]
 html_theme_options = {
     "light_css_variables": {
