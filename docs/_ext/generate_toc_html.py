@@ -324,8 +324,9 @@ def generate_toc_html(app, exception):
         </svg>
       </symbol>
     </svg>
+    <script src="iframe_theme_receiver.js"></script>
 </head>
-<body>
+<body data-theme="auto">
 <div class="content-container">
     <div id="tocSearchPanel">
         <div id="tocSearchPanelInner">
