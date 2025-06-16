@@ -302,11 +302,6 @@ form.sidebar-search-container {
     }
 }
 
-/* Code block styles */
-pre, pre code {
-    color: #000000 !important;
-}
-
 /* Code block styling */
 pre .code_keyword {
     color: #0000FF !important;
