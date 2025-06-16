@@ -302,11 +302,6 @@ form.sidebar-search-container {
     }
 }
 
-/* Code block styles */
-pre, pre code {
-    color: #000000 !important;
-}
-
 /* Code block styling */
 pre .code_keyword {
     color: #0000FF !important;
@@ -321,7 +316,9 @@ pre .code_param {
 }
 
 pre .code_var {
-    color: #001080 !important;
+    /* Use this color until separate dark mode colors are implemented */
+    color: #0040B0 !important;
+    /* color: #001080 !important; */
 }
 
 pre .code_function {
@@ -359,7 +356,9 @@ pre a.code_param, pre a.code_param:link, pre a.code_param:visited {
 }
 
 pre a.code_var, pre a.code_var:link, pre a.code_var:visited {
-    color: #001080 !important;
+    /* Use this color until separate dark mode colors are implemented */
+    color: #0040B0 !important;
+    /* color: #001080 !important; */
 }
 
 pre a.code_function, pre a.code_function:link, pre a.code_function:visited {
@@ -376,10 +375,6 @@ pre a.code_string, pre a.code_string:link, pre a.code_string:visited {
 
 pre a.code_number, pre a.code_number:link, pre a.code_number:visited {
     color: #7211c2 !important;
-}
-
-pre a.code_name, pre a.code_name:link, pre a.code_name:visited {
-    color: #000000 !important;
 }
 
 pre a:hover {
