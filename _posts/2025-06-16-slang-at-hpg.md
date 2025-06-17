@@ -23,8 +23,9 @@ For the complete conference schedule, visit [https://highperformancegraphics.org
 
 Stay connected with Slang's neural graphics developments:
 
-- Try our [2D Gaussian Splatting examples](https://github.com/shader-slang/slangpy/tree/main/experiments/diff-splatting)  
+- Try our [2D Gaussian Splatting examples](https://github.com/shader-slang/slangpy-samples/tree/main/experiments/diff-splatting)  
 - Experiment with [Slang in your browser](https://shader-slang.org/slang-playground/?demo=gsplat2d-diff)  
-- Join us on the [Slang Discord](https://khr.io/slang-discord)
+- Join us on the [Slang Discord](https://khr.io/slangdiscord)
+
 
 We're looking forward to demonstrating how Slang is making neural graphics more accessible to everyone. See you at HPG 2025!
