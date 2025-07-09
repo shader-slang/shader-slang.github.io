@@ -10,6 +10,7 @@ image: /images/events/2025-07-slang-reflections-meetup-thumbnail.webp
 human_date: "🗓️ July 8, 2025"
 human_time: "🕜 8:00 USA PT"
 session_length: "⏱️ 45-60 minutes"
+youtube_id: "OxOZ81N3NKw"
 ---
 
 We know it: many developers that are just getting started with Slang find themselves daunted by the reflection API. During this meet-up we will explain the underlying mental model for how Slang reflects shader code and show specific code examples for how to use the reflection API to access the information that developers most often need. Along the way we will call out caveats and pitfalls that we’ve seen bite developers before.
