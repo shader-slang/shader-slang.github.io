@@ -2,3 +2,5 @@ Gemfile
 Gemfile.lock
 _site/
 upgrade-site.sh
+docs/_build
+*.pyc

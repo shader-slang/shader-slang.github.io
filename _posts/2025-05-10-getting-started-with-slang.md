@@ -10,6 +10,7 @@ image: /images/events/2025-05-gaussian-splat-meetup-image.webp
 human_date: "🗓️ May 20, 2025"
 human_time: "🕜 8:00 USA PT"
 session_length: "⏱️ 45-60 minutes"
+youtube_id: "oGAzYih8I3Q"
 ---
 
 Join us for an engaging hands-on session where we'll walk through creating your first Gaussian splat using Slang. Perfect for graphics programmers interested in getting started with neural techniques, this hands-on introduction will take you from installation through basic shader compilation to rendering your first splat.

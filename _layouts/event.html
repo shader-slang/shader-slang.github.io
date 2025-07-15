@@ -7,11 +7,16 @@ bodyClass: "page-post"
     <div class="row">
         <div class="col-12">
 
-            <p><button class="btn btn-secondary">Virtual Meetup</button></p>
+            <p><div class="btn btn-secondary" style="cursor:inherit;">Virtual Meetup</div></p>
 
             <h1>{{ page.title }}
                 <hr>
             </h1>
+
+            {% if page.youtube_id and page.youtube_id != '' %}
+                {% include youtube_video.html youtube_id=page.youtube_id %}
+            {% endif %}
+
             <div class="metadata">
                 <div class="date">
                 {% if page.human_date and page.human_date != '' %}
@@ -25,7 +30,6 @@ bodyClass: "page-post"
                 {% endif %}
                 </div>
             </div>
-
 
             {{content}}
         </div>
