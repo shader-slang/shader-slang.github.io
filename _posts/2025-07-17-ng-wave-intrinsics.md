@@ -1,12 +1,12 @@
 ---
 layout: post
 title: "Neural Graphics: Speeding It Up with Wave Intrinsics"
-date: 2025-05-27
+date: 2025-07-17
 categories: [ "blog" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/wave-graphic.webp
-human_date: "May 27, 2025"
+human_date: "July 17, 2025"
 ---
 
 In our journey through neural graphics, we started with [Neural Graphics in an Afternoon](https://shader-slang.org/blog/featured/2025/04/04/neural-gfx-in-an-afternoon/), exploring the exciting possibilities of representing and rendering scenes with machine learning approaches. We then delved into [Neural Graphics: First Principles to Performance](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/), laying down some initial strategies for making these techniques practical. Now, we're ready to roll up our sleeves and explore more advanced performance optimizations, using our familiar 2D differentiable Gaussian splatting example as a testbed.
@@ -17,7 +17,17 @@ Let’s look at the modifications added to a new example in the SlangPy samples 
 
 As a quick refresher, these examples implement a 2D Gaussian splatting algorithm. We represent a scene (or in this case, a 2D image) with a collection of 2D Gaussian "blobs," each defined by parameters like center, covariance (shape/rotation), and color. We then render an image by splatting these Gaussians onto a canvas, and Slang's automatic differentiation capabilities allow us to compute how the loss function (the difference between our rendered image and a target) changes with respect to each Gaussian's parameters. This enables us to train the Gaussians to reconstruct a target image.
 
-The Python script (`main.py`) driving this process is identical between the two examples; the evolution we're examining happens within the Slang shader code itself (`diffsplatting2d.slang` vs. `ballotsplatting2d.slang`), specifically in how Gaussians are culled, sorted (or not), and rasterized.
+The Python script (`main.py`) driving this process is nearly identical between the two examples, with one key difference: the `balloted-splatting` example uses SlangPy's ability to set a specific call group shape to explicitly match the wavefront size. For example, when kicking off the backward propagation of our loss calculation, we now call
+
+```
+module.perPixelLoss.call_group_shape(Shape((WORKGROUP_X, WORKGROUP_Y))).bwds(per_pixel_loss, dispatch_ids, blobs, input_image)
+```
+
+This code uses the WORKGROUP_X and WORKGROUP_Y values to define the dispatch shape according to the available workgroup dimensions. We'll be using wave intrinsics, which allow different threads within a single subgroup to share certain information and do calculations collaboratively, so we want to ensure that the work is organized into appropriately sized groups for our hardware to process. In general, the goal is to saturate all the available threads with work, so that none of the compute units are left idle. 
+
+The number of threads available in a single subgroup can vary from one hardware architecture to another; for ease of explanation, this example uses a set of compile-time constants to define its dispatch size, and assumes only one subgroup per workgroup. If you wished to deploy code like this to different systems with different GPUs, you'd need to do some additional work to determine the correct dimensions at runtime. Additionally, using only a single subgroup for each workgroup has potential downsides: this code will be vulnerable to stalls where there are operations like memory reads which introduce latency. If multiple subgroups are being processed, GPUs are able to swap between them to make efficient use of their available cycles while waiting on operations to complete. For now, when running this example, you'll want to take a moment to ensure that WORKGROUP_X and WORKGROUP_Y are set to values that, when multiplied together, give the subgroup size for your hardware. (On NVIDIA and AMD RDNA systems, this value is 32.)
+
+That said, most of the difference between the previous example and this one shows up in the Slang shader code itself (`diffsplatting2d.slang` vs. `ballotsplatting2d.slang`), specifically in how Gaussians are culled, sorted (or not), and rasterized.
 
 ## The `diff-splatting` Approach: A Straightforward Staged Pipeline
 
@@ -112,8 +122,9 @@ Why undertake this refactoring? The shift to a wave intrinsic-based approach in 
 *   **Eliminating the Bottleneck of Sorting:** Explicitly sorting data in shared memory (like the `bitonicSort`) is computationally intensive and can be a significant performance bottleneck. The ballot-based approach sidesteps this.  
 *   **Better Hardware Utilization:** Wave intrinsics are designed to map directly onto efficient GPU hardware pathways, allowing for faster execution of tasks like voting (balloting), data exchanges (shuffling), and other coordinated operations within a subgroup.
 
-This performance benefit is easily observable when running the `diff-splatting` and `balloted-splatting` examples side-by-side. On my Windows 11 system, equipped with an RTX 2070 Super, the `diff-splatting` example takes 3 minutes, 2 seconds to complete 10000 iterations, peaking somewhere around 54 iterations per second. `balloted-splatting` completes the same number of iterations in 2 minutes, 40 seconds, at 12% reduction in execution time, with a peak around 64 iterations per second.
+This performance benefit is easily observable when running the `diff-splatting` and `balloted-splatting` examples side-by-side. On my Windows 11 system, equipped with an RTX 5090, the `diff-splatting` example takes 47 seconds to complete 10000 iterations, averaging 211 iterations per second. `balloted-splatting` completes the same number of iterations in 37 seconds, a 21% reduction in execution time, and averages 266.4 iterations per second. Similarly, on the integrated GPU, the execution time drops from around 1 hour 20 minutes for `diff-splatting` to 1 hour and 6 minutes for `balloted-splatting`.
 
 ## Looking Ahead
 
-The evolution from `diff-splatting` to `balloted-splatting` provides a concrete example of how understanding and applying modern GPU architectural features can lead to substantial performance gains in neural graphics and other demanding rendering tasks. As we continue to explore this field, such optimization techniques will be crucial for pushing the boundaries of what's possible in real-time.
+The evolution from `diff-splatting` to `balloted-splatting` demonstrates how subgroup-specific techniques like WaveActiveBallot can provide significant performance benefits by reducing duplicate work, and allowing simultaneously executing threads to work collaboratively. That is, the same compute optimization techniques already available to traditional graphics can also be a great benefit to neural graphics approaches. 
+The examples we've explored here are just the beginning—there's a rich landscape of GPU-specific techniques waiting to be applied to neural rendering pipelines, and Slang provides a powerful foundation for exploring them.
