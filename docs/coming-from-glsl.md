@@ -315,7 +315,7 @@ When porting GLSL shaders to Slang, most common mathematical functions (sin, cos
 
 ## Control Flow Attributes
 
-Slang provides control flow hint attributes similar to those in the GL_EXT_control_flow_attributes GLSL extension. These attributes provide optimization hints for loops and conditional statements to the compiler. Note that these are hints only and may be ignored by the compiler.
+Slang provides control flow hint attributes similar to those in the GL_EXT_control_flow_attributes GLSL extension. These attributes provide optimization hints for loops and conditional statements to the driver compiler. Note that these are hints only and may be ignored by the driver compiler.
 
 ### Attribute Mapping
 
@@ -329,6 +329,8 @@ Slang provides control flow hint attributes similar to those in the GL_EXT_contr
 | `[[dont_unroll]]` | `[loop]` | loops | Same as loop |
 
 Note: Slang also supports [unroll(N)] for partial unrolling hints.
+
+Note: Slang supports the [ForceUnroll] attribute which unrolls the loop before emitting SPIR-V or other target code.
 
 ### Usage Example
 
