@@ -313,6 +313,63 @@ When porting GLSL shaders to Slang, most common mathematical functions (sin, cos
 | `m1 * m2` (matrix multiply) | `mul(m1, m2)` | Matrix multiplication |
 | `v * m` (row vector) | `mul(m, v)` (column vector) | Vector-matrix multiplication |
 
+## Control Flow Attributes
+
+Slang provides control flow hint attributes similar to those in the GL_EXT_control_flow_attributes GLSL extension. These attributes provide optimization hints for loops and conditional statements to the driver compiler. Note that these are hints only and may be ignored by the driver compiler.
+
+### Attribute Mapping
+
+| GLSL Attribute | Slang Attribute | Applies To | Description |
+|----------------|-----------------|------------|-------------|
+| `[[branch]]` | `[branch]` | if/switch | Hint to keep selection control flow (use actual branching) |
+| `[[flatten]]` | `[flatten]` | if/switch | Hint to remove selection control flow (evaluate both branches) |
+| `[[dont_flatten]]` | `[branch]` | if/switch | Same as branch |
+| `[[loop]]` | `[loop]` | loops | Hint to keep loop control flow (against unrolling) |
+| `[[unroll]]` | `[unroll]` | loops | Hint to remove or reduce loop control flow (unroll fully) |
+| `[[dont_unroll]]` | `[loop]` | loops | Same as loop |
+
+Note: Slang also supports [unroll(N)] for partial unrolling hints.
+
+Note: Slang supports the [ForceUnroll] attribute which unrolls the loop before emitting SPIR-V or other target code.
+
+### Usage Example
+
+**GLSL:**
+
+```glsl
+#extension GL_EXT_control_flow_attributes : enable
+
+[[unroll]]
+for(int i = 0; i < 8; i++) {
+    // loop body
+}
+
+[[flatten]]
+if(condition) {
+    // if body
+} else {
+    // else body
+}
+```
+
+**Slang:**
+
+```hlsl
+[unroll]
+for(int i = 0; i < 8; i++) {
+    // loop body
+}
+
+[flatten]
+if(condition) {
+    // if body
+} else {
+    // else body
+}
+```
+
+These attributes are applied directly before the control flow statements in both languages.
+
 ## Resource Handling
 
 This section covers how to convert GLSL resource declarations to Slang, including different buffer types, textures, and specialized resources.
