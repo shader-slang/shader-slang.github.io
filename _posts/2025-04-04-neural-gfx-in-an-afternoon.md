@@ -2,7 +2,7 @@
 layout: post
 title: "Neural Graphics in an Afternoon"
 date: 2025-04-04 17:00:00
-categories: [ "blog", "featured" ]
+categories: [ "blog" ]
 tags: [slang]
 featured: true
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"

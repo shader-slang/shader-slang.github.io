@@ -2,7 +2,7 @@
 layout: post
 title: "Neural Graphics: Speeding It Up with Wave Intrinsics"
 date: 2025-07-17
-categories: [ "blog" ]
+categories: [ "blog", "featured" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/wave-graphic.webp
@@ -19,7 +19,7 @@ As a quick refresher, these examples implement a 2D Gaussian splatting algorithm
 
 The Python script (`main.py`) driving this process is nearly identical between the two examples, with one key difference: the `balloted-splatting` example uses SlangPy's ability to set a specific call group shape to explicitly match the wavefront size. For example, when kicking off the backward propagation of our loss calculation, we now call
 
-```
+```python
 module.perPixelLoss.call_group_shape(Shape((WORKGROUP_X, WORKGROUP_Y))).bwds(per_pixel_loss, dispatch_ids, blobs, input_image)
 ```
 
@@ -46,7 +46,7 @@ The `balloted-splatting` example presents a more sophisticated and often more pe
 
 You can see this in action in the new `cullAndApplyBlobs` function, which effectively replaces the `coarseRasterize`, `padBuffer`, `bitonicSort`, and `fineRasterize` sequence from the previous example.
 
-```slang  
+```hlsl  
 /*
  * cullAndApplyBlobs finds blobs which intersect the current tile and evaluates them in a single pass using
  * wave intrinsics.
