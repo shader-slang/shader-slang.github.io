@@ -7,6 +7,7 @@ tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/wave-graphic.webp
 human_date: "July 17, 2025"
+featured: true
 ---
 
 In our journey through neural graphics, we started with [Neural Graphics in an Afternoon](https://shader-slang.org/blog/featured/2025/04/04/neural-gfx-in-an-afternoon/), exploring the exciting possibilities of representing and rendering scenes with machine learning approaches. We then delved into [Neural Graphics: First Principles to Performance](https://shader-slang.org/blog/2025/04/30/neural-graphics-first-principles-performance/), laying down some initial strategies for making these techniques practical. Now, we're ready to roll up our sleeves and explore more advanced performance optimizations, using our familiar 2D differentiable Gaussian splatting example as a testbed.
