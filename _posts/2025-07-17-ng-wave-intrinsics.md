@@ -2,7 +2,7 @@
 layout: post
 title: "Neural Graphics: Speeding It Up with Wave Intrinsics"
 date: 2025-07-17
-categories: [ "blog", "featured" ]
+categories: [ "blog" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/wave-graphic.webp
