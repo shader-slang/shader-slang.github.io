@@ -21,9 +21,17 @@ document.addEventListener('DOMContentLoaded', function() {
             expandPathToElementAndChildren(currentPageElement);
             
             // After expansion, restore the scroll position
-            setTimeout(function() {
-                restoreScrollPosition();
-            }, 50); // Small delay to ensure expansion is complete
+            restoreScrollPosition();
+                
+            // Check if current page is still visible after restoration
+            const rect = currentPageElement.getBoundingClientRect();
+            if (rect.top < 0 || rect.top > window.innerHeight) {
+                // Current page is not visible, scroll to show it
+                currentPageElement.scrollIntoView({
+                    behavior: 'instant',
+                    block: 'nearest'
+                });
+            }
         }
         
     } catch (e) {
