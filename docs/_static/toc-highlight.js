@@ -16,9 +16,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // If we found the current page, expand the path to it
+        // If we found the current page, expand the path to it and expand its children
         if (currentPageElement) {
-            expandPathToElement(currentPageElement);
+            expandPathToElementAndChildren(currentPageElement);
             
             // Scroll to make the current page visible
             setTimeout(function() {
@@ -35,10 +35,18 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function expandPathToElement(element) {
-    // Start from the current page's list item and walk up the ancestry
+function expandPathToElementAndChildren(element) {
+    // Start from the current page's list item
     let currentLi = element.closest('li');
+    if (!currentLi) return;
     
+    // First, expand the current page's own children if it has any
+    const currentCheckbox = currentLi.querySelector(':scope > .toctree-checkbox');
+    if (currentCheckbox) {
+        currentCheckbox.checked = true;
+    }
+    
+    // Then walk up the ancestry to expand the path to this element
     while (currentLi) {
         // Find the parent ul of this li
         const parentUl = currentLi.parentElement;
