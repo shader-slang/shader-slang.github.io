@@ -49,12 +49,12 @@ intro_image_hide_on_mobile: false
             <p>Slang code is highly portable, but can still leverage unique platform capabilities, including the latest
                 features in
                 Direct3D and Vulkan. For example, developers can make full use of <a
-                    href="https://shader-slang.com/slang/user-guide/convenience-features.html#pointers-limited">pointers</a> when generating
+                    href="external/slang/docs/user-guide/05-convenience-features.html#pointers-limited">pointers</a> when generating
                 SPIR-V. Slang's <a href="/slang/user-guide/capabilities.html">capability
                     system</a> helps applications manage feature set differences across target platforms by ensuring
                 code only uses available
                 features during the type-checking step, before generating final code. Additionally, Slang provides <a
-                    href="https://shader-slang.com/slang/user-guide/a1-04-interop.html">flexible
+                    href="external/slang/docs/user-guide/a1-04-interop.html">flexible
                     interop</a> features to enable directly embedding target code or SPIR-V into generated shaders.</p>
         </div>
     </div>

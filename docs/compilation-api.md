@@ -13,7 +13,7 @@ This tutorial explains the flow of calls needed to use the Slang Compilation API
 
 Using the compilation API offers much more control over compilation compared to `slangc`, and with better performance as well. For applications with complex needs, or ones that are sensitive to compilation performance, it is recommneded to use the Compilation API.
 
-The Slang compilation API is provided as a dynamic library. Linking to it, you have access to the compilation API which is organized in a Component Object Model (COM) fashion.  The Slang [User Guide](https://shader-slang.com/slang/user-guide/compiling.html#using-the-compilation-api) describes Slang's "COM-lite" interface a bit more.
+The Slang compilation API is provided as a dynamic library. Linking to it, you have access to the compilation API which is organized in a Component Object Model (COM) fashion.  The Slang [User Guide](external/slang/docs/user-guide/08-compiling#using-the-compilation-api) describes Slang's "COM-lite" interface a bit more.
 
 ## Table of Contents
 
@@ -96,7 +96,7 @@ Slang supports using the preprocessor.
 
 ##### Compiler options
 
-Here is where you can specify Session-wide options. Check the [User Guide](https://shader-slang.com/slang/user-guide/compiling.html#compiler-options) for info on available options.
+Here is where you can specify Session-wide options. Check the [User Guide](external/slang/docs/user-guide/08-compiling#compiler-options) for info on available options.
 
 ```cpp
     std::array<slang::CompilerOptionEntry, 1> options = 
@@ -168,7 +168,7 @@ A common way to query an entry-point is by using the `IModule::findEntryPointByN
 ```
 
 It is also possible to query entry-points by index, and work backwards to check the name of the entry-points that are returned at different indices.
-Check the [User Guide](https://shader-slang.com/slang/user-guide/reflection.html#program-reflection) for info.
+Check the [User Guide](external/slang/docs/user-guide/09-reflection#program-reflection) for info.
 
 #### Compose Modules and Entry Points
 
@@ -291,19 +291,19 @@ Modules are loaded into the session as described in [Load Modules](#load-modules
 
 Slang offers the capability to save modules to disk after this initial processing, allowing for faster initial module load times.
 
-API methods for module precompilation are described in the [User Guide](https://shader-slang.com/slang/user-guide/link-time-specialization.html#using-precompiling-modules-with-the-api).
+API methods for module precompilation are described in the [User Guide](external/slang/docs/user-guide/10-link-time-specialization#using-precompiling-modules-with-the-api).
 
 Specialization
 --------------
 
 #### Link-time Constants
 
-This form of specialization involves placing relevant constant definitions in a separate Module that can be selectively included. For example, if you have two variants of a shader that differ in constants that they use, you can create two different Modules for the constants, one for each variant. When composing one variant or the other, just select the right constants module in createCompositeComponentType(). This is described also in the [User Guide](https://shader-slang.com/slang/user-guide/link-time-specialization.html#link-time-constants)
+This form of specialization involves placing relevant constant definitions in a separate Module that can be selectively included. For example, if you have two variants of a shader that differ in constants that they use, you can create two different Modules for the constants, one for each variant. When composing one variant or the other, just select the right constants module in createCompositeComponentType(). This is described also in the [User Guide](external/slang/docs/user-guide/10-link-time-specialization#link-time-constants)
 
 #### Link-time Types
 
 Similar to Link-time Constants. This form of specialization simply puts different versions of user types in separate modules so that the needed implementation can be selected when creating the CompositeComponentType.
-[User Guide](https://shader-slang.com/slang/user-guide/link-time-specialization.html#link-time-types)
+[User Guide](external/slang/docs/user-guide/10-link-time-specialization#link-time-types)
 
 #### Generics Specialization
 
@@ -679,7 +679,7 @@ An `IMetaData` interface can be queried from a compiled program. After `getEntry
         isUsed);
 ```
 
-See [Reflection API Tutorial](https://shader-slang.com/slang/docs/reflection-api) for more details.
+See [Reflection API Tutorial](external/slang/docs/user-guide/09-reflection) for more details.
 
 Complete Example
 ----------------
