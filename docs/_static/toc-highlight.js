@@ -20,19 +20,19 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentPageElement) {
             expandPathToElementAndChildren(currentPageElement);
             
-            // Scroll to make the current page visible
+            // After expansion, restore the scroll position
             setTimeout(function() {
-                currentPageElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-            }, 100); // Small delay to ensure expansion is complete
+                restoreScrollPosition();
+            }, 50); // Small delay to ensure expansion is complete
         }
         
     } catch (e) {
         // Log that we can't access parent URL due to cross-origin restrictions
         console.log('Cannot access parent URL:', e);
     }
+    
+    // Save scroll position when page unloads
+    window.addEventListener('beforeunload', saveScrollPosition);
 });
 
 function expandPathToElementAndChildren(element) {
@@ -68,5 +68,27 @@ function expandPathToElementAndChildren(element) {
         
         // Move up to the next level
         currentLi = parentLi;
+    }
+} 
+
+function saveScrollPosition() {
+    try {
+        window.savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    } catch (e) {
+        console.log('Could not save scroll position:', e);
+    }
+}
+
+function restoreScrollPosition() {
+    try {
+        if (window.savedScrollPosition === undefined) return;
+        
+        // Restore the exact scroll position
+        window.scrollTo({
+            top: window.savedScrollPosition,
+            behavior: 'instant'
+        });
+    } catch (e) {
+        console.log('Could not restore scroll position:', e);
     }
 } 
