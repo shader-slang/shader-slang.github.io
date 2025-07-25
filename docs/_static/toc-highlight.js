@@ -16,29 +16,45 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
         
-        // If we found the current page, expand the path to it
+        // If we found the current page, expand the path to it and expand its children
         if (currentPageElement) {
-            expandPathToElement(currentPageElement);
+            expandPathToElementAndChildren(currentPageElement);
             
-            // Scroll to make the current page visible
-            setTimeout(function() {
+            // After expansion, restore the scroll position
+            restoreScrollPosition();
+                
+            // Check if current page is still visible after restoration
+            const rect = currentPageElement.getBoundingClientRect();
+            if (rect.top < 0 || rect.top > window.innerHeight) {
+                // Current page is not visible, scroll to show it
                 currentPageElement.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
+                    behavior: 'instant',
+                    block: 'nearest'
                 });
-            }, 100); // Small delay to ensure expansion is complete
+            }
         }
         
     } catch (e) {
         // Log that we can't access parent URL due to cross-origin restrictions
         console.log('Cannot access parent URL:', e);
     }
+    
+    // Save scroll position when page unloads
+    window.addEventListener('beforeunload', saveScrollPosition);
 });
 
-function expandPathToElement(element) {
-    // Start from the current page's list item and walk up the ancestry
+function expandPathToElementAndChildren(element) {
+    // Start from the current page's list item
     let currentLi = element.closest('li');
+    if (!currentLi) return;
     
+    // First, expand the current page's own children if it has any
+    const currentCheckbox = currentLi.querySelector(':scope > .toctree-checkbox');
+    if (currentCheckbox) {
+        currentCheckbox.checked = true;
+    }
+    
+    // Then walk up the ancestry to expand the path to this element
     while (currentLi) {
         // Find the parent ul of this li
         const parentUl = currentLi.parentElement;
@@ -60,5 +76,27 @@ function expandPathToElement(element) {
         
         // Move up to the next level
         currentLi = parentLi;
+    }
+} 
+
+function saveScrollPosition() {
+    try {
+        window.savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+    } catch (e) {
+        console.log('Could not save scroll position:', e);
+    }
+}
+
+function restoreScrollPosition() {
+    try {
+        if (window.savedScrollPosition === undefined) return;
+        
+        // Restore the exact scroll position
+        window.scrollTo({
+            top: window.savedScrollPosition,
+            behavior: 'instant'
+        });
+    } catch (e) {
+        console.log('Could not restore scroll position:', e);
     }
 } 
