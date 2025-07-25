@@ -1,7 +1,7 @@
 ---
-title: Slang Feature matureness
+title: Slang Feature Matureness
 layout: page
-description: Slang Feature matureness
+description: Slang Feature Matureness
 permalink: "/docs/feature_matureness/"
 intro_image_absolute: true
 intro_image_hide_on_mobile: false
