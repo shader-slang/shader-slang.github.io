@@ -179,7 +179,7 @@ T max4(T x, T y, T z, T w)
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more detailed explanations on defining a custom interface, please refer to the [Slang User's Guide](external/slang/docs/user-guide/11-interfaces-generics.md).
+For more detailed explanations on defining a custom interface, please refer to the [Slang User's Guide](external/slang/docs/user-guide/06-interfaces-generics.md).
 
 
 #### `#pragma` for DXC wouldn't work for Slang
@@ -242,7 +242,7 @@ MyStruct operator+(MyStruct lhs, MyStruct rhs)
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more details, please consult the [Slang User's Guide](external/slang/docs/user-guide/05-convenience-features.md#operator-overloading)
+For more details, please consult the [Slang User's Guide](external/slang/docs/user-guide/03-convenience-features.md#operator-overloading)
 
 #### Subscript Operator
 Slang uses a different syntax for overloading subscript operator so both reads and writes to a subscript location can be defined.
@@ -283,7 +283,7 @@ struct MyType
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more details, please consult the [Slang User's Guide](external/slang/docs/user-guide/05-convenience-features.md#subscript-operator).
+For more details, please consult the [Slang User's Guide](external/slang/docs/user-guide/03-convenience-features.md#subscript-operator).
 
 
 #### Implicit parameter binding
@@ -325,7 +325,7 @@ Due to this difference, some casting issues may appear as errors while migrating
 
 
 #### SPIR-V target specific functionalities
-When you target SPIR-V, there are a few things that the user may want to know. Please check the [Slang User's Guide](external/slang/docs/user-guide/spirv-target-specific.md) for more details.
+When you target SPIR-V, there are a few things that the user may want to know. Please check the [Slang User's Guide](external/slang/docs/user-guide/a2-01-spirv-target-specific.md) for more details.
 
 
 ### Debugging and Performance Tips
