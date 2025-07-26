@@ -679,7 +679,7 @@ An `IMetaData` interface can be queried from a compiled program. After `getEntry
         isUsed);
 ```
 
-See [Reflection API Tutorial](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/09-reflection.html) for more details.
+See [Using the Reflection API](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/09-reflection.html) for more details.
 
 Complete Example
 ----------------
