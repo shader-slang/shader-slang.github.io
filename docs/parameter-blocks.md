@@ -545,7 +545,7 @@ The approach we will describe here is only appropriate for applications that abi
 In the absence of manual annotation, the Slang compiler will bind parameters to locations in a deterministic fashion, and an application can simply mirror that deterministic logic in its own code in order to derive the locations that parameters have been bound to.
 
 Applications that need to support the fully general case (including shader code with manual binding annotations) can still make use of parameter blocks.
-In such cases, developers are encouraged to read the other [documentation](external/slang/docs/user-guide/09-reflection.md) that exists for the Slang reflection API.
+In such cases, developers are encouraged to read the other [documentation](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/09-reflection.html) that exists for the Slang reflection API.
 
 This section will also restrict itself to the Vulkan API, for simplicity.
 We cover the creation of descriptor set layouts and pipeline layouts using reflection, but *not* the task of writing to them.
