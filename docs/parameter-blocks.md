@@ -549,7 +549,7 @@ In such cases, developers are encouraged to read the other [documentation](https
 
 This section will also restrict itself to the Vulkan API, for simplicity.
 We cover the creation of descriptor set layouts and pipeline layouts using reflection, but *not* the task of writing to them.
-Developers interested in using the Slang reflection API for *writing* to descriptor sets are encouraged to read the [documentation](shader-cursors.md) that we have provided on the "shader cursor" idiom.
+Developers interested in using the Slang reflection API for *writing* to descriptor sets are encouraged to read the [documentation](shader-cursors) that we have provided on the "shader cursor" idiom.
 
 ### What Goes Into a Pipeline Layout?
 
