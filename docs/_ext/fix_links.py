@@ -8,36 +8,6 @@ from sphinx.application import Sphinx
 
 logger = logging.getLogger(__name__)
 
-def fix_md_links_source_read(app, docname, source):
-    """
-    Preprocessing to fix .md links to .html before Sphinx processes the files.
-    Only converts relative paths, not absolute URLs or external links.
-    """
-    content = source[0]
-    
-    # Convert .md links to .html for relative paths only
-    md_pattern = r'(\[[^\]]*\]\()([^)]*?)\.md(#[^)]*)?\)'
-    def md_repl(match):
-        prefix, path, fragment = match.group(1), match.group(2), match.group(3) or ''
-        
-        # Only convert relative paths, not absolute URLs
-        if (not path.startswith('http://') and 
-            not path.startswith('https://') and
-            not path.startswith('//') and
-            not path.startswith('mailto:') and
-            not path.startswith('ftp://')):
-            # Convert .md to .html for relative paths
-            return f'{prefix}{path}.html{fragment})'
-        else:
-            # Leave absolute URLs unchanged
-            return match.group(0)
-
-    new_content = re.sub(md_pattern, md_repl, content)
-    
-    if new_content != content:
-        source[0] = new_content
-        logger.info(f"[DEBUG] Fixed .md links in {docname}")
-
 def fix_md_links_post_process(app, exception):
     """
     Post-processing to fix links in the HTML output files.
@@ -92,10 +62,7 @@ def fix_md_links_post_process(app, exception):
 
 def setup(app: Sphinx):
     """Set up the extension."""
-    logger.info("[DEBUG] Registering link fixer extension (preprocessing and post-processing)")
-
-    # Register preprocessing function to fix .md links before Sphinx processes them
-    app.connect('source-read', fix_md_links_source_read)
+    logger.info("[DEBUG] Registering link fixer extension (post-processing only)")
 
     # Register post-processing function to run after the build is complete
     app.connect('build-finished', fix_md_links_post_process)
