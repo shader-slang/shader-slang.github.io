@@ -179,7 +179,7 @@ T max4(T x, T y, T z, T w)
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more detailed explanations on defining a custom interface, please refer to the [Slang User's Guide](https://shader-slang.com/slang/user-guide/interfaces-generics.html).
+For more detailed explanations on defining a custom interface, please refer to the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/06-interfaces-generics.html).
 
 
 #### `#pragma` for DXC wouldn't work for Slang
@@ -242,7 +242,7 @@ MyStruct operator+(MyStruct lhs, MyStruct rhs)
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more details, please consult the [Slang User's Guide](https://shader-slang.com/slang/user-guide/convenience-features.html#operator-overloading)
+For more details, please consult the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/03-convenience-features.html#operator-overloading)
 
 #### Subscript Operator
 Slang uses a different syntax for overloading subscript operator so both reads and writes to a subscript location can be defined.
@@ -283,7 +283,7 @@ struct MyType
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more details, please consult the [Slang User's Guide](https://shader-slang.com/slang/user-guide/convenience-features.html#subscript-operator).
+For more details, please consult the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/03-convenience-features.html#subscript-operator).
 
 
 #### Implicit parameter binding
@@ -325,7 +325,7 @@ Due to this difference, some casting issues may appear as errors while migrating
 
 
 #### SPIR-V target specific functionalities
-When you target SPIR-V, there are a few things that the user may want to know. Please check the [Slang User's Guide](https://shader-slang.com/slang/user-guide/spirv-target-specific.html) for more details.
+When you target SPIR-V, there are a few things that the user may want to know. Please check the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/a2-01-spirv-target-specific.html) for more details.
 
 
 ### Debugging and Performance Tips
@@ -337,7 +337,7 @@ When debugging Slang shaders, disabling optimizations can simplify the debugging
 Slang offers a command-line option to emit or suppress `#line` directives when targeting C-like text formats such as HLSL, GLSL, Metal, and WGSL.
 When `#line` directives are emitted, they can assist in debugging with shader debugging tools, as these tools can correlate back to the original Slang shader.
 
-For more information, please refer to `LineDirectiveMode` in the [Slang User's Guide](https://shader-slang.com/slang/user-guide/compiling.html).
+For more information, please refer to `LineDirectiveMode` in the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/08-compiling.html).
 
 
 #### Experiment with [ForceInline]

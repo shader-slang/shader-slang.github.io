@@ -95,16 +95,16 @@ description: Empowering real-time graphics developers with advanced language fea
                         latest
                         features in
                         Direct3D and Vulkan. For example, developers can make full use of
-                        <a href="/slang/user-guide/convenience-features.html#pointers-limited">pointers</a> when generating
+                        <a href="https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/03-convenience-features.html#pointers-limited>pointers</a> when generating
                         SPIR-V.
-                        Slang's <a href="/slang/user-guide/capabilities.html">capability system</a> helps applications
+                        Slang's <a href="https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/05-capabilities.html">capability system</a> helps applications
                         manage
                         feature
                         set differences
                         across target platforms by ensuring code only uses available features during the type-checking step,
                         before
                         generating
-                        final code. Additionally, Slang provides <a href="/slang/user-guide/a1-04-interop.html">flexible
+                        final code. Additionally, Slang provides <a href="https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/a1-04-interop.html">flexible
                             interop</a>
                         features to enable
                         directly embedding target code or SPIR-V into generated shaders.
