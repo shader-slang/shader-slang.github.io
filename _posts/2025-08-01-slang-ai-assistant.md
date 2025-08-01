@@ -12,7 +12,7 @@ human_date: "August 1, 2025"
 ## Introduction
 
 Large Language Models(LLMs) aid coding by boosting productivity. llms.txt is a proposed standard for websites to offer LLM-friendly content, mainly to assist LLMs during inference.
-Slang now supports the llms.txt standard. You can now use LLMs to accelerate your development with help of coding assistants like Cursor by providing relevant context about Slang’s 
+Slang now supports the llms.txt standard. You can now use LLMs to accelerate your development with help of coding assistants like [Cursor](https://cursor.com/agents) or any tool of choice by providing relevant context about Slang’s
 documentation, within your projects. We provide 3 different versions of llms.txt:
 
 1. llms.txt - contains links with brief descriptions for agents to navigate. Use this if you’re looking for basic understanding of slang
