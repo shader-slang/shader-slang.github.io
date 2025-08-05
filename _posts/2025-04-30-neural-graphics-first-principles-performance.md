@@ -9,7 +9,7 @@ image: /images/posts/2025-04-30-abstractsplats.webp
 human_date: "April 30, 2025"
 ---
 
-In my [last blog post](https://shader-slang.org/blog/featured/2025/04/04/neural-gfx-in-an-afternoon/), I gave an introduction to how gradient descent is used to drive gaussian splatting representations– essentially, going through a list of blobs in 2D space, calculating their color values at a specific texture coordinate, and blending them together, and iteratively adjusting them to be as close as possible to an ideal target image. Notably, this simplified version had significant performance and quality limitations. In this post, I’ll take you through the changes needed to go from that simple pedagogical example to an implementation that achieves real-time performance.
+In my [last blog post](https://shader-slang.org/blog/2025/04/04/neural-gfx-in-an-afternoon/), I gave an introduction to how gradient descent is used to drive gaussian splatting representations– essentially, going through a list of blobs in 2D space, calculating their color values at a specific texture coordinate, and blending them together, and iteratively adjusting them to be as close as possible to an ideal target image. Notably, this simplified version had significant performance and quality limitations. In this post, I’ll take you through the changes needed to go from that simple pedagogical example to an implementation that achieves real-time performance.
 
 ## A More Efficient Algorithm
 
