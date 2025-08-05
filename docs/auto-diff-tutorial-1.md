@@ -7,37 +7,27 @@ intro_image_absolute: true
 intro_image_hide_on_mobile: false
 ---
 
-# **Introduction to Slang\'s Automatic Differentiation (AutoDiff)**
+## Introduction to Slang\'s Automatic Differentiation (AutoDiff)
 
 This tutorial explains the automatic differentiation (autodiff) capabilities within the Slang shading language, covering both forward and backward modes, handling custom types, defining custom derivatives and providing example use cases.
 
 To enable autodiff for a function in Slang, you simply mark the function with `[Differentiable]`. This instructs the compiler to automatically generate both **forward mode** and **backward mode** gradient propagation functions for it as long as the function is differentiable. In the following sections, we'll explore how each mode works in theory and practice, starting with forward mode autodiff.
 
-## **Forward Mode Differentiation**
+### Forward Mode Differentiation
 
 Given a function $s = square(x, y)$, the goal is to find out how changes of the input parameters will impact the output. To do this, we must compute derivative of $s$ with respect to $x$ and $y$, namely $\frac{\partial s}{\partial x}dx$ and $\frac{\partial s}{\partial y}dy$, so the **forward mode automatic differentiation** computes $fwd(s) = \frac{\partial s}{\partial x}dx + \frac{\partial s}{\partial y}dy$, that is to compute **derivatives** of a function by augmenting each variable in a computation with its **rate of change.**
 
 If we write this derivative calculation into matrix multiplication form, we will have 
-$$fwd(s) = \left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}
-dx \\
-dy
-\end{bmatrix}$$
+$$fwd(s) = \left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}dx \\dy\end{bmatrix}$$
 
 And this matrix $\left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack$is called the **Jacobian Matrix**. In this simple example, the function $square(x,\, y)$ takes two input values and outputs one value, so it's a $\mathbb{R}^{2}\mathbb{\, \rightarrow R}$ mapping, and the shape of the Jacobian matrix will be $\mathbb{R}^{1 \times 2}$. To be more general, if a function is $\mathbb{R}^{N} \rightarrow \mathbb{R}^{M}$mapping, the shape of its Jacobian matrix will be $\mathbb{R}^{M \times N}$. You can find a more comprehensive explanation of the Jacobian matrix in thi [wiki page](https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant).
 
 
 >**Extended Reading:**
 >
->You may have questions about what exactly $dx$ (or $dy$) is. The answer is directly related to the name of "forward mode" differentiation. According to our definition above, forward mode differentiation tries to tell us how the output deviates if we give input a change. So $dx$ in this context represents the change in the input $x$. $x$ can be an independent variable where we can just assign a change value (e.g. $\text{d}x, = 1$) to it. But if $x$ is a function that depends on another input variable, e.g. $x = f(\theta)$, and we want to study how change of $\theta$ impacts the output of $s$, in this scenario, $dx = fwd(x) = \frac{\partial x}{\partial\theta}\text{d}\theta$, and we can assign 1 to $d\theta$, so its change will "propagate forward" to $x $, and the rate of change of $x$ will "forward" to $s$. And this is why this computation is called forward mode differentiation, because it keeps forwarding the changs from the input variables all the way down to the output variables.
+>You may have questions about what exactly $dx$ (or $dy$) is. The answer is directly related to the name of "forward mode" differentiation. According to our definition above, forward mode differentiation tries to tell us how the output deviates if we give input a change. So $dx$ in this context represents the change in the input $x$. $x$ can be an independent variable where we can just assign a change value (e.g. $dx= 1$) to it. But if $x$ is a function that depends on another input variable, e.g. $x = f(\theta)$, and we want to study how change of $\theta$ impacts the output of $s$, in this scenario, $dx = fwd(x) = \frac{\partial x}{\partial \theta}d\theta$, and we can assign 1 to $d\theta$, so its change will "propagate forward" to $x $, and the rate of change of $x$ will "forward" to $s$. And this is why this computation is called forward mode differentiation, because it keeps forwarding the changs from the input variables all the way down to the output variables.
 >Forward mode autodiff aims to compute the **Jacobian Matrix vector product**, which evaluates the derivates of a function's output given the rate of change of its inputs. For example, by plugging a one-hot vector (a binary vector where exactly one element is one) into the Jacobian Matrix vector product, we can get the partial derivative of $s$ with respect to the inputs:
->$$\frac{\partial s}{\partial x}\  = \ \left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}
->1 \\
->0
->\end{bmatrix} \text{  and  }
->\frac{\partial s}{\partial y}\  = \ \left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}
->0 \\
->1
->\end{bmatrix}$$
+>$$\frac{\partial s}{\partial x}\  = \ \left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}1 \\0\end{bmatrix} \text{  and  }\frac{\partial s}{\partial y}\  = \ \left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}0 \\1\end{bmatrix}$$
 
 
 Now let us see how to use Slang's autodiff to compute the forward mode derivatives. Consider the function $square(x, y)$ defined as follows:
@@ -51,7 +41,7 @@ float square(float x, float y)
 - 1\.  Mark the function as `[Differentiable]` to tell Slang to automatically generate a forward (and backward) mode derivate propagation function at compile time.
 ```hlsl
 [Differentiable]
-float square(float x, float y)\
+float square(float x, float y)
 {
     return x*x + y*y;
 }
@@ -63,7 +53,7 @@ float square(float x, float y)\
 let x_pair = diffPair(3.0f, 1.0f);
 ```
 
-it means $x=3.0$ and $\text{d}x = 1.0$. The value of $x$ is just randomly chosen, and we choose $dx = 1.0$, because we want the coefficient of $\frac{\partial s}{\partial x}$ to be 1 in the forward model computation. Similarly, we can construct differential pair for $y$ as well, so:
+it means $x=3.0$ and $dx = 1.0$. The value of $x$ is just randomly chosen, and we choose $dx = 1.0$, because we want the coefficient of $\frac{\partial s}{\partial x}$ to be 1 in the forward model computation. Similarly, we can construct differential pair for $y$ as well, so:
 
 ```hlsl
 let y_pair = diffPair(4.0f, 1.0f);
@@ -93,12 +83,12 @@ let y_pair = diffPair(4.0f, 0.0f);
 let result = fwd_diff(square)(x_pair, y_pair);
 ```
 
-such that $\text{d}y = 0.0$, this piece of code will calculate $\frac{\partial s}{\partial x}\  = \ \left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}
+such that $dy = 0.0$, this piece of code will calculate $\frac{\partial s}{\partial x}\  = \ \left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}
 1 \\
 0
-\end{bmatrix}$ , so the result.d will equal to $\frac{\partial s}{\partial x}$. Similarly, we can play the same trick to x to get $\frac{\partial s}{\partial y}$. As you may notice, in order to achieve partial derivatives of $s$ w.r.t. to the two parameters $x$ and $y$, we have to invoke forward mode differentiation twice. In real world gradient descent-based applications, the number of parameters is easily very large (e.g. 1 million). This means that we must invoke the forward mode autodiff as many times as the number of parameters to get all the partial derivatives, which is impractical, and this is the known limitation of forward mode differentiation. Therefore, the backward mode differentiation is more frequently used in this scenario, and that's what we will explore next.
+\end{bmatrix}$ , so the `result.d` will equal to $\frac{\partial s}{\partial x}$. Similarly, we can play the same trick to x to get $\frac{\partial s}{\partial y}$. As you may notice, in order to achieve partial derivatives of $s$ w.r.t. to the two parameters $x$ and $y$, we have to invoke forward mode differentiation twice. In real world gradient descent-based applications, the number of parameters is easily very large (e.g. 1 million). This means that we must invoke the forward mode autodiff as many times as the number of parameters to get all the partial derivatives, which is impractical, and this is the known limitation of forward mode differentiation. Therefore, the backward mode differentiation is more frequently used in this scenario, and that's what we will explore next.
 
-## **Backward Mode Differentiation**
+### Backward Mode Differentiation
 
 For ease of comparison with forward mode, let's keep using $s = square(x,y)$. Now assume we have a loss function $l=h(s)$. The goal is to compute $\frac{\partial l}{\partial x}$ and $\frac{\partial l}{\partial y}$. Applying the chain rule, we can easily form $\frac{\partial l}{\partial x}=\frac{\partial l}{\partial s}\frac{\partial s}{\partial x}$ and $\frac{\partial l}{\partial y}=\frac{\partial l}{\partial s}\frac{\partial s}{\partial y}$. We can also convert this into matrix multiplication form as:
 
@@ -136,7 +126,7 @@ Slang's syntax for the backward mode autodiff is similar to forward:
 
 - 1\.  Same as forward mode, mark the function as `[Differentiable]`.
 
-- 2\.  Construct diffPair. However, in backward mode, we will leave the derivative field as 0 because that field is used as output to store the result derivative. Therefore, we will construct it as:
+- 2\.  Construct differential pair. However, in backward mode, we will leave the derivative field as 0 because that field is used as output to store the result derivative. Therefore, we will construct it as:
 
 ```hlsl
 var x_pair = diffPair(3.0f, 0.0f);
@@ -169,7 +159,7 @@ let result = bwd_diff(square)(x_pair, y_pair, dlds);
 printf("dL/dx = %f, dL/dy = %f\n", x_pair.d, y_pair.d);
 ```
 
-# **AutoDiff with User-Defined Types**
+## AutoDiff with User-Defined Types
 
 After warming up on the autodiff concept, a natural question is "How does autodiff work with user-defined types?". The short answer is using the Slang **Differentiable type system.**
 
@@ -209,8 +199,7 @@ interface **IDifferentiable**
     where Differential.Differential == Differential;
     static Differential dzero();
     static Differential dadd(Differential, Differential);
-    static Differential dmul<T : __BuiltinRealType>(T,
-    Differential);
+    static Differential dmul<T : __BuiltinRealType>(T, Differential);
 };
 ```
 
@@ -264,7 +253,7 @@ void main()
 
 Notice that we never provided the definition of `dzero`/`dadd`/`dmul` required by the IDifferentiable interface. This is allowed because the Slang compiler automatically synthesizes these methods even if the user doesn't explicitly provide them.
 
-# **Custom Derivatives**
+## Custom Derivatives
 
 No AutoDiff implementation is guaranteed to always produce the most efficient derivative code nor the most numerical stable result, therefore sometimes you may want to provide your own implementation for forward and backward mode gradient propagation functions instead of using the compiler-generated ones. Slang also provides a way to allow implementing the custom derivatives.
 
@@ -315,7 +304,7 @@ void bwd_square(inout DifferentialPair<float> x_pair, inout DifferentialPair<flo
 
 In those cases, Slang compiler will pick your provided implementations.
 
-## **How to propagate derivatives to global buffer storage.**
+### How to propagate derivatives to global buffer storage
 
 In the given example in this tutorial, all the variables used in the functions are just local variables. Consider if the variable y in the square function is coming from some global storage, e.g
 
@@ -360,7 +349,7 @@ float bwd_getY(int idx, float dOut)
 
 During synthesis of the backward mode of `square` function, when the compiler sees the `getY` call instruction, it will automatically pick its custom backward implementation `bwd_getY`.
 
-## **Debugging Trick by Using Custom Derivative Implementation**
+### Debugging Trick by Using Custom Derivative Implementation
 
 Since the autodiff synthesization process is totally opaque, the generated code is invisible to users. Though you can specify `"-target hlsl"` to translate the target code to some textual form, the autodiff code is not intended to be easy to read, especially when the original functions are sophisticated. Therefore, debugging the autodiff code could be a challenging task. We provide a debug option to help you check the gradients flow during computation.
 
