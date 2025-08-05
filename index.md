@@ -95,7 +95,7 @@ description: Empowering real-time graphics developers with advanced language fea
                         latest
                         features in
                         Direct3D and Vulkan. For example, developers can make full use of
-                        <a href="https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/03-convenience-features.html#pointers-limited>pointers</a> when generating
+                        <a href="https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/03-convenience-features.html#pointers-limited">pointers</a> when generating
                         SPIR-V.
                         Slang's <a href="https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/05-capabilities.html">capability system</a> helps applications
                         manage
