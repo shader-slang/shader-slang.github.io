@@ -191,7 +191,7 @@ public half loss(MyNetwork* network, no_diff half x, no_diff halfy)
 
 And from the slang kernel function, we will just need to call the backward of loss like this:
 ```hlsl
-bwd_diff(**loss**)(network, input.x, input.y, 1.0h);
+bwd_diff(loss)(network, input.x, input.y, 1.0h);
 ```
 
 One important thing to notice is that we are using no_diff attribute to decorate the input x, y and **groudtruth** calculation, because in the backward pass, we only care about the result of $\frac{\partial loss}{\partial\theta}$. no_diff attribute just tells Slang to treat the variables or instructions as non-differentiable, so there will be no backward mode instructions generated for those variables or instructions. In this case, since we don't care about the derivative of loss function with respective of input, therefore we can safely mark them as non-differentiable.
@@ -228,12 +228,11 @@ public struct MyNetwork
 Following the propagation direction of the gradients, we will next implement the backward derivative of FeedForwardLayer. But we're going to do something different. Instead of asking Slang to automatically synthesize the backward autodiff for us, we will provide a custom derivative implementation. Because the network parameters and gradients are a buffer storage declared in the layer, we will have to provide a custom derivative to write the gradient back to the global buffer storage, you can reference \[**How to propagate derivatives to global buffer storage\ ** in last tutorial to refresh your memory. Another reason is that our layer is just matrix multiplication with bias, and its derivative is quite simple, and there are lots of options to even accelerate it with specific hardware (e.g. Nvidia tensor core). Therefore, it's good practice to implement the custom derivative.
 
 First, let's revisit the mathematical formula, given:
-$$Z\ \  = \ W\  \cdot x\  + \ b$$
-$$Y\  = \ LeakRelu(Z)$$
+$$Z=W\cdot x+b$$
+$$Y=LeakRelu(Z)$$
 
 Where $W \in R^{m \times n}$, $x \in R^{n}$ and $b \in R^{m}$, the
 gradient of $W$, $x$ and $b$ will be:
-
 $$Z = W\cdot x + b$$
 $$dZ=dY\cdot(z > 0?1:\alpha)$$
 $$dW=dZ\cdot x^{T}$$
@@ -243,11 +242,10 @@ $$dx = W^{T} \cdot dZ$$
 Therefore, the implementation should be:
 ```hlsl
 [BackwardDerivativeOf(eval)]
-public void evalBwd(
-inout DifferentialPair<MLVec<InputSize>> x, MLVec<OutputSize> dResult) // dY
+public void evalBwd(inout DifferentialPair<MLVec<InputSize>> x, MLVec<OutputSize> dResult)
 {
     let Z = eval(x.p); // Re-compute forward pass to get Z
-    // Step 1: Backward through activation function\
+    // Step 1: Backward through activation function
     // dZ = dY * (Z > 0 ? 1 : alpha)
     for (int i = 0; i < OutputSize; i++)
     {
@@ -285,12 +283,12 @@ The implementation of `outerProductAccumulate` and `matMulTransposed` are just t
 
 ### 4.3 Make the vector differentiable
 
-If we just compile what we have right now, you will hit compile error because MLVec is not a differentiable type, so, Slang doesn't expect the signature of backward of layer's eval method to be
+If we just compile what we have right now, you will hit compile error because `MLVec` is not a differentiable type, so, Slang doesn't expect the signature of backward of layer's eval method to be
 ```hlsl
 public void evalBwd(inout DifferentialPair<MLVec<InputSize>> x, MLVec<OutputSize> dResult)
 ```
 
-Therefore, we will have to update MLVec to make to differentiable:
+Therefore, we will have to update `MLVec` to make to differentiable:
 ```hlsl
 public struct MLVec<int N> : IDifferentialbe
 {
