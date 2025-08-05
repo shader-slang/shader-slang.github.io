@@ -34,7 +34,7 @@ Now let us see how to use Slang's autodiff to compute the forward mode derivativ
 ```hlsl
 float square(float x, float y)
 {
-    return x*x + y*y;
+    return x * x + y * y;
 }
 ```
 
@@ -43,7 +43,7 @@ float square(float x, float y)
 [Differentiable]
 float square(float x, float y)
 {
-    return x*x + y*y;
+    return x * x + y * y;
 }
 ```
 
@@ -190,10 +190,10 @@ By default, following types are differentiable in Slang:
 
 -   **Tuples:** `Tuple<each T>` is differentiable if `T` is differentiable.
 
-To make a custom type differentiable, Slang provides a built-in **IDifferentiable** interface, so that any user-defined types conforming to this interface will be treated as differentiable types. The interface is defined as:
+To make a custom type differentiable, Slang provides a built-in `IDifferentiable` interface, so that any user-defined types conforming to this interface will be treated as differentiable types. The interface is defined as:
 
 ```hlsl
-interface **IDifferentiable**
+interface IDifferentiable
 {
     associatedtype Differential : IDifferentiable
     where Differential.Differential == Differential;
@@ -215,7 +215,7 @@ struct Point
 [Differentiable]
 float square(Point p)
 {
-    return p.x*p.x + p.y*p.y;
+    return p.x * p.x + p.y * p.y;
 }
 ```
 
@@ -294,7 +294,8 @@ And of course, another method:
 
 ```hlsl
 [BackwardDerivativeOf(bwd_square)]
-Float square(float x, float y);
+float square(float x, float y);
+
 void bwd_square(inout DifferentialPair<float> x_pair, inout DifferentialPair<float> y_pair, float dOut)
 {
     x_pair = diffPair(x.p, 2.0f * x.p * dOut);
@@ -315,7 +316,7 @@ RWStructuredBuffer<float> g_buffer;
 float square(float x, int idx)
 {
     float y = g_buffer[idx];
-    return x*x + y*y;
+    return x * x + y * y;
 }
 ```
 
