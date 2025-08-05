@@ -17,7 +17,9 @@ To enable autodiff for a function in Slang, you simply mark the function with `[
 
 Given a function $s = square(x, y)$, the goal is to find out how changes of the input parameters will impact the output. To do this, we must compute derivative of $s$ with respect to $x$ and $y$, namely $\frac{\partial s}{\partial x}dx$ and $\frac{\partial s}{\partial y}dy$, so the **forward mode automatic differentiation** computes $fwd(s) = \frac{\partial s}{\partial x}dx + \frac{\partial s}{\partial y}dy$, that is to compute **derivatives** of a function by augmenting each variable in a computation with its **rate of change**.
 
-If we write this derivative calculation into matrix multiplication form, we will have $$fwd(s) = \left\lbrack \frac{\partial s}{\partial x},\frac{\partial s}{\partial y} \right\rbrack\begin{bmatrix}dx \\ dy\end{bmatrix}$$
+If we write this derivative calculation into matrix multiplication form, we will have
+
+$$fwd(s) = \begin{bmatrix}\frac{\partial s}{\partial x}\frac{\partial s}{\partial y}\end{bmatrix} \begin{bmatrix}dx\\dy\end{bmatrix}$$
 
 And this matrix $\left\lbrack \frac{\partial s}{\partial x}\,\frac{\partial s}{\partial y} \right\rbrack$is called the **Jacobian Matrix**. In this simple example, the function $square(x,\, y)$ takes two input values and outputs one value, so it's a $\mathbb{R}^{2}\mathbb{\, \rightarrow R}$ mapping, and the shape of the Jacobian matrix will be $\mathbb{R}^{1 \times 2}$. To be more general, if a function is $\mathbb{R}^{N} \rightarrow \mathbb{R}^{M}$mapping, the shape of its Jacobian matrix will be $\mathbb{R}^{M \times N}$. You can find a more comprehensive explanation of the Jacobian matrix in thi [wiki page](https://en.wikipedia.org/wiki/Jacobian_matrix_and_determinant).
 
