@@ -172,7 +172,7 @@ Slang distinguishes between types that can be differentiated (differentiable) an
 float run(int op, float a, float b);
 ```
 
-int type for op is a **non-differentiable type**, while float type for a and b is a **differentiable type.** When synthesizing the autodiff functions, Slang will change differentiable types to DifferentialPair and will not change the non-differentiable type. Therefore, the signature of forward mode of function `run` will be
+`int` type for `op` is a **non-differentiable type**, while `float` type for `a` and `b` is a **differentiable type.** When synthesizing the autodiff functions, Slang will change differentiable types to DifferentialPair and will not change the non-differentiable type. Therefore, the signature of forward mode of function `run` will be
 
 ```hlsl
 DifferentialPair fwd_diff(run)(int op, DifferentialPair<float> a, DifferentialPair<float> b);
@@ -204,7 +204,7 @@ interface IDifferentiable
 };
 ```
 
-The interface defines requirements that a type must satisfy to be considered differentiable, such as how to represent zero gradient, how to perform multiplication and add operations on the gradients, and the definition of the type of gradients. Taking the previous square example, let's change the input to a custom struct type Point such that
+The interface defines requirements that a type must satisfy to be considered differentiable, such as how to represent zero gradient, how to perform multiplication and add operations on the gradients, and the definition of the type of gradients. Taking the previous square example, let's change the input to a custom struct type `Point` such that
 
 ```hlsl
 struct Point
@@ -220,13 +220,13 @@ float square(Point p)
 }
 ```
 
-If we don't have any constraints on type Point, the signature of the forward mode of square is
+If we don't have any constraints on type `Point`, the signature of the forward mode of `square` is
 
 ```hlsl
 DifferentialPair fwd_diff(square)(Point p);
 ```
 
-and there is no derivative calculated for the point because Slang treats Point as a non-differentiable type, the result derivative will be 0. In order to make Point differentiable, we need to make Point conform to
+and there is no derivative calculated for the point because Slang treats `Point` as a non-differentiable type, the result derivative will be 0. In order to make `Point` differentiable, we need to make `Point` conform to
 `IDifferentiable`:
 ```hlsl
 struct Point: IDifferentiable
@@ -252,7 +252,7 @@ void main()
 }
 ```
 
-Notice that we never provided the definition of `dzero`/`dadd`/`dmul` required by the IDifferentiable interface. This is allowed because the Slang compiler automatically synthesizes these methods even if the user doesn't explicitly provide them.
+Notice that we never provided the definition of `dzero`/`dadd`/`dmul` required by the `IDifferentiable` interface. This is allowed because the Slang compiler automatically synthesizes these methods even if the user doesn't explicitly provide them.
 
 ## Custom Derivatives
 
@@ -308,7 +308,7 @@ In those cases, Slang compiler will pick your provided implementations.
 
 ### How to propagate derivatives to global buffer storage
 
-In the given example in this tutorial, all the variables used in the functions are just local variables. Consider if the variable y in the square function is coming from some global storage, e.g
+In the given example in this tutorial, all the variables used in the functions are just local variables. Consider if the variable `y` in the square function is coming from some global storage, e.g
 
 ```hlsl
 RWStructuredBuffer<float> g_buffer;
@@ -321,7 +321,7 @@ float square(float x, int idx)
 }
 ```
 
-Where does the derivative of y propagate? In this case, variable y is treated as a non-differentiable type as the source of this variable is buffer storage which is a non-differentiable type. So custom derivative implementation is very useful to solve this problem.
+Where does the derivative of `y` propagate? In this case, variable `y` is treated as a non-differentiable type as the source of this variable is buffer storage which is a non-differentiable type. So custom derivative implementation is very useful to solve this problem.
 
 - 1\.  First, we can wrap the buffer access into a function which is differentiable
 
@@ -355,11 +355,11 @@ During synthesis of the backward mode of `square` function, when the compiler se
 
 Since the autodiff synthesization process is totally opaque, the generated code is invisible to users. Though you can specify `"-target hlsl"` to translate the target code to some textual form, the autodiff code is not intended to be easy to read, especially when the original functions are sophisticated. Therefore, debugging the autodiff code could be a challenging task. We provide a debug option to help you check the gradients flow during computation.
 
-Looking at the previous example of the use case of custom derivative implementation, you might be aware that this technique can also be used to watch the intermediate gradients. Given an implementation of square as follow:
+Looking at the previous example of the use case of custom derivative implementation, you might be aware that this technique can also be used to watch the intermediate gradients. Given an implementation of `square` as follow:
 
 ```hlsl
 [Differentiable]
-float square(float x, int idx)
+float square(float x, float y)
 {
     float a = x * x;
     float b = y * y;
@@ -367,11 +367,11 @@ float square(float x, int idx)
 }
 ```
 
-Assume we want to check whether the gradient of b is calculated correct, we can wrap the computation of b into a differentiable function, and defined the custom derivative of this function so that we can print or save the derivative flew into this function, for example:
+Assume we want to check whether the gradient of `b` is calculated correct, we can wrap the computation of `b` into a differentiable function, and defined the custom derivative of this function so that we can print or save the derivative flew into this function, for example:
 
 ```hlsl
 [Differentiable]
-float square(float x, int idx)
+float square(float x, float y)
 {
     float a = x * x;
     float b = debugGrad(y * y);
