@@ -32,7 +32,10 @@ This demonstrates how users can access high-quality documentation concerning gen
 3. The LLM then goes ahead and provides implementation as well on how this can be done.
 4. Note: Given the current state of LLMs, output may not be 100% accurate, compilable code, so you will need to review it closely.
 
-<img src="/images/posts/2025-08-01-slang-ai-assistant.webm" alt="AI coding assistant" class="img-fluid" style="max-width: 100%; width: 800px; height: auto;">
+<video width="480" controls>
+  <source src="/images/posts/2025-08-01-slang-ai-assistant.webm" type="video/webm">
+  Your browser does not support the video tag.
+</video>
 
 We encourage you to try out this integration and experience firsthand how it can streamline your development workflow, 
 and we welcome your feedback to help us further improve this valuable tool. Kindly start discussion on our Slang Discord or file issues on our GitHub if you have suggestions.
