@@ -75,3 +75,7 @@ tutorials:
     description: "Main things to know if you are coming to Slang as an GLSL developer."
     link_url: "https://docs.shader-slang.org/en/latest/coming-from-glsl.html"
     link_label: "Coming from GLSL"
+  - title: "Slang Automatic Differentiation Tutorial - 1"
+    description: "Learn how to use Slang’s automatic differentiation feature to compute the gradient of a shader."
+    link_url: "https://docs.shader-slang.org/en/latest/auto-diff-tutorial-1.html"
+    link_label: "Slang Automatic Differentiation Tutorial - 1"
