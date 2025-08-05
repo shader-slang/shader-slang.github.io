@@ -5,7 +5,7 @@ date: 2025-08-01
 categories: [ "blog" ]
 tags: [slang]
 author: "Mukund Keshava, NVIDIA"
-image: /images/posts/2025-08-01-slang-ai-assistant.webm
+image: /images/posts/2025-08-01-slang-ai-assistant.webp
 human_date: "August 1, 2025"
 ---
 
