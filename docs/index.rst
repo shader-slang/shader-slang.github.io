@@ -36,3 +36,4 @@ Slang Documentation
    Migrating from HLSL to Slang <coming-from-hlsl>
    Using Slang Parameter Blocks <parameter-blocks>
    Migrating from GLSL to Slang <coming-from-glsl>
+   AutoDiff Tutorial 1 <auto-diff-tutorial-1>
