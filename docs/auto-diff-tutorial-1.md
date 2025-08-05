@@ -1,5 +1,5 @@
 ---
-title: Slang Automatic Differentiation Tutorial - 1
+title: Automatic Differentiation Tutorial - 1
 layout: page
 description: Autodiff tutorial 1
 permalink: "/docs/auto-diff-tutorial-1"
