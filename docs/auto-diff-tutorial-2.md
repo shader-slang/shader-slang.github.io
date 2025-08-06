@@ -11,7 +11,7 @@ intro_image_hide_on_mobile: false
 
 In the [last tutorial](auto-diff-tutorial-1.md), we explain basic knowledge about Slang's autodiff feature and introduce some advanced techniques about custom derivative implementation and custom differential type.
 
-In this tutorial, we will walk through a real-world example to combine what we've learnt from the last tutorial.
+In this tutorial, we will walk through a real-world example using what we've learnt from the last tutorial.
 
 We will learn how to implement a tiny Multi-Layer Perceptron (MLP) to approximate a set of polynomial functions using Slang's automatic differentiation capabilities.
 
@@ -38,13 +38,13 @@ f_{4}(x,\, y) =&x + 0.5y^{2}
 
 Given a neural network $MLP(x,y;\theta)$ with parameters $\theta$, we want to minimize:
 
-$$L(\theta) = \left| \left| MLP(x,y;\theta) - f(x,y) \right| \right|_{2}$$
+$$L(\theta) = \left| \left| MLP(x,y;\theta) - f(x,y) \right| \right|^{2}$$
 
 Where:
 
 - $MLP(x,y;\theta)$ is our neural network\'s output
 - $f(x,y)$ is the ground truth polynomial set
-- $L(\theta)$ is the squared L2 norm of the error (mean squared error)
+- $L(\theta)$ is the [mean squared error](https://en.wikipedia.org/wiki/Mean_squared_error)
 
 ### The Workflow will be
 
@@ -69,7 +69,7 @@ public struct MyNetwork
         // layer2.eval(layer1.eval());
     }
 
-    public half4 **eval**(no_diff half x, no_diff half y)
+    public half4 eval(no_diff half x, no_diff half y)
     {
         // construct MLVec<4> from x, y
         // call internal _eval
@@ -78,11 +78,12 @@ public struct MyNetwork
 }
 ```
 
-In our interface methods design, we introduce an internal representation of vector type `MLVec<4>` in the network evaluation. And this design choice will help us hide the details about how we are going to perform the arithmetic/logic operations on the vector type, as they are irrelevant to how the network should be designed. For now, you can treat this type as an opaque type, and we will talk about the detail in later section. Therefore, in the public method, we will just box the input to `MLVec`, call internal `_eval` method, and unbox `MLVec` to normal vector. And in the internal `_eval` method, we will just chain the evaluations of each layer together.
+In our interface methods design, we introduce an internal representation of vector type `MLVec<4>` in the network evaluation. And this design choice will help us hide the details about how we are going to perform the arithmetic/logic operations on the vector type, as they are irrelevant to how the network should be designed. For now, you can treat this type as an opaque type, and we will talk about the detail in later section. Therefore, in the public method, we will just convert the input to `MLVec`, call the internal `_eval` method, and convert `MLVec` back to a normal vector. And in the internal `_eval` method, we will just chain the evaluations of each layer together.
+> Note that we are using `half` type, which is [16-bit floating-point type](external/slang/docs/user-guide/02-conventional-features.md#scalar-types) for better thoughput and reducing memory usage.
 
 ### 3.2 Feed-Forward Layer Definition
 
-Each layer performs: $LeakRelu(Wx+x, b)$, so we can create a struct to abstract this as follow:
+Each layer performs: $LeakyRelu(Wx+x, b)$, so we can create a struct to abstract this as follow:
 
 ```hlsl
 public struct FeedForwardLayer<int InputSize, int OutputSize>
@@ -95,16 +96,17 @@ public struct FeedForwardLayer<int InputSize, int OutputSize>
     public MLVec<OutputSize> eval(MLVec<InputSize> input)
     {
         // out = matrix-multiply-add(input, weight, bias);
-        // return leak_relu(out, alpha);
+        // return leaky_relu(out, alpha);
     }
 }
 ```
 
-The evaluation is very simple, which is just a matrix vector multiplication plus a bias vector, and then perform a LeakRelu function on it. But we should pay extra attention that we use pointers in this struct to reference the parameters (e.g. weight and bias) instead of declaring arrays or even global storage buffers. Because our MLP will be run on GPU and each evaluation function will be executed per-thread, if we use array for each layer, it indicates that there will be an array allocated for each thread and that will explode the GPU memory. For the same reason, we cannot declare a global storage buffer because each thread will hold a storage buffer that stores the exact same data. Therefore, the most efficient way is to use pointer or reference to the global storage buffer, so every thread executes the layer's method can access it.
+The evaluation is very simple, just doing a matrix vector multiplication plus a bias vector, and then performing a LeakyRelu function on it. But note that we use pointers in this struct to reference the parameters (e.g. weight and bias) instead of declaring arrays or even global storage buffers. Because our MLP will be run on the GPU and each evaluation function will be executed per-thread, if we used arrays for each layer, an array would be allocated for each thread and that would explode the GPU memory. For the same reason, we cannot declare a global storage buffer  because each thread will hold a storage buffer that stores the exact same data.
+Therefore, the most efficient approach is to use pointers or references to the global storage buffer, so every thread which executes the layer's method can access it.
 
 ### 3.3 Vector Type Definition
 
-The MLVec type represents vectors:
+The `MLVec` type represents vectors:
 ```hlsl
 public struct MLVec<int N>
 {
@@ -120,7 +122,7 @@ public struct MLVec<int N>
     }
 }
 ```
-For MLVec, there are at least two methods to help us convert from and to a normal array.
+For `MLVec`, we declare two methods to help us convert from and to a normal array.
 
 **Supporting Operations**:
 
@@ -149,7 +151,7 @@ public half loss(MyNetwork* network, half x, half y)
     let networkResult = network.eval(x, y); // MLP(x,y; θ)
     let gt = groundtruth(x, y);             // target(x,y)
     let diff = networkResult - gt;          // Error vector
-    return dot(diff, diff);                 // ||error||
+    return dot(diff, diff);                 // square of error
 }
 ```
 
@@ -168,39 +170,37 @@ public half4 groundtruth(half x, half y)
 }
 ```
 
-You must notice that in the loss function, we don't calculate the L2 norm, instead we just compute the square of L2 norm, and the reason is that L2 norm will involve computing the square root and the derivative of a square root will have division operation so it could cause infinite value if the denominator is 0. Therefore, it could make gradient unstable.
-
 ## 4. Backward Pass Design
 
-After implementing the forward pass of the network evaluation, we will need to implement the backward pass, you will see how effortless it is to implement the backward pass with slang's autodiff. We're going to start the implementation from the end of the workflow to the beginning, because that's how the direction of the gradients flow.
+After implementing the forward pass of the network evaluation, we then need to implement the backward pass. You will see how effortless it is to implement the backward pass with Slang's autodiff. We're going to start the implementation from the end of the workflow to the beginning, because that's how the direction of the gradients flow.
 
 ### 4.1 Backward Pass of Loss
 
-To implement the backward derivative of loss function, we only need to mark the function is `[Differentiable]` as we learnt from [last tutorial](auto-diff-tutorial-1.md)
+To implement the backward derivative of loss function, we only need to mark the function is `[Differentiable]` as we learnt from [last tutorial](auto-diff-tutorial-1.md#forward-mode-differentiation)
 
 ```hlsl
 [Differentiable]
 public half loss(MyNetwork* network, no_diff half x, no_diff halfy)
 {
-    let networkResult = network.eval(x, y); // MLP(x,y; θ)
-    let gt = no_diff groundtruth(x, y);     // target(x,y)
-    let diff = networkResult - gt;          // Error vector
-    return dot(diff, diff);                 // ||error||
+    let networkResult = network->eval(x, y);    // MLP(x,y; θ)
+    let gt = no_diff groundtruth(x, y);         // target(x,y)
+    let diff = networkResult - gt;              // Error vector
+    return dot(diff, diff);                     // square of error
 }
 ```
 
-And from the slang kernel function, we will just need to call the backward of loss like this:
+And from the Slang kernel function, we just need to call the backward mode of the `loss` function like this:
 ```hlsl
 bwd_diff(loss)(network, input.x, input.y, 1.0h);
 ```
 
-One important thing to notice is that we are using no_diff attribute to decorate the input `x`, `y` and `groudtruth` calculation, because in the backward pass, we only care about the result of $\frac{\partial loss}{\partial\theta}$. `no_diff` attribute just tells Slang to treat the variables or instructions as non-differentiable, so there will be no backward mode instructions generated for those variables or instructions. In this case, since we don't care about the derivative of loss function with respective of input, therefore we can safely mark them as non-differentiable.
+One important thing to notice is that we are using the [`no_diff` attribute](external/slang/docs/user-guide/07-autodiff.html#excluding-parameters-from-differentiation) to decorate the inputs `x` and `y`, as well as `groudtruth` calculation, because in the backward pass, we only care about the result of $\frac{\partial loss}{\partial\theta}$. The `no_diff` attribute just tells Slang to treat the variables or instructions as non-differentiable, so there will be no backward mode instructions generated for those variables or instructions. In this case, since we don't care about the derivative of loss function with respective of input, therefore we can safely mark them as non-differentiable.
 
-This implementation indicates that this call `network.eval(x, y);` must be differentiable, so next we are going to implement the backward pass for this method.
+Since `loss` function is differentiable now, every instruction inside this function has to be differentiable except those marked as `no_diff`. Therefore, `network->eval(x, y)` must be differentiable, so next we are going to implement the backward pass for this method.
 
 ### 4.2 Automatic Propagation to MLP
 
-Similarly, we will just need to mark the eval methods in MyNetwork as differentiable:
+Just like the `loss` function, the only thing we need to do for `MyNetwork::eval` in order to use them with autodiff is to mark them as differentiable:
 ```hlsl
 public struct MyNetwork
 {
@@ -225,11 +225,11 @@ public struct MyNetwork
 
 ## 4.3 Custom Backward Pass for Layers
 
-Following the propagation direction of the gradients, we will next implement the backward derivative of FeedForwardLayer. But we're going to do something different. Instead of asking Slang to automatically synthesize the backward autodiff for us, we will provide a custom derivative implementation. Because the network parameters and gradients are a buffer storage declared in the layer, we will have to provide a custom derivative to write the gradient back to the global buffer storage, you can reference [progagate derivative to storage buffer](auto-diff-tutorial-1.md#how-to-propagate-derivatives-to-global-buffer-storage) in last tutorial to refresh your memory. Another reason is that our layer is just matrix multiplication with bias, and its derivative is quite simple, and there are lots of options to even accelerate it with specific hardware (e.g. Nvidia tensor core). Therefore, it's good practice to implement the custom derivative.
+Following the propagation direction of the gradients, we will next implement the backward derivative of FeedForwardLayer. But here we're going to do something different. Instead of asking Slang to automatically synthesize the backward autodiff for us, we will provide a custom derivative implementation. Because the network parameters and gradients are a buffer storage declared in the layer, we will have to provide a custom derivative to write the gradient back to the global buffer storage. You can reference [progagate derivative to storage buffer](auto-diff-tutorial-1.md#how-to-propagate-derivatives-to-global-buffer-storage) in last tutorial to refresh your memory. Another benefit of providing a custom derivative here is that our layer is just matrix multiplication with bias, and its derivative is quite simple, so there are lots of options to accelerate it with specific hardware (e.g. Nvidia tensor cores). Therefore, it's good practice to implement the custom derivative.
 
 First, let's revisit the mathematical formula, given:
 $$Z=W\cdot x+b$$
-$$Y=LeakRelu(Z)$$
+$$Y=LeakyRelu(Z)$$
 
 Where $W \in R^{m \times n}$, $x \in R^{n}$ and $b \in R^{m}$, the
 gradient of $W$, $x$ and $b$ will be:
@@ -277,20 +277,20 @@ The key point in this implementation is that we use atomic add when writing the 
 InterlockedAddF16Emulated(biasesGrad + i, dResult.data[i], originalValue);
 ```
 
-In the forward pass we already know that the parameters stored in a global storage buffer is shared by all threads, and so are gradients. Therefore, during backward pass, each thread will accumulate its gradient data to the shared storage buffer, we must use atomic add to accumulate all the gradients without race condition.
+In the forward pass we already know that the parameters stored in a global storage buffer is shared by all threads, and so are gradients. Therefore, during backward pass, each thread will accumulate its gradient data to the shared storage buffer, we must use atomic add to accumulate all the gradients without race conditions.
 
-The implementation of `outerProductAccumulate` and `matMulTransposed` are just trivial for-loop multiplication, so we will not show the details in this tutorial, the complete code can be found at [here](https://github.com/shader-slang/neural-shading-s25/tree/main/hardware-acceleration/mlp-training).
+The implementation of `outerProductAccumulate` and `matMulTransposed` are trivial for-loop multiplication, so we will not show the details in this tutorial. The complete code can be found at [here](https://github.com/shader-slang/neural-shading-s25/tree/main/hardware-acceleration/mlp-training).
 
 ### 4.3 Make the vector differentiable
 
-If we just compile what we have right now, you will hit compile error because `MLVec` is not a differentiable type, so, Slang doesn't expect the signature of backward of layer's eval method to be
+If we just compile what we have right now, we would generate a compile error because `MLVec` is not a differentiable type, so Slang doesn't expect the signature of backward of layer's eval method to be
 ```hlsl
 public void evalBwd(inout DifferentialPair<MLVec<InputSize>> x, MLVec<OutputSize> dResult)
 ```
 
-Therefore, we will have to update `MLVec` to make to differentiable:
+Therefore, we will have to update `MLVec` to make it differentiable:
 ```hlsl
-public struct MLVec<int N> : IDifferentialbe
+public struct MLVec<int N> : IDifferentiable
 {
     public half data[N];
 
@@ -304,7 +304,7 @@ public struct MLVec<int N> : IDifferentialbe
 
 ### 4.4 Parameter Update
 
-After the back propagation, the last step is to update the parameters by the gradients we just compute
+After back propagation, the last step is to update the parameters by the gradients we just computed
 ```hlsl
 public struct Optimzer
 {
@@ -370,4 +370,4 @@ void adjustParameters(
 
 The training process will be a loop that alternatively invokes the slang compute kernel `learnGradient` and `adjustParameters`, until the loss converges to an acceptable threshold value.
 
-We will skip the host side implementation for the MLP example, it will be boilerplate code that setup graphics pipeline and allocate buffers for parameters. You can access the [github repo](https://github.com/shader-slang/neural-shading-s25/tree/main/hardware-acceleration/mlp-training) for complete code of this example which includes the host side implementation. Alternatively, you can try to use the more powerful tool [SlangPy](https://github.com/shader-slang/slangpy) to run this MLP example without writing any graphics boilerplate code.
+The host side implementation for this example is not shown, it will be boilerplate code to setup the graphics pipeline and allocate buffers for parameters. You can access the [github repo](https://github.com/shader-slang/neural-shading-s25/tree/main/hardware-acceleration/mlp-training) for complete code of this example, which includes the host side implementation. Alternatively, you can use the more powerful tool [SlangPy](https://github.com/shader-slang/slangpy) to run this MLP example without writing any graphics boilerplate code.
