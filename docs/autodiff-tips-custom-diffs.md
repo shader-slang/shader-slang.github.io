@@ -28,7 +28,7 @@ Discontinuous functions are those that have abrupt changes or "jumps" in their o
 
 When dealing with discontinuities, a custom derivative allows you to define how you want the "change" to be represented at those points, which might involve subgradients or specific approximations.
 
-# 3\. Lookups from Memory
+# 3\. Buffer Accesses
 
 Functions whose output depends on values retrieved from memory based on an input (e.g., accessing an RWStructuredBuffer on the GPU, or reading from a raw pointer CPU-side) introduce side-effects that automatic differentiation struggles to handle. This can include things like race conditions or ambiguous derivative write-back locations. Additionally, the lookup index itself is non-continuous. Therefore, custom derivatives are often necessary to accurately represent "change" at these points, potentially involving subgradients or specific approximations.
 
