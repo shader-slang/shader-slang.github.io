@@ -19,20 +19,11 @@ Opaque functions are those where the internal operations are not visible or acce
 
 For these functions, since the autodiff system cannot "see" inside to compute the derivative, providing a custom derivative allows you to still incorporate them into your differentiable computations.
 
-# 2\. Discontinuous Functions
-
-Discontinuous functions are those that have abrupt changes or "jumps" in their output. Automatic differentiation assumes continuity, and applying it directly to discontinuous functions can lead to incorrect or undefined derivatives. Examples include:
-
-* **Texture sampling:** Similar to hardware-accelerated filtering, direct texture sampling can involve discrete choices of texels, leading to discontinuities.  
-* **Naturally discontinuous functions:** Functions like the Rectified Linear Unit (ReLU) (output is 0 for negative input, input for positive input), absolute value, or stepwise functions inherently have points of non-differentiability.
-
-When dealing with discontinuities, a custom derivative allows you to define how you want the "change" to be represented at those points, which might involve subgradients or specific approximations.
-
-# 3\. Buffer Accesses
+# 2\. Buffer Accesses
 
 Functions whose output depends on values retrieved from memory based on an input (e.g., accessing an RWStructuredBuffer on the GPU, or reading from a raw pointer CPU-side) introduce side-effects that automatic differentiation struggles to handle. This can include things like race conditions or ambiguous derivative write-back locations. Additionally, the lookup index itself is non-continuous. Therefore, custom derivatives are often necessary to accurately represent "change" at these points, potentially involving subgradients or specific approximations.
 
-# 4\. Numerically Unstable Functions
+# 3\. Numerically Unstable Functions
 
 Numerical stability refers to how well a computation preserves accuracy when faced with small changes in input or when intermediate values become very large or very small. Some complex mathematical functions can be numerically unstable, leading to issues like:
 
@@ -45,7 +36,7 @@ By defining a custom derivative, you can implement more robust numerical methods
 
 One of the key strengths of Slang's autodiff system is its flexibility. You are not forced to choose between entirely custom derivatives or entirely automatic differentiation. Slang allows you to **mix custom and automatic differentiation**. 
 
-This means you can address just the parts of your function stack that truly need custom derivatives (e.g., the opaque, discontinuous, or numerically unstable sections) while still leveraging Slang's powerful autodiff for the rest of your computations. This hybrid approach offers the best of both worlds: the convenience and efficiency of automatic differentiation where it's most effective, and the precision and control of custom derivatives where they are absolutely necessary.
+This means you can address just the parts of your function stack that truly need custom derivatives (e.g., the opaque or numerically unstable sections) while still leveraging Slang's powerful autodiff for the rest of your computations. This hybrid approach offers the best of both worlds: the convenience and efficiency of automatic differentiation where it's most effective, and the precision and control of custom derivatives where they are absolutely necessary.
 
 For examples of this in practice, take a look at some of the [experiments]() in our SlangPy samples repository. In particular, you can see a user-defined custom derivative function invoking bwd\_diff() to make use of automatic differentiation for the functions it calls out to in the [differentiable splatting experiment](https://github.com/shader-slang/slangpy-samples/blob/main/experiments/diff-splatting/diffsplatting2d.slang#L512).
 
@@ -54,7 +45,7 @@ For examples of this in practice, take a look at some of the [experiments]() in 
 While some functions are mathematically discontinuous or opaque, making them undifferentiable in a strict sense, it's often still possible and desirable to define a custom derivative that approximates their behavior or provides a useful "gradient" for optimization purposes. This is particularly crucial in machine learning and computational graphics where such functions are common. Here's how you might approach creating a custom derivative for something that seems inherently undifferentiable:
 
 * **Subgradients for Discontinuous Functions**:  
-  For functions with sharp corners or jumps (like ReLU, absolute value, or step functions), the derivative is undefined at specific points. Instead of a single derivative, you can define a subgradient. A subgradient is not a unique value but rather a set of possible "slopes" at the non-differentiable point. For example, for ReLU:  
+  For functions with sharp corners or jumps (like ReLU, absolute value, or step functions), the derivative is undefined at specific points. Automatic differentiation systems like Slang's handle these cases using established conventions, but you may want custom behavior. A subgradient is not a unique value but rather a set of possible "slopes" at the non-differentiable point. For example, for ReLU:  
   * If input \> 0, derivative is 1\.  
   * If input \< 0, derivative is 0\.  
   * If input \= 0, the subgradient can be any value between 0 and 1 (inclusive).  
