@@ -22,6 +22,7 @@ Slang Documentation
    SPIR-V Specific Functionalities <external/slang/docs/user-guide/a2-01-spirv-target-specific>
    Metal Specific Functionalities <external/slang/docs/user-guide/a2-02-metal-target-specific>
    WGSL Specific Functionalities <external/slang/docs/user-guide/a2-03-wgsl-target-specific>
+   Autodiff Tips & Tricks <autodiff-tips-custom-diffs>
 
 .. toctree::
    :caption: Tutorials

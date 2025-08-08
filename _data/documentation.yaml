@@ -41,6 +41,10 @@ articles:
     description: "Things to know when using Slang to compile to the WGSL."
     link_url: "https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/a2-03-wgsl-target-specific.html"
     link_label: "WGSL Functionalities"
+  - title: "Autodiff Tips & Tricks: When to Use Custom Derivatives"
+    description: "Guidance on when defining custom derivatives can help you out"
+    link_url: "https://docs.shader-slang.org/en/latest/autodiff-tips-custom-diffs.md"
+    link_label: "Autodiff Tips & Tricks: Custom Derivatives"
 
 tutorials:
   - title: "Write Your First Slang Shader"
@@ -83,3 +87,4 @@ tutorials:
     description: "Learn how to use Slang’s automatic differentiation feature to compute the gradient of a shader."
     link_url: "https://docs.shader-slang.org/en/latest/auto-diff-tutorial-2.html"
     link_label: "Automatic Differentiation Tutorial - 2"
+
