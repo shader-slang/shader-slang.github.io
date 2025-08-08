@@ -79,7 +79,7 @@ tutorials:
     description: "Learn how to use Slang’s automatic differentiation feature to compute the gradient of a shader."
     link_url: "https://docs.shader-slang.org/en/latest/auto-diff-tutorial-1.html"
     link_label: "Automatic Differentiation Tutorial - 1"
-    - title: "Slang Automatic Differentiation Tutorial - 2"
+  - title: "Slang Automatic Differentiation Tutorial - 2"
     description: "Learn how to use Slang’s automatic differentiation feature to compute the gradient of a shader."
     link_url: "https://docs.shader-slang.org/en/latest/auto-diff-tutorial-2.html"
     link_label: "Automatic Differentiation Tutorial - 2"
