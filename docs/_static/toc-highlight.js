@@ -10,7 +10,24 @@ document.addEventListener('DOMContentLoaded', function() {
             const parentUrlObj = new URL(parentUrl);
 
             // Compare the pathname (ignoring hash and query parameters)
-            if (linkUrl.pathname === parentUrlObj.pathname) {
+            const linkPath = linkUrl.pathname;
+            const parentPath = parentUrlObj.pathname;
+
+            // Check for direct match first
+            let isMatch = linkPath === parentPath;
+
+            if (!isMatch) {
+                // If no direct match and parent path doesn't end with a file, try appending index.html
+                const lastSegment = parentPath.split('/').pop();
+                const endsWithFile = lastSegment && lastSegment.includes('.');
+
+                if (!endsWithFile) {
+                    isMatch = linkPath === parentPath + 'index.html' ||
+                             linkPath === parentPath.replace(/\/$/, '') + '/index.html';
+                }
+            }
+
+            if (isMatch) {
                 link.parentElement.classList.add('current-page');
                 currentPageElement = link.parentElement;
             }
