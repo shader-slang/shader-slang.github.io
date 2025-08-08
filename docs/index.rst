@@ -37,3 +37,4 @@ Slang Documentation
    Using Slang Parameter Blocks <parameter-blocks>
    Migrating from GLSL to Slang <coming-from-glsl>
    AutoDiff Tutorial 1 <auto-diff-tutorial-1>
+   AutoDiff Tutorial 2 <auto-diff-tutorial-2>
