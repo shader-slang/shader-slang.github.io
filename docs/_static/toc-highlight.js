@@ -21,14 +21,16 @@ document.addEventListener('DOMContentLoaded', function() {
             expandPathToElementAndChildren(currentPageElement);
             restoreScrollPosition();
             scrollToElementIfNotVisible(currentPageElement);
+            restoreRelativePosition(currentPageElement);
         }
     } catch (e) {
         // Log that we can't access parent URL due to cross-origin restrictions
         console.log('Cannot access parent URL:', e);
     }
 
-    // Save scroll position when page unloads
+    // Save scroll position and relative position when page unloads
     window.addEventListener('beforeunload', saveScrollPosition);
+    window.addEventListener('beforeunload', saveRelativePosition);
 });
 
 function expandPathToElementAndChildren(element) {
@@ -75,14 +77,30 @@ function saveScrollPosition() {
         // Target the toc-content div which has the scroll attribute
         const scrollableContainer = document.querySelector('.toc-content');
         if (!scrollableContainer) {
-            console.log('No .toc-content element found!');
+            console.log('No scrollable container found!');
             return;
         }
 
         // Save the container's scroll position
         sessionStorage.setItem('sidebarScrollPosition', scrollableContainer.scrollTop);
 
-        // Also save the destination page's relative position within the viewport if it's visible
+        console.log('Saved scroll position to', scrollableContainer.scrollTop);
+    } catch (e) {
+        console.log('Could not save scroll position:', e);
+    }
+}
+
+function saveRelativePosition() {
+    console.log('Saving relative position of current page...');
+    try {
+        // Target the toc-content div which has the scroll attribute
+        const scrollableContainer = document.querySelector('.toc-content');
+        if (!scrollableContainer) {
+            console.log('No scrollable container found!');
+            return;
+        }
+
+        // Save the destination page's relative position within the viewport if it's visible
         const links = document.querySelectorAll('.sidebar-tree a.reference');
         links.forEach(function(link) {
             const linkUrl = new URL(link.href, window.location.origin);
@@ -95,9 +113,9 @@ function saveScrollPosition() {
             sessionStorage.setItem(key, relativePosition);
         });
 
-        console.log('Saved scroll position to', scrollableContainer.scrollTop);
+        console.log('Saved relative position of current page');
     } catch (e) {
-        console.log('Could not save scroll position:', e);
+        console.log('Could not save relative position of current page:', e);
     }
 }
 
@@ -106,7 +124,7 @@ function restoreScrollPosition() {
     try {
         const scrollableContainer = document.querySelector('.toc-content');
         if (!scrollableContainer) {
-            console.log('No .toc-content element found!');
+            console.log('No scrollable container found!');
             return;
         }
 
@@ -124,8 +142,7 @@ function restoreScrollPosition() {
     }
 }
 
-function scrollToElementIfNotVisible(element)
-{
+function scrollToElementIfNotVisible(element) {
     console.log('Checking if current page is visible...');
     const rect = element.getBoundingClientRect();
     if (rect.top < 0 || rect.top > window.innerHeight) {
@@ -136,36 +153,40 @@ function scrollToElementIfNotVisible(element)
             block: 'center'
         });
 
-        console.log('Scrolled current page into view, restoring relative position...');
-
-        // Then try to restore the relative position it had on the previous page
-        const parentUrl = window.parent.location.href;
-        const parentUrlObj = new URL(parentUrl);
-        const key = 'pageRelativePosition_' + parentUrlObj.pathname;
-        const savedRelativePosition = sessionStorage.getItem(key);
-
-        if (savedRelativePosition == null) {
-            console.log('No relative position to restore!');
-            return;
-        }
-
-        const scrollableContainer = document.querySelector('.toc-content');
-        if (scrollableContainer == null) {
-            console.log('No scrollable container found!');
-            return;
-        }
-
-        const targetRelativePosition = parseInt(savedRelativePosition, 10);
-        const currentRect = element.getBoundingClientRect();
-        const containerRect = scrollableContainer.getBoundingClientRect();
-        const currentRelativePosition = currentRect.top - containerRect.top;
-
-        // Calculate how much we need to scroll to restore the relative position
-        const adjustment = currentRelativePosition - targetRelativePosition;
-        scrollableContainer.scrollTop += adjustment;
-
-        console.log('Restored relative position of current page to', targetRelativePosition, 'with adjustment of', adjustment);
+        console.log('Scrolled current page into view');
     } else {
         console.log('Current page is already visible');
     }
+}
+
+function restoreRelativePosition(element) {
+    console.log('Restoring relative position of current page...');
+
+    // Then try to restore the relative position it had on the previous page
+    const parentUrl = window.parent.location.href;
+    const parentUrlObj = new URL(parentUrl);
+    const key = 'pageRelativePosition_' + parentUrlObj.pathname;
+    const savedRelativePosition = sessionStorage.getItem(key);
+
+    if (savedRelativePosition == null) {
+        console.log('No relative position to restore!');
+        return;
+    }
+
+    const scrollableContainer = document.querySelector('.toc-content');
+    if (scrollableContainer == null) {
+        console.log('No scrollable container found!');
+        return;
+    }
+
+    const targetRelativePosition = parseInt(savedRelativePosition, 10);
+    const currentRect = element.getBoundingClientRect();
+    const containerRect = scrollableContainer.getBoundingClientRect();
+    const currentRelativePosition = currentRect.top - containerRect.top;
+
+    // Calculate how much we need to scroll to restore the relative position
+    const adjustment = currentRelativePosition - targetRelativePosition;
+    scrollableContainer.scrollTop += adjustment;
+
+    console.log('Restored relative position of current page to', targetRelativePosition, 'with adjustment of', adjustment);
 }
