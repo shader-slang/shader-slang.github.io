@@ -5,7 +5,7 @@ date: 2025-08-08 17:00:00
 categories: [ "blog" ]
 tags: [slang, siggraph]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
-image: /images/posts/TBD
+image: /images/posts/siggraph-logo.webp
 human_date: "August 8, 2025"
 ---
 
