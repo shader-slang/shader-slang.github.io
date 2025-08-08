@@ -43,7 +43,7 @@ articles:
     link_label: "WGSL Functionalities"
   - title: "Autodiff Tips & Tricks: When to Use Custom Derivatives"
     description: "Guidance on when defining custom derivatives can help you out"
-    link_url: "https://docs.shader-slang.org/en/latest/autodiff-tips-custom-diffs.md"
+    link_url: "https://docs.shader-slang.org/en/latest/autodiff-tips-custom-diffs.html"
     link_label: "Autodiff Tips & Tricks: Custom Derivatives"
 
 tutorials:
