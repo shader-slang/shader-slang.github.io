@@ -4,7 +4,7 @@
 
 This is the landing page for the SIGGRAPH 2025 Course "Introduction to Neural Shading". You will find source code and other accompanying materials with the course here as they become available.
 
-The latest release of Slang for SIGGRAPH can be found here https://github.com/shader-slang/slang/releases/tag/v2025.14.1
+The latest release of Slang for SIGGRAPH can be found here https://github.com/shader-slang/slang/releases/tag/v2025.14.2
 
 ## [Hands-On Class: Introduction to Slang](https://s2025.conference-schedule.org/?post_type=page&p=14&id=gensubcur_104&sess=sess287)
 
