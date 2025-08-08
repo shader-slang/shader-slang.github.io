@@ -19,19 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // If we found the current page, expand the path to it and expand its children
         if (currentPageElement) {
             expandPathToElementAndChildren(currentPageElement);
-            
-            // After expansion, restore the scroll position
             restoreScrollPosition();
-                
-            // Check if current page is still visible after restoration
-            const rect = currentPageElement.getBoundingClientRect();
-            if (rect.top < 0 || rect.top > window.innerHeight) {
-                // Current page is not visible, scroll to show it
-                currentPageElement.scrollIntoView({
-                    behavior: 'instant',
-                    block: 'nearest'
-                });
-            }
+            scrollToElementIfNotVisible(currentPageElement);
         }
         
     } catch (e) {
@@ -44,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function expandPathToElementAndChildren(element) {
+    console.log('Expanding path to element and its children...');
     // Start from the current page's list item
     let currentLi = element.closest('li');
     if (!currentLi) return;
@@ -77,26 +67,60 @@ function expandPathToElementAndChildren(element) {
         // Move up to the next level
         currentLi = parentLi;
     }
+    console.log('Expanded path to element and its children');
 } 
 
 function saveScrollPosition() {
+    console.log('Saving scroll position...');
     try {
-        window.savedScrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+        // Target the toc-content div which has the scroll attribute
+        const scrollableContainer = document.querySelector('.toc-content');
+        if (!scrollableContainer) {
+            console.log('No .toc-content element found!');
+            return;
+        }
+        // Use sessionStorage to persist the scroll position across page loads.
+        sessionStorage.setItem('sidebarScrollPosition', scrollableContainer.scrollTop);
+        console.log('Saved scroll position to', scrollableContainer.scrollTop);
     } catch (e) {
         console.log('Could not save scroll position:', e);
     }
 }
 
 function restoreScrollPosition() {
+    console.log('Restoring scroll position...');
     try {
-        if (window.savedScrollPosition === undefined) return;
+        const scrollableContainer = document.querySelector('.toc-content');
+        if (!scrollableContainer) {
+            console.log('No .toc-content element found!');
+            return;
+        }
+
+        const savedScrollPosition = sessionStorage.getItem('sidebarScrollPosition');
+        if (savedScrollPosition === null) {
+            console.log('No scroll position to restore!');
+            return;
+        };
         
-        // Restore the exact scroll position
-        window.scrollTo({
-            top: window.savedScrollPosition,
-            behavior: 'instant'
-        });
+        // Restore scroll position to the toc-content container
+        scrollableContainer.scrollTop = parseInt(savedScrollPosition, 10);
+        console.log('Restored scroll position to', parseInt(savedScrollPosition, 10));
     } catch (e) {
         console.log('Could not restore scroll position:', e);
     }
-} 
+}
+
+function scrollToElementIfNotVisible(element) {
+    console.log('Checking if current page is visible...');
+    const rect = element.getBoundingClientRect();
+    if (rect.top < 0 || rect.top > window.innerHeight) {
+        console.log('Current page is not visible, scrolling to show it...');
+        element.scrollIntoView({
+            behavior: 'instant',
+            block: 'center'
+        });
+        console.log('Scrolled current page into view');
+    } else {
+        console.log('Current page is visible');
+    }
+}
