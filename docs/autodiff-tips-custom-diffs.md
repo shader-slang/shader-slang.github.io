@@ -28,14 +28,15 @@ float externalFunction(float x)
     return someExternalLibraryCall(x);
 }
 
-void externalFunction_bwd(float x, float dOut)
+void externalFunction_bwd(inout DifferentialPair<float> x, float dOut)
 {
     // Approximate the derivative using finite differences
-    const float h = 1e-6;
-    float fwd = someExternalLibraryCall(x + h);
-    float bwd = someExternalLibraryCall(x - h);
-    float derivative = (fwd - bwd) / (2.0 * h);
-    // The gradient dOut * derivative would be propagated by Slang's autodiff system
+    const float epsilon = 1e-6;
+    float fwd = someExternalLibraryCall(x.p + epsilon);
+    float bwd = someExternalLibraryCall(x.p - epsilon);
+    float derivative = (fwd - bwd) / (2.0 * epsilon);
+
+    x = diffPair(x.p, derivative);
 }
 ```
 
@@ -77,18 +78,21 @@ By defining a custom derivative, you can implement more robust numerical methods
 [BackwardDerivative(safeDivide_bwd)]
 float safeDivide(float numerator, float denominator)
 {
-    const float eps = 1e-8;
-    return numerator / (denominator + eps);
+    const float epsilon = 1e-8;
+    return numerator / max(denominator, epsilon);
 }
 
-void safeDivide_bwd(float numerator, float denominator, float dOut)
+void safeDivide_bwd(inout DifferentialPair<float> numerator, inout DifferentialPair<float> denominator, float dOut)
 {
-    const float eps = 1e-8;
+    const float epsilon = 1e-8;
     const float maxGradient = 1e6;  // Prevent gradient explosion
-    float denomStable = denominator + eps;
+    float denomStable = denominator.p + epsilon;
     // Clamp gradients to prevent explosion when denominator is very small
     float dNumerator = clamp(dOut / denomStable, -maxGradient, maxGradient);
     float dDenominator = clamp(-dOut * numerator / (denomStable * denomStable), -maxGradient, maxGradient);
+
+    numerator = diffPair(numerator.p, dNumerator);
+    denominator = diffPair(denominator.p, dDenominator);
 }
 ```
 
@@ -116,10 +120,7 @@ While some functions are mathematically discontinuous or opaque, making them und
 Slang's autodiff system includes built-in conventions for handling many discontinuous functions that would otherwise be problematic for differentiation. For example, Slang can automatically generate derivatives for the `max()` function even though it's not differentiable at the point where `x = y`. When the inputs are equal, Slang assigns half the gradient to each input, ensuring that gradients flow through both branches of the computation. Similarly, for `clamp()` function, when the input equals the minimum or maximum bounds, Slang propagates the gradient to the input `x` rather than to the `min` or `max` parameters, making a choice that favors the primary input. Similar conventions exist for other discontinuous functions like `min()`, `abs()`, and conditional operations. These conventions are designed to provide sensible gradients that work well in practice, even when the mathematical derivative is undefined at certain points.
 
 * **Finite Difference Approximation**:  
-  If you have no analytical way to determine the derivative, you can resort to numerical approximation using finite differences. This method involves evaluating the function at two closely spaced points and calculating the slope between them:  
-  \`f'(x) ≈ (f(x \+ h) \- f(x)) / h\`  
-  where \`h\` is a small perturbation.  
-  While computationally more expensive and potentially less accurate than analytical derivatives, finite differences can provide a workable approximation for opaque or highly complex functions where direct differentiation is impossible. You would implement this calculation in your custom derivative function.  
+  If you have no analytical way to determine the derivative, you can resort to numerical approximation using finite differences. This method involves evaluating the function at two closely spaced points and calculating the slope between them. While computationally more expensive and potentially less accurate than analytical derivatives, finite differences can provide a workable approximation for opaque or highly complex functions where direct differentiation is impossible. You would implement this calculation in your custom derivative function. See the example in the "Opaque Functions" section above for a practical implementation of this technique.  
 * **Surrogate Gradients (for Hard Discontinuities)**:  
   For functions with truly "hard" discontinuities (e.g., a direct lookup in a table based on an index, or a strict "if-else" branching that completely changes the computation), a subgradient or finite difference might not be suitable. In such cases, you might use a surrogate gradient. This involves replacing the undifferentiable part of the computation with a differentiable approximation solely for the purpose of backpropagation.  
   For example, if you have a \`floor()\` operation (which is not differentiable), you might, during the backward pass, pretend it was an identity function (\`x\`) or a smoothed version of it to allow gradients to flow through. The forward pass still uses the exact \`floor()\` operation, but the backward pass uses your custom, differentiable surrogate. This allows the optimization algorithm to still "feel" a gradient and make progress, even if it's not the true mathematical derivative.  
