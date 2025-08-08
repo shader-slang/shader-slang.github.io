@@ -89,7 +89,7 @@ void safeDivide_bwd(inout DifferentialPair<float> numerator, inout DifferentialP
     float denomStable = denominator.p + epsilon;
     // Clamp gradients to prevent explosion when denominator is very small
     float dNumerator = clamp(dOut / denomStable, -maxGradient, maxGradient);
-    float dDenominator = clamp(-dOut * numerator / (denomStable * denomStable), -maxGradient, maxGradient);
+    float dDenominator = clamp(-dOut * numerator.p / (denomStable * denomStable), -maxGradient, maxGradient);
 
     numerator = diffPair(numerator.p, dNumerator);
     denominator = diffPair(denominator.p, dDenominator);
