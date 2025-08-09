@@ -57,7 +57,7 @@ The course includes interactive samples written in Python and Slang, allowing yo
 
 ## Latest Slang Release
 
-We're also excited to announce our latest Slang release, which brings significant improvements and new features to the language. This release continues our commitment to making shader programming more accessible and powerful:
+We're also excited to announce our latest Slang release, which brings significant improvements and new features to the language. This release continues our commitment to making shader programming more accessible and powerful: Slang Release [v2025.14.3](https://github.com/shader-slang/slang/releases/tag/v2025.14.3)
 
 We're also excited to announce our latest Slang release, which brings significant improvements and new features to the language, including:
 
