@@ -11,7 +11,16 @@ The latest release of Slang for SIGGRAPH can be found here https://github.com/sh
 **Sunday, August 10, 4:00-5:30 PM PDT**  
 **West Building, Rooms 121-122**
 
-Join us for a comprehensive hands-on lab that will take you from Slang basics to advanced features. This is an interactive session.
+Join us for an introductory lab for the Slang shading language, covering topics from language basics to advanced features like generics and automatic analytical derivatives.
+
+We'll also have a few small projects and coding puzzles so you can try out what we'll be talking about, using a new shader editor built for this lab! We'll also demo how Slang works with debuggers like RenderDoc, and port a GLSL shader live. The room will have computers, so no need to bring a laptop.
+
+You can also download the full lab materials and slides below!
+
+[Lab materials with slides »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Lab.zip)  
+[Slides only »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)
+
+[![Two slides from the Introduction to Slang lab. On the left is the title slide. On the right is a screenshot of vk_slang_editor and the course's agenda: language basics, using slangc, porting GLSL, shader I/O, debugging and tools, structs, modules, interfaces, SlangPy, and autodifferentiation.](intro-to-slang.webp)](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)
 
 ## [Birds of a Feather: Developing with Slang](https://s2025.conference-schedule.org/?post_type=page&p=14&id=bof_177&sess=sess558)
 
