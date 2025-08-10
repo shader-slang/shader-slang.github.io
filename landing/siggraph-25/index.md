@@ -1,3 +1,7 @@
+---
+title: Slang at SIGGRAPH 2025
+description: Slang at SIGGRAPH 2025
+---
 
 Welcome to the Slang landing page for SIGGRAPH 2025. Here you'll find information about our events and accompanying materials for our interactive lab, neural shading course, and Birds of a Feather session, and you can download our latest [release, 2025.14.3](https://github.com/shader-slang/slang/releases/tag/v2025.14.3). Please see our accompanying [blog post](https://shader-slang.org/blog/2025/08/08/slang-at-siggraph-2025/) for more information.
 
