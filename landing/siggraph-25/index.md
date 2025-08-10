@@ -18,7 +18,7 @@ Download the full lab materials and slides below
 [Lab materials with slides »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Lab.zip)  
 [Slides only »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)
 
-[![The title and agenda slides from the lab. The agenda slide has a screenshot of vk_slang_editor and the course's agenda: language basics, using slangc, porting GLSL, shader I/O, debugging and tools, structs, modules, interfaces, SlangPy, and autodifferentiation.](intro-to-slang.webp)](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)
+<img src="intro-to-slang.webp" alt="The title and agenda slides from the lab. The agenda slide has a screenshot of vk_slang_editor and the course's agenda: language basics, using slangc, porting GLSL, shader I/O, debugging and tools, structs, modules, interfaces, SlangPy, and autodifferentiation." style="max-width: 100%;">
 
 ## [Birds of a Feather: Developing with Slang](https://s2025.conference-schedule.org/?post_type=page&p=14&id=bof_177&sess=sess558)
 
