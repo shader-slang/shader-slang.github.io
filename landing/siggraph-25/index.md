@@ -9,7 +9,16 @@ Links to the materials for each session will be posted as they become available.
 **Sunday, August 10, 4:00-5:30 PM PDT**  
 **West Building, Rooms 121-122**
 
-This hands-on lab introduces Slang, an open-source, open governance shading language hosted by Khronos that simplifies graphics development across platforms. Designed to tackle the growing complexity of shader code, Slang offers modern programming constructs while maintaining top performance on current GPUs.
+Join us for an introductory lab for the Slang shading language, covering topics from language basics to advanced features like generics and automatic differentiation.
+
+This lab also includes a few small projects and coding puzzles so you can try out what is presented, using a new shader editor built for this lab! We also demo how Slang works with debuggers like RenderDoc, and port a GLSL shader live.
+
+Download the full lab materials and slides below
+
+[Lab materials with slides »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Lab.zip)  
+[Slides only »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)
+
+[![The title and agenda slides from the lab. The agenda slide has a screenshot of vk_slang_editor and the course's agenda: language basics, using slangc, porting GLSL, shader I/O, debugging and tools, structs, modules, interfaces, SlangPy, and autodifferentiation.](intro-to-slang.webp)](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)
 
 ## [Birds of a Feather: Developing with Slang](https://s2025.conference-schedule.org/?post_type=page&p=14&id=bof_177&sess=sess558)
 
