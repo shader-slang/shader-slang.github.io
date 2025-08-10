@@ -101,7 +101,7 @@ This release demonstrates our ongoing investment in Slang's capabilities and our
 If you can't attend SIGGRAPH 2025 in person, you can still stay connected with the Slang community:
 
 - **Try Slang Online**: Experiment with [Slang in your browser](https://shader-slang.org/slang-playground)
-- **Join the Community**: Connect with other developers on our [Discord server](https://khr.io/slang-discord)
+- **Join the Community**: Connect with other developers on our [Discord server](https://khr.io/slangdiscord)
 - **Explore Examples**: Check out our [GitHub repository](https://github.com/shader-slang/slang) for tutorials and sample code
 - **Follow Updates**: Stay informed about Slang developments through our [blog](https://shader-slang.com/blog) and social media
 
