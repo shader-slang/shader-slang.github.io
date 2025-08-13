@@ -37,4 +37,8 @@ The Slang shading language and compiler is a proven open-source technology empow
 
 This course teaches the fundamentals of neural shading, wherein traditional graphics algorithms are replaced with simple neural networks. Both theory and practical implementation will be covered, along with hardware acceleration, and production deployment. Follow along with the instructors using interactive samples written in Python & Slang!
 
+Download the full materials from the following repo
+
+[Neural shading material repo »](https://github.com/shader-slang/neural-shading-s25)
+
 _For more information about SIGGRAPH 2025, visit the [official conference website](https://s2025.siggraph.org/)._
