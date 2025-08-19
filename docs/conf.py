@@ -185,6 +185,7 @@ linkcheck_ignore = [
 linkcheck_rate_limit_timeout = 30.0
 linkcheck_report_timeouts_as_broken = True
 linkcheck_retries = 3
+linkcheck_workers = 1
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
