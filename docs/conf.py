@@ -182,10 +182,15 @@ linkcheck_ignore = [
     r"http://libLLVM\.so.*", 
     r"http://slang\.so.*",
 ]
-linkcheck_rate_limit_timeout = 30.0
 linkcheck_report_timeouts_as_broken = True
-linkcheck_retries = 3
-linkcheck_workers = 1
+
+# Configure request headers for authentication
+linkcheck_request_headers = {
+    "https://github.com/*": {
+        "Authorization": f"token {os.environ.get('GITHUB_TOKEN', '')}",
+        "User-Agent": "Slang-Documentation-Linkcheck/1.0"
+    }
+}
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
