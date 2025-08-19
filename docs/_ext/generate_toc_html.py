@@ -93,7 +93,6 @@ def process_document(env, docname, parent_maxdepth=1, processed_docs=None):
     
     # First check for commented toctree
     doc_path = env.doc2path(docname)
-    logger.info(f"Checking for commented toctree in {doc_path}")
     with open(doc_path, 'r', encoding='utf-8') as f:
         content = f.read()
     
@@ -137,7 +136,6 @@ def process_document(env, docname, parent_maxdepth=1, processed_docs=None):
     
     # Then process uncommented toctrees
     uncommented_toctrees = list(doctree.traverse(addnodes.toctree))
-    logger.info(f"Found {len(uncommented_toctrees)} uncommented toctrees in {docname}")
     for node in uncommented_toctrees:
         caption = node.get('caption')
         maxdepth = node.get('maxdepth', parent_maxdepth)
