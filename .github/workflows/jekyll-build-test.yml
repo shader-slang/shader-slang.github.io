@@ -1,0 +1,40 @@
+name: Build Jekyll Site
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Build with Jekyll
+        id: jekyll-build
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: .
+          destination: ./_site
+          future: false
+          build_revision: ${{ github.sha }}
+          verbose: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Test build artifacts
+        run: |
+          if [ ! -d "_site" ]; then
+            echo "Jekyll build failed - _site directory not created"
+            exit 1
+          fi
+          
+          if [ ! -f "_site/index.html" ]; then
+            echo "Jekyll build failed - index.html not generated"
+            exit 1
+          fi
+          
+          echo "Jekyll build completed successfully"
