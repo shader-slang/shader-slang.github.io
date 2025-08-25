@@ -15,9 +15,9 @@ Large Language Models(LLMs) aid coding by boosting productivity. llms.txt is a p
 Slang now supports the llms.txt standard. You can now use LLMs to accelerate your development with help of coding assistants like [Cursor](https://cursor.com/agents) or any tool of choice by providing relevant context about Slang’s
 documentation, within your projects. We provide 3 different versions of llms.txt:
 
-1. llms.txt - contains links with brief descriptions for agents to navigate. Use this if you’re looking for basic understanding of Slang
-2. llms-full.txt - contains entire Slang docs compressed into the llms.txt format. Use this for more detailed documentation or for detailed explanations of Slang.
-3. llms-SlangPy-full.txt - contains SlangPy related information. Use this for SlangPy related topics.
+1. [llms.txt](/docs/llms.txt) - contains links with brief descriptions for agents to navigate. Use this if you’re looking for basic understanding of Slang
+2. [llms-full.txt](/docs/llms-full.txt) - contains entire Slang docs compressed into the llms.txt format. Use this for more detailed documentation or for detailed explanations of Slang.
+3. [llms-SlangPy-full.txt](/docs/llms-slangpy-full.txt) - contains SlangPy related information. Use this for SlangPy related topics.
 
 ## Usage
 
