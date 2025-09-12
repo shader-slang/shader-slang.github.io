@@ -7,6 +7,7 @@ tags: [slang, siggraph]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/siggraph-logo.webp
 human_date: "August 8, 2025"
+youtube_id: "Y7uBfTxFnnA"
 ---
 
 We're excited to announce that Slang will have a significant presence at **SIGGRAPH 2025** in Vancouver this August! This year's conference will feature three major Slang events: a hands-on lab for learning the language, a comprehensive course on neural shading techniques, and a Birds of a Feather session for community discussion and updates.
