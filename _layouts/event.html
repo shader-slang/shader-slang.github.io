@@ -7,7 +7,13 @@ bodyClass: "page-post"
     <div class="row">
         <div class="col-12">
 
-            <p><div class="btn btn-secondary" style="cursor:inherit;">Virtual Meetup</div></p>
+            <p><div class="btn btn-secondary" style="cursor:inherit;">
+            {% if page.event_type and page.event_type != '' %}
+              {{ page.event_type }}
+            {% else %}
+              Event
+            {% endif %}
+            </div></p>
 
             <h1>{{ page.title }}
                 <hr>
@@ -22,10 +28,10 @@ bodyClass: "page-post"
                 {% if page.human_date and page.human_date != '' %}
                  {{ page.human_date }}
                 {% endif %}
-                {% if page.human_date and page.human_time != '' %}
+                {% if page.human_time and page.human_time != '' %}
                  | {{ page.human_time }}
                 {% endif %}
-                {% if page.human_date and page.session_length != '' %}
+                {% if page.session_length and page.session_length != '' %}
                  | {{ page.session_length }}
                 {% endif %}
                 </div>

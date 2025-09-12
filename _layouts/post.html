@@ -19,6 +19,9 @@ bodyClass: "page-post"
                 <div class="author">{{ page.author }}</div>
             </div>
 
+            {% if page.youtube_id and page.youtube_id != '' %}
+                {% include youtube_video.html youtube_id=page.youtube_id %}
+            {% endif %}
 
             {{content}}
 </div>
