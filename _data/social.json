@@ -20,6 +20,11 @@
     "image": "images/social/bluesky.svg"
   },
   {
+    "name": "Youtube",
+    "link": "https://www.youtube.com/playlist?list=PLYO7XTAX41FNNKUBI6BogkPFGwZ6x4-NE",
+    "image": "images/social/youtube.svg"
+  },
+  {
     "name": "Reddit",
     "link": "https://www.reddit.com/r/shaderslang/",
     "image": "images/social/reddit-dark.svg"
