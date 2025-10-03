@@ -10,6 +10,7 @@ image: /images/events/2025-07-getting-started-with-slang-modularization-thumbnai
 human_date: "🗓️ September 9, 2025"
 human_time: "🕜 8:00 USA PT"
 session_length: "⏱️ 45-60 minutes"
+youtube_id: "ABFc0WRHbH8"
 ---
 
 Tired of wrestling with preprocessor macros and copy-pasting shader code? Discover how Slang's modern module system can revolutionize your shader development workflow!

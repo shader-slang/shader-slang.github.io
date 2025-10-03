@@ -1,7 +1,7 @@
 ---
-title: Automatic Differentiation Tutorial - 1
+title: "Automatic Differentiation Tutorial - 1"
 layout: page
-description: Autodiff tutorial 1
+description: "Autodiff tutorial 1"
 permalink: "/docs/auto-diff-tutorial-1"
 intro_image_absolute: true
 intro_image_hide_on_mobile: false

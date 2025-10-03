@@ -1,7 +1,7 @@
 ---
-title: Autodiff Tips and Tricks: Custom Derivatives
+title: "Autodiff Tips and Tricks: Custom Derivatives"
 layout: page
-description: Autodiff Tips and Tricks: Custom Derivatives
+description: "Autodiff Tips and Tricks: Custom Derivatives"
 permalink: "/docs/autodiff-tips-custom-diffs"
 intro_image_absolute: true
 intro_image_hide_on_mobile: false
