@@ -5,7 +5,7 @@ date: 2025-10-03 17:00:00
 categories: [ "blog" ]
 tags: [slang, siggraph, events]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
-image: CHANGEME
+image: /images/posts/neuralshading-thumbnail.webp
 human_date: "October 3, 2025"
 ---
 
