@@ -38,7 +38,6 @@ There are four types of Status:
 | Autodiff (higher-order) | Experimental | Implemented and adopted in 2 different codebases. Known holes in design, and has not been widely adopted or exercised so its quality maybe significantly lower. |
 | Builtin generic interfaces and operator overloads for generic code | Experimental | There isn't bugs or quality issues, and a lot of user code is depending on this, but we don't have good test coverage to build the confidence that it will provide good user experience. |
 | Capabilities | Experimental | Implementation not done. |
-| Capabilities | Experimental | Implementation not done. |
 | GLSL Compatibility | Experimental | Lightly adopted in MKL's mini examples, and a subset of CTS. Need more detailed scope and more time to test its quality. |
 | Generic existential types | Experimental | Not being used or tested much |
 | Generic existential types | Experimental | Not being used or tested much |
