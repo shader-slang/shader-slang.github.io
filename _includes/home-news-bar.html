@@ -46,7 +46,12 @@
                                 {% elsif post.categories contains 'blog' %}Read Blog
                                 {% elsif post.categories contains 'presentation' %}View Presentation
                                 {% elsif post.categories contains 'video' %}Watch Video
-                                {% elsif post.categories contains 'event' %}Join Virtual Meetup
+                                {% elsif post.categories contains 'event' %}
+                                    {% if post.event_button_label != '' %}
+                                        {{ post.event_button_label }}
+                                    {% else %}
+                                        Join Virtual Meetup
+                                    {% endif%}
                                 {% else %}Read More
                                 {% endif %}
                             </a>
