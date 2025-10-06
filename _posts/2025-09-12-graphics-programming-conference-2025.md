@@ -8,7 +8,7 @@ tags: [slang]
 event_type: ""
 author: ""
 image: "/images/events/2025-11-18-slang-graphics-programming-conference-2025.webp"
-human_date: "🗓️ November 18-20, 2025"
+human_date: "November 18-20, 2025"
 event_button_label: "Learn More"
 ---
 
