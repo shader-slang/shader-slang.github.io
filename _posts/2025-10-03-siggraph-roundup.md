@@ -1,12 +1,12 @@
 ---
 layout: post
 title: "SIGGRAPH 2025 Materials Now Available: Recordings and Resources from Our Events"
-date: 2025-10-03 17:00:00
+date: 2025-10-06 17:00:00
 categories: [ "blog" ]
 tags: [slang, siggraph, events]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/neuralshading-thumbnail.webp
-human_date: "October 3, 2025"
+human_date: "October 6, 2025"
 ---
 
 Recordings and materials from all three of our SIGGRAPH 2025 sessions are now available! Whether you missed the events or want to revisit the content, you can now access everything from our hands-on lab, Birds of a Feather session, and neural shading course.
