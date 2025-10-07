@@ -35,9 +35,9 @@
                                 <h4>{{ post.title }}</h4>
                             </div>
                             {% if post.human_date and post.human_date != '' %}
-                            <div class="card-text">{{ post.human_date | date_to_string }}</div>
+                            <div class="card-text">{{ post.human_date }}</div>
                             {% else %}
-                            <div class="card-text">{{ post.date | date_to_string }}</div>
+                            <div class="card-text">{{ post.date | date: "%B %-d, %Y" }}</div>
                             {% endif %}
                             <a class="btn btn-primary" href="{% if post.source_url and post.source_url != '' %}{{ post.source_url }}{% else %}{{ post.url | relative_url }}{% endif %}">
 
@@ -46,7 +46,12 @@
                                 {% elsif post.categories contains 'blog' %}Read Blog
                                 {% elsif post.categories contains 'presentation' %}View Presentation
                                 {% elsif post.categories contains 'video' %}Watch Video
-                                {% elsif post.categories contains 'event' %}Join Virtual Meetup
+                                {% elsif post.categories contains 'event' %}
+                                    {% if post.event_button_label != '' %}
+                                        {{ post.event_button_label }}
+                                    {% else %}
+                                        Join Virtual Meetup
+                                    {% endif%}
                                 {% else %}Read More
                                 {% endif %}
                             </a>
