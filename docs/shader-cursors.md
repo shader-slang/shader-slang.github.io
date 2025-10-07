@@ -772,7 +772,7 @@ The `write()` operations of this Vulkan RHI shader object are similar to those o
 ```cpp
 void VulkanShaderObject::write(ShaderOffset offset, Texture* texture)
 {
-	uint32_t bindingIndex = m_typeLayout->getBindingRangeIndexOffset(
+	uint32_t bindingIndex = m_typeLayout->getBindingRangeFirstDescriptorRangeIndex(
 		offset.bindingRangeIndex);
 
 	VkDescriptorImageInfo image;
@@ -813,7 +813,7 @@ VkDescriptorType mapToDescriptorType(slang::BindingType bindingRangeType)
 
 This RHI code is able to remain simple and clean because the Slang reflection API provides methods that directly query the information that an RHI needs to know (in this case, in order to fill out the fields of a `VkWriteDescriptorSet`):
 
-* The `slang::TypeLayoutReflection::getBindingRangeIndexOffset()` method translates the target-independent binding range index into the Vulkan binding index  
+* The `slang::TypeLayoutReflection::getBindingRangeFirstDescriptorRangeIndex()` method translates the target-independent binding range index into the Vulkan binding index  
 * The `slang::TypeLayoutReflection::getBindingRangeType()` method provides information about the binding range that can be mapped directly to the `VkDescriptorType`
 
 ### Is that really all the code that is needed?
