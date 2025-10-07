@@ -13,11 +13,15 @@ Recordings and materials from all three of our SIGGRAPH 2025 sessions are now av
 
 ### Hands-On Class: Introduction to Slang
 
-Our hands-on lab covered everything from language fundamentals to advanced features like modules, generics, and automatic differentiation. You can now work through the entire session at your own pace.
+Our hands-on lab covered everything from language fundamentals to advanced features like modules, generics, and automatic differentiation. You can now see the recording, or work through the entire session at your own pace.
+
 
 Download the lab materials and walk through the examples on your own computer here:\
 [Lab Materials](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Lab.zip)\
 [Lab Slides](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)
+
+And view the recording here:\
+[Lab Recording](https://youtu.be/F7OS9Zvztmw?si=vXLCu0x-s-jHNagX)
 
 ### Birds of a Feather: Developing with Slang
 
