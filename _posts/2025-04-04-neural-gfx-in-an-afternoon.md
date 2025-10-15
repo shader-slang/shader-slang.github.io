@@ -48,33 +48,34 @@ Slang makes this entire process much easier, because it can automatically calcul
 
 ## The Code
 
-Let’s take a look at what it looks like to do this in the code. I’ll first go through a simplified version of the 2D Gaussian splatting example, so it’s very clear how the mechanism works. You can find this example in the SlangPy repository [here](https://github.com/shader-slang/slangpy/tree/main/examples/simplified-splatting). First, we’ll check out the Python side of things. With SlangPy, this code is pretty succinct.
+Let’s take a look at what it looks like to do this in the code. I’ll first go through a simplified version of the 2D Gaussian splatting example, so it’s very clear how the mechanism works. You can find this example in the SlangPy repository [here](https://github.com/shader-slang/slangpy-samples/tree/main/examples/simplified-splatting). First, we’ll check out the Python side of things. With SlangPy, this code is pretty succinct.
 
 ```python
-# SPDX-License-Identifier: Apache-2.0 WITH LLVM-exception
+# SPDX-License-Identifier: Apache-2.0
 
 import slangpy as spy
-import sgl
 import pathlib
 import imageio
 import numpy as np
 
-# Create an SGL device, which will handle setup and invocation of the Slang
+# Create a device, which will handle setup and invocation of the Slang
 # compiler for us. We give it both the slangpy PATH and the local include
 # PATH so that it can find Slang shader files
-device = sgl.Device(compiler_options={
-    "include_paths": [
-        spy.SHADER_PATH,
-        pathlib.Path(__file__).parent.absolute(),
-    ],
-})
+device = spy.Device(
+    compiler_options={
+        "include_paths": [
+            spy.SHADER_PATH,
+            pathlib.Path(__file__).parent.absolute(),
+        ],
+    }
+)
 
 # Load our Slang module -- we'll take a look at this in just a moment
 module = spy.Module.load_from_file(device, "simplediffsplatting2d.slang")
 
 # Create a buffer to store Gaussian blobs. We're going to make a very small one,
 # because right now this code is not very efficient, and will take a while to run.
-# For now, we are going to create 200 blobs, and each blob will be comprised of 9 
+# For now, we are going to create 200 blobs, and each blob will be comprised of 9
 # floats:
 #   blob center x and y (2 floats)
 #   sigma (a 2x2 covariance matrix - 4 floats)
@@ -84,8 +85,9 @@ FLOATS_PER_BLOB = 9
 # SlangPy lets us create a Tensor and initialize it easily using numpy to generate
 # random values. This Tensor includes storage for gradients, because we call .with_grads()
 # on the created spy.Tensor.
-blobs = spy.Tensor.numpy(device, np.random.rand(
-    NUM_BLOBS * FLOATS_PER_BLOB).astype(np.float32)).with_grads()
+blobs = spy.Tensor.from_numpy(
+    device, np.random.rand(NUM_BLOBS * FLOATS_PER_BLOB).astype(np.float32)
+).with_grads()
 
 # Load our target image from a file, using the imageio package,
 # and store its width and height in W, H
@@ -93,17 +95,18 @@ image = imageio.imread("./jeep.jpg")
 W = image.shape[0]
 H = image.shape[1]
 
-# Convert the image from RGB_u8 to RGBA_f32 -- we're going 
+# Convert the image from RGB_u8 to RGBA_f32 -- we're going
 # to be using texture values during derivative propagation,
-# so we need to be dealing with floats here. 
+# so we need to be dealing with floats here.
 image = (image / 256.0).astype(np.float32)
 image = np.concatenate([image, np.ones((W, H, 1), dtype=np.float32)], axis=-1)
 input_image = device.create_texture(
     data=image,
     width=W,
     height=H,
-    format=sgl.Format.rgba32_float,
-    usage=sgl.ResourceUsage.shader_resource)
+    format=spy.Format.rgba32_float,
+    usage=spy.TextureUsage.shader_resource,
+)
 
 # Create a per_pixel_loss Tensor to hold the calculated loss, and create gradient storage
 per_pixel_loss = spy.Tensor.empty(device, dtype=module.float4, shape=(W, H))
@@ -124,15 +127,16 @@ adam_second_moment = spy.Tensor.zeros_like(blobs)
 current_render = device.create_texture(
     width=W,
     height=H,
-    format=sgl.Format.rgba32_float,
-    usage=sgl.ResourceUsage.shader_resource | sgl.ResourceUsage.unordered_access)
+    format=spy.Format.rgba32_float,
+    usage=spy.TextureUsage.shader_resource | spy.TextureUsage.unordered_access,
+)
 
 iterations = 10000
 for iter in range(iterations):
     # Back-propagage the unit per-pixel loss with auto-diff.
-    module.perPixelLoss.bwds(per_pixel_loss,
-                             spy.grid(shape=(input_image.width,input_image.height)),
-                             blobs, input_image)
+    module.perPixelLoss.bwds(
+        per_pixel_loss, spy.grid(shape=(input_image.width, input_image.height)), blobs, input_image
+    )
 
     # Update the parameters using the Adam algorithm
     module.adamUpdate(blobs, blobs.grad_out, adam_first_moment, adam_second_moment)
@@ -140,10 +144,10 @@ for iter in range(iterations):
     # Every 50 iterations, render the blobs out to a texture, and hand it off to tev
     # so that you can visualize the iteration towards ideal
     if iter % 50 == 0:
-        module.renderBlobsToTexture(current_render,
-                                    blobs,
-                                    spy.grid(shape=(input_image.width,input_image.height)))
-        sgl.tev.show_async(current_render, name=f"optimization_{(iter // 50):03d}")
+        module.renderBlobsToTexture(
+            current_render, blobs, spy.grid(shape=(input_image.width, input_image.height))
+        )
+        spy.tev.show_async(current_render, name=f"optimization_{(iter // 50):03d}")
     
 ```
 
@@ -178,10 +182,10 @@ This line calls into a Slang function in our module which provides an [optimized
     # Every 50 iterations, render the blobs out to a texture, and hand it off to tev
     # so that you can visualize the iteration towards ideal
     if iter % 50 == 0:
-        module.renderBlobsToTexture(current_render,
-                                    blobs,
-                                    spy.grid(shape=(input_image.width,input_image.height)))
-        sgl.tev.show_async(current_render, name=f"optimization_{(iter // 50):03d}")
+        module.renderBlobsToTexture(
+            current_render, blobs, spy.grid(shape=(input_image.width, input_image.height))
+        )
+        spy.tev.show_async(current_render, name=f"optimization_{(iter // 50):03d}")
 ```
   
 And then finally, we use one last function in our Slang module to render the results of our blobs out to a texture, instead of just keeping them in memory, so that we can visualize the results of the iterations as we go on. We’re doing 10 thousand iterations, though, so looking at every iteration might be overkill, so we’ll only render out every 50th iteration.
