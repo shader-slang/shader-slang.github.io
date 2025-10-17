@@ -18,12 +18,16 @@ This lab also includes a few small projects and coding puzzles so you can try ou
 
 Download the full lab materials and slides below
 
-[Lab materials with slides »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Lab.zip)  
-[Slides only »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)
+[Lab materials with slides »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Lab.zip)\
+[Slides only »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides.pdf)\
+[Recording »](https://youtu.be/F7OS9Zvztmw?si=MgqXOE3bRYv8chxx)
 
 <img src="intro-to-slang.webp" alt="The title and agenda slides from the lab. The agenda slide has a screenshot of vk_slang_editor and the course's agenda: language basics, using slangc, porting GLSL, shader I/O, debugging and tools, structs, modules, interfaces, SlangPy, and autodifferentiation." style="max-width: 100%;">
 
 ## [Birds of a Feather: Developing with Slang](https://s2025.conference-schedule.org/?post_type=page&p=14&id=bof_177&sess=sess558)
+
+[Slides Only »](https://www.khronos.org/assets/uploads/developers/presentations/Slang_BOF_SIGGRAPH_2025.pdf)\
+[Recording »](https://www.youtube.com/watch?v=Y7uBfTxFnnA)
 
 **Wednesday, August 13, 2:30-3:30 PM PDT**  
 **British Ballroom, Fairmont Waterfront**
@@ -39,6 +43,7 @@ This course teaches the fundamentals of neural shading, wherein traditional grap
 
 Download the full materials from the following repo
 
-[Neural shading material repo »](https://github.com/shader-slang/neural-shading-s25)
+[Neural shading material repo »](https://github.com/shader-slang/neural-shading-s25)\
+[Recordings »](https://youtube.com/playlist?list=PLPTS9gmXL0u_BA3bG67IYQHgrMl48Xml3&si=iS-uuslPHhByFms3)
 
 _For more information about SIGGRAPH 2025, visit the [official conference website](https://s2025.siggraph.org/)._
