@@ -181,6 +181,7 @@ linkcheck_ignore = [
     r"http://libllvm\.so.*",
     r"http://libLLVM\.so.*", 
     r"http://slang\.so.*",
+    r'https://www\.shadertoy\.com/.*',
 ]
 linkcheck_report_timeouts_as_broken = True
 
