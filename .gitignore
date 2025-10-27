@@ -1,5 +1,6 @@
 Gemfile
 Gemfile.lock
+build.sh
 _site/
 upgrade-site.sh
 docs/_build
