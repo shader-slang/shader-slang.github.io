@@ -10,7 +10,11 @@ author: ""
 image: "/images/events/2025-10-21-Slang-Auto-Diff-Banner.webp"
 human_date: "October 21, 2025"
 event_button_label: "Learn More"
+youtube_id: "gUE-RIOwQKI"
 ---
+
+## Presentations
+Powerpoint Slides - [Getting Started with Shader Slang Autodiff](/images/events/2025-10-06-Getting-Started-with-Slang-Autodiff.pdf) (pdf)
 
 ## Automatic Differentiation
 
