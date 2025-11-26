@@ -298,7 +298,7 @@ Benefits of Slang's approach:
   what methods are valid for generic types, unlike C++ template parameters.
 
 There are certain things which work with C++ style templates, which are
-(deliberatly) disallowed with Slang generics. For example the following code
+(deliberately) disallowed with Slang generics. For example the following code
 will work in C++ but the naïve equivalent in Slang will not compile.
 
 ```cpp
