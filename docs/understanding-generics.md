@@ -304,8 +304,8 @@ will work in C++ but the naïve equivalent in Slang will not compile.
 ```cpp
 // This function will compile when instantiated at a type which supports the +
 // operator. However this restriction is only discovered at the call site.
-template<T>
-float addValue(T v0, T v1) { return v0.x + v1.x; }
+template<typename T>
+float addValue(T v0, T v1) { return v0 + v1; }
 
 // We happen to call `addValue` with a type that supports addition.
 void user() {addValue(1,2); }
