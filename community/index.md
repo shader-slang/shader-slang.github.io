@@ -76,8 +76,8 @@ intro_image_hide_on_mobile: false
                 </p>
                 <p>
                     Submissions to <a
-                        href="https://github.com/shader-slang/slang/tree/master/docs/proposals">/docs/proposals/</a>
-                    considered <strong>Slang Proposed Features</strong> (SPFs), and require two <strong>Language
+                        href="https://github.com/shader-slang/spec/tree/master/proposals">/proposals/ in the spec repository</a>
+                    are considered <strong>Slang Proposed Features</strong> (SPFs), and require two <strong>Language
                         Owners</strong> (more info
                     below) to approve the submission.</p>
 
@@ -94,7 +94,7 @@ intro_image_hide_on_mobile: false
                     consensus amongst themselves.</p>
                 <p>
                     <strong>Language Owner</strong>: A language owner is the owner of the <a
-                        href="https://github.com/shader-slang/slang/tree/master/docs/proposals">/docs/proposals/</a> All
+                        href="https://github.com/shader-slang/spec/tree/master/proposals">proposals in the spec repository</a>. All
                     new Slang language and core module
                     features (e.g. new language syntax, new functions, or new types in the Slang core module) starts
                     with a design document
