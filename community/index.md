@@ -72,33 +72,30 @@ intro_image_hide_on_mobile: false
                     reviewers who are
                     familiar with the area of code you are touching. If you have doubts, look at the git blame for the
                     file and the
-                    CODEOWNER file.
+                    CODEOWNERS file.
                 </p>
                 <p>
                     Submissions to <a
                         href="https://github.com/shader-slang/spec/tree/master/proposals">/proposals/ in the spec repository</a>
-                    are considered <strong>Slang Proposed Features</strong> (SPFs), and require two <strong>Language
-                        Owners</strong> (more info
+                    are considered <strong>Slang Proposed Features</strong> (SPFs), and require a <strong>Language
+                        Owner</strong> (more info
                     below) to approve the submission.</p>
                 <h4>Owner</h4>
                 <p>
-                    Every file in the Slang repository has a list of owners. An owner of a directory has the right to
-                    approve pull requests
-                    touching the directory. A pull request is approved only when at least two owners of each directory
-                    affected by the
-                    changes have given their approval. If you are a committer and think you're ready to become an owner
-                    of a directory, put
-                    up a PR to the relevant OWNERs and get two owners to review it. In case of conflict between owners,
-                    owners need to reach
-                    consensus amongst themselves.</p>
+                    An owner of a directory in the Slang repository has the right to
+                    approve pull requests touching the directory.
+                    A pull request is approved only when at least one owner of each directory
+                    affected by the changes have given their approval. Currently all members of <a
+                        href="https://github.com/orgs/shader-slang/teams/dev">shader-slang/dev</a> are owners
+                    of every directory. </p>
                 <p>
                     <strong>Language Owner</strong>: A language owner is the owner of the <a
                         href="https://github.com/shader-slang/spec/tree/master/proposals">proposals in the spec repository</a>. All
                     new Slang language and core module
                     features (e.g. new language syntax, new functions, or new types in the Slang core module) starts
                     with a design document
-                    submitted to this directory. The language and core module design must be approved by two language
-                    owners before any
+                    submitted to this directory. The language and core module design must be approved by a language
+                    owner before any
                     implementation pull request for the new language feature can be approved.
                 </p>
             </div>
@@ -118,8 +115,8 @@ intro_image_hide_on_mobile: false
                     A bug fix starts with a GitHub issue describing the bug. Any community member can submit a pull
                     request coming from your
                     personal fork of Slang containing fixes for the bug. Such pull requests needs to be reviewed and
-                    approved by two
-                    committers who are owners of the files being changed by the pull request. Once the pull request is
+                    approved by a
+                    committer who is familiar the files being changed by the pull request. Once the pull request is
                     approved and has
                     passed all CI tests, it can be merged to the main branch. Pull requests are expected to be reviewed
                     by the committers within 24 hours after they are created or updated, and to
