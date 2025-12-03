@@ -116,7 +116,7 @@ intro_image_hide_on_mobile: false
                     request coming from your
                     personal fork of Slang containing fixes for the bug. Such pull requests needs to be reviewed and
                     approved by a
-                    committer who is familiar the files being changed by the pull request. Once the pull request is
+                    committer who is familiar with the files being changed by the pull request. Once the pull request is
                     approved and has
                     passed all CI tests, it can be merged to the main branch. Pull requests are expected to be reviewed
                     by the committers within 24 hours after they are created or updated, and to
