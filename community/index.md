@@ -120,7 +120,8 @@ intro_image_hide_on_mobile: false
                     approved and has
                     passed all CI tests, it can be merged to the main branch. Pull requests are expected to be reviewed
                     by the committers within 24 hours after they are created or updated, and to
-                    close within a week.</p>
+                    close within a week.
+                    Smaller pull requests will be more likely to get quick reviews than large pull requests.</p>
                 <h4>Process for Slang Feature Changes</h4>
                 <p>
                     Changes that add or modify syntax, language features, Slang's core module, or the compilation and
