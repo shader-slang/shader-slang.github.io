@@ -166,21 +166,3 @@ intro_image_hide_on_mobile: false
         </div>
     </div>
 </div>
-
-<div class="container">
-    <div class="section">
-        <div class="row">
-            <div classs="col-12">
-                <h3>Request to Own More Directories
-                    <hr>
-                </h3>
-                <p>When you are granted committer status, you will be assigned an initial set of directories that you will own based on
-                your record of contribution. As you continue to contribute to the project, you will naturally become the owner for any
-                new directories that you create.
-                After landing several changes to a specific directory, you can request to be an owner of the directory by submitting a
-                PR to modify the ./github/CODEOWNER file adding yourself to the owners list. Your PR will go through the same review
-                process and you will become an owner once the PR is approved and merged.</p>
-            </div>
-        </div>
-    </div>
-</div>
