@@ -178,9 +178,6 @@ linkcheck_anchors = False
 linkcheck_ignore = [
     r"https://github.com/your-name/.*",
     r"http://claude.ai/code",
-    r"http://libllvm\.so.*",
-    r"http://libLLVM\.so.*", 
-    r"http://slang\.so.*",
     r"http://[^ ]+\.so.*",
     r'https://www\.shadertoy\.com/.*',
 ]
