@@ -178,7 +178,7 @@ linkcheck_anchors = False
 linkcheck_ignore = [
     r"https://github.com/your-name/.*",
     r"http://claude.ai/code",
-    r"http://[^ ]+\.so.*",
+    r"http://[^\.]+\.so.*",
     r'https://www\.shadertoy\.com/.*',
 ]
 linkcheck_report_timeouts_as_broken = True
