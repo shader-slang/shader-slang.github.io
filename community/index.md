@@ -80,7 +80,6 @@ intro_image_hide_on_mobile: false
                     are considered <strong>Slang Proposed Features</strong> (SPFs), and require two <strong>Language
                         Owners</strong> (more info
                     below) to approve the submission.</p>
-
                 <h4>Owner</h4>
                 <p>
                     Every file in the Slang repository has a list of owners. An owner of a directory has the right to
@@ -130,10 +129,8 @@ intro_image_hide_on_mobile: false
                     Changes that add or modify syntax, language features, Slang's core module, or the compilation and
                     reflection API must go
                     through our process for language changes. The full process is documented here.</p>
-
                 <a class="btn btn-primary" href="/community/language-change-process">Slang Feature Change
                     Documentation</a>
-
             </div>
         </div>
     </div>
@@ -186,7 +183,6 @@ intro_image_hide_on_mobile: false
                 After landing several changes to a specific directory, you can request to be an owner of the directory by submitting a
                 PR to modify the ./github/CODEOWNER file adding yourself to the owners list. Your PR will go through the same review
                 process and you will become an owner once the PR is approved and merged.</p>
-
             </div>
         </div>
     </div>
