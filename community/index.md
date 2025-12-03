@@ -72,34 +72,30 @@ intro_image_hide_on_mobile: false
                     reviewers who are
                     familiar with the area of code you are touching. If you have doubts, look at the git blame for the
                     file and the
-                    CODEOWNER file.
+                    CODEOWNERS file.
                 </p>
                 <p>
                     Submissions to <a
-                        href="https://github.com/shader-slang/slang/tree/master/docs/proposals">/docs/proposals/</a>
-                    considered <strong>Slang Proposed Features</strong> (SPFs), and require two <strong>Language
-                        Owners</strong> (more info
+                        href="https://github.com/shader-slang/spec/tree/master/proposals">/proposals/ in the spec repository</a>
+                    are considered <strong>Slang Proposed Features</strong> (SPFs), and require a <strong>Language
+                        Owner</strong> (more info
                     below) to approve the submission.</p>
-
                 <h4>Owner</h4>
                 <p>
-                    Every file in the Slang repository has a list of owners. An owner of a directory has the right to
-                    approve pull requests
-                    touching the directory. A pull request is approved only when at least two owners of each directory
-                    affected by the
-                    changes have given their approval. If you are a committer and think you're ready to become an owner
-                    of a directory, put
-                    up a PR to the relevant OWNERs and get two owners to review it. In case of conflict between owners,
-                    owners need to reach
-                    consensus amongst themselves.</p>
+                    An owner of a directory in the Slang repository has the right to
+                    approve pull requests touching the directory.
+                    A pull request is approved only when at least one owner of each directory
+                    affected by the changes have given their approval. Currently all members of <a
+                        href="https://github.com/orgs/shader-slang/teams/dev">shader-slang/dev</a> are owners
+                    of every directory. </p>
                 <p>
                     <strong>Language Owner</strong>: A language owner is the owner of the <a
-                        href="https://github.com/shader-slang/slang/tree/master/docs/proposals">/docs/proposals/</a> All
+                        href="https://github.com/shader-slang/spec/tree/master/proposals">proposals in the spec repository</a>. All
                     new Slang language and core module
                     features (e.g. new language syntax, new functions, or new types in the Slang core module) starts
                     with a design document
-                    submitted to this directory. The language and core module design must be approved by two language
-                    owners before any
+                    submitted to this directory. The language and core module design must be approved by a language
+                    owner before any
                     implementation pull request for the new language feature can be approved.
                 </p>
             </div>
@@ -119,21 +115,20 @@ intro_image_hide_on_mobile: false
                     A bug fix starts with a GitHub issue describing the bug. Any community member can submit a pull
                     request coming from your
                     personal fork of Slang containing fixes for the bug. Such pull requests needs to be reviewed and
-                    approved by two
-                    committers who are owners of the files being changed by the pull request. Once the pull request is
+                    approved by a
+                    committer who is familiar with the files being changed by the pull request. Once the pull request is
                     approved and has
                     passed all CI tests, it can be merged to the main branch. Pull requests are expected to be reviewed
                     by the committers within 24 hours after they are created or updated, and to
-                    close within a week.</p>
+                    close within a week.
+                    Smaller pull requests will be more likely to get quick reviews than large pull requests.</p>
                 <h4>Process for Slang Feature Changes</h4>
                 <p>
                     Changes that add or modify syntax, language features, Slang's core module, or the compilation and
                     reflection API must go
                     through our process for language changes. The full process is documented here.</p>
-
                 <a class="btn btn-primary" href="/community/language-change-process">Slang Feature Change
                     Documentation</a>
-
             </div>
         </div>
     </div>
@@ -168,25 +163,6 @@ intro_image_hide_on_mobile: false
                 familiar with your work to see if they will nominate you. They will discuss that in #slang-committers discord — two
                 others in that will need to second the nomination.</p>
                 <a class="btn btn-primary" href="/community/become-a-committer">How to Become a Committer</a>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div class="container">
-    <div class="section">
-        <div class="row">
-            <div classs="col-12">
-                <h3>Request to Own More Directories
-                    <hr>
-                </h3>
-                <p>When you are granted committer status, you will be assigned an initial set of directories that you will own based on
-                your record of contribution. As you continue to contribute to the project, you will naturally become the owner for any
-                new directories that you create.
-                After landing several changes to a specific directory, you can request to be an owner of the directory by submitting a
-                PR to modify the ./github/CODEOWNER file adding yourself to the owners list. Your PR will go through the same review
-                process and you will become an owner once the PR is approved and merged.</p>
-
             </div>
         </div>
     </div>
