@@ -649,7 +649,7 @@ struct ShaderOffset
 {
 	size_t			byteOffset = 0;
 	uint32_t		bindingRangeIndex = 0;
-uint32_t 		arrayIndexInBindingRange = 0;
+	uint32_t 		arrayIndexInBindingRange = 0;
 };
 ```
 
@@ -658,6 +658,7 @@ And then the shader cursor itself just tracks the offset/index information and a
 ```cpp
 struct ShaderCursor
 {
+	slang::TypeLayoutReflection *m_typeLayout;
 	MyEngine::ShaderObject*	m_object = nullptr;
 	MyEngine::ShaderOffset	m_offset;
 };
@@ -708,7 +709,7 @@ ShaderCursor ShaderCursor::field(int index)
 	ShaderCursor result = *this;
 	result.m_typeLayout = field->getTypeLayout();
 	result.m_offset.byteOffset += field->getOffset();
-	result.m_offset.bindingRangeOffset += m_typeLayout->getFieldBindingRangeOffset(index);
+	result.m_offset.bindingRangeIndex += m_typeLayout->getFieldBindingRangeOffset(index);
 
 	return result;
 }
