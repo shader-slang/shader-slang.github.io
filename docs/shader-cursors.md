@@ -785,7 +785,7 @@ void VulkanShaderObject::write(ShaderOffset offset, Texture* texture)
 	write.dstBinding = bindingIndex;
 	write.dstArrayElement = offset.arrayIndexInBindingRange;
 	write.descriptorCount = 1;
-	write.descriptorType = mapToDescriptorType(m_typeLayout->getBindingRangeType());
+	write.descriptorType = mapToDescriptorType(m_typeLayout->getBindingRangeType(offset.bindingRangeIndex));
 	write.pImageInfo = &image;
 
 	vkUpdateDescriptorSets(vulkanDevice,
@@ -803,9 +803,9 @@ VkDescriptorType mapToDescriptorType(slang::BindingType bindingRangeType)
 {
 	switch(bindingRangeType)
 	{
-	case slang::BindingRangeType::Texture:
+	case slang::BindingType::Texture:
 		return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-	case slang::BindingRangeType::MutableTexture:
+	case slang::BindingType::MutableTexture:
 		return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 	...
 	}
