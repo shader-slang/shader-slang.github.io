@@ -392,7 +392,7 @@ private:
 	size_t			m_byteOffset;
 	VkDescriptorSet	m_descriptorSet;
 	uint32_t		m_bindingIndex;
-uint32_t 		m_bindingArrayIndex;		
+	uint32_t 		m_bindingArrayElement;		
 	...
 };
 ```
@@ -635,7 +635,7 @@ struct ShaderCursor
 	size_t			m_byteOffset;
 	VkDescriptorSet	m_descriptorSet;
 	uint32_t		m_bindingIndex;
-uint32_t 		m_bindingArrayIndex;		
+	uint32_t 		m_bindingArrayElement;		
 	...
 };
 ```
