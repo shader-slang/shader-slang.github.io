@@ -904,7 +904,7 @@ struct ShaderObjectLayoutBuilder
 		slang::TypeLayoutReflection* typeLayout);
 	void addBindingsFrom(
 		slang::TypeLayoutReflection* typeLayout,
-		uint32_t elementCount);
+		uint32_t descriptorCount);
 }
 ```
 
