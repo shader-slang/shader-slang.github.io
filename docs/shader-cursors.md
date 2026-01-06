@@ -1058,7 +1058,7 @@ void appCodeToRenderSomething(
 	MyEngine::SkyLight* skyLight)
 {
 	auto globals = programLayout->getGlobalParamsTypeLayout();
-	auto skyLightParam = globals->getFieldByIndex(globals->findFieldIndex("gSkyLight"));
+	auto skyLightParam = globals->getFieldByIndex(globals->findFieldIndexByName("gSkyLight"));
 	uint32_t descriptorSetIndex = skyLightParam->getOffset(slang::ParameterCategory::RegisterSpace);
 ...
 }
@@ -1088,7 +1088,7 @@ MyEngine::SkyLight* skyLight)
 	auto computeEntryPoint = programLayout->getEntryPointByIndex(0);
 	auto params = computeEntryPoint->getTypeLayout();
 
-	auto skyLightParam = params ->getFieldByIndex(params ->findFieldIndex("gSkyLight"));
+	auto skyLightParam = params ->getFieldByIndex(params ->findFieldIndexByName("gSkyLight"));
 	uint32_t descriptorSetIndex = skyLightParam->getOffset(slang::ParameterCategory::RegisterSpace);
 ...
 }
