@@ -1031,7 +1031,7 @@ class RHI
 	virtual ShaderObjectLayout* createShaderObjectLayout(
 	slang::TypeLayoutReflection* typeLayout) = 0;
 	virtual ShaderObject* createParameterBlock(
-		slang::ShaderObjectLayout* layout) = 0;
+		ShaderObjectLayout* layout) = 0;
 }
 ```
 
