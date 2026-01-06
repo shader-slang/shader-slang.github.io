@@ -1006,7 +1006,7 @@ uint32_t descriptorCount)
 	for(int i = 0; i < bindingRangeCount; ++i)
 	{
 		VkDescriptorSetLayoutBinding layoutBinding;
-		layoutBinding.bindingIndex = m_bindingIndex++;
+		layoutBinding.binding = m_bindingIndex++;
 		layoutBinding.descriptorType = mapToDescriptorType(m_typeLayout->getBindingRangeType(i));
 		layoutBinding.descriptorCount = descriptorCount * m_typeLayout->getBindingRangeBindingCount(i);
 		...
