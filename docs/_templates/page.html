@@ -1,9 +1,19 @@
-<!-- Based on https://stackoverflow.com/a/25543713/1130282 -->
 {% extends "!page.html" %}
 
+{% block extrahead %}
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TMTZVLLMBP"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-TMTZVLLMBP');
+</script>
+{% endblock %}
+
+<!-- Based on https://stackoverflow.com/a/25543713/1130282 -->
 {% block footer %}
- <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
- <script type="text/javascript">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script type="text/javascript">
     $(document).ready(function() {
         $(".toggle > *").hide();
         $(".toggle .header").show();
