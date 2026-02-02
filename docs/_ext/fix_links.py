@@ -49,6 +49,25 @@ def fix_md_links_post_process(app, exception):
 
                     content = re.sub(pattern, repl, content)
 
+                    # Fix &amp; in URLs (and other query strings in href attributes)
+                    # MyST-Parser incorrectly double-escapes & to &amp;amp; in href attributes
+                    # See https://github.com/executablebooks/MyST-Parser/issues/1028 for more details
+                    def fix_ampersands_in_href(match):
+                        quote = match.group(1)
+                        url = match.group(2)
+                        # Only fix URLs that have a query string (contain ?)
+                        if '?' in url:
+                            # Fix double-escaped ampersands (&amp;amp; -> &amp;)
+                            # Single &amp; is valid HTML in href attributes
+                            fixed_url = url
+                            while '&amp;amp;' in fixed_url:
+                                fixed_url = fixed_url.replace('&amp;amp;', '&amp;')
+                            return f'href={quote}{fixed_url}{quote}'
+                        return match.group(0)
+
+                    href_pattern = r'href=(["\'])([^"\']+)\1'
+                    content = re.sub(href_pattern, fix_ampersands_in_href, content)
+
                     if content != original_content:
                         with open(filepath, 'w', encoding='utf-8') as f:
                             f.write(content)
