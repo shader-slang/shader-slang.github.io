@@ -7,7 +7,7 @@ on:
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -16,7 +16,7 @@ jobs:
 
       - name: Build with Jekyll
         id: jekyll-build
-        uses: actions/jekyll-build-pages@v1
+        uses: actions/jekyll-build-pages@v1.0.12
         with:
           source: .
           destination: ./_site
@@ -31,10 +31,10 @@ jobs:
             echo "Jekyll build failed - _site directory not created"
             exit 1
           fi
-          
+
           if [ ! -f "_site/index.html" ]; then
             echo "Jekyll build failed - index.html not generated"
             exit 1
           fi
-          
+
           echo "Jekyll build completed successfully"
