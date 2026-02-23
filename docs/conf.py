@@ -183,14 +183,6 @@ linkcheck_ignore = [
 ]
 linkcheck_report_timeouts_as_broken = True
 
-# Configure request headers for authentication
-linkcheck_request_headers = {
-    "https://github.com/*": {
-        "Authorization": f"token {os.environ.get('GITHUB_TOKEN', '')}",
-        "User-Agent": "Slang-Documentation-Linkcheck/1.0"
-    }
-}
-
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
