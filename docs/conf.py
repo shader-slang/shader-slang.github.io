@@ -180,6 +180,7 @@ linkcheck_ignore = [
     r"http://claude.ai/code",
     r"http://[^\.]+\.so.*",
     r'https://www\.shadertoy\.com/.*',
+    r'https://([a-z]+\.)?khronos\.org/.*',
 ]
 linkcheck_report_timeouts_as_broken = True
 
