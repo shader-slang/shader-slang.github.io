@@ -40,24 +40,19 @@ There are four types of Status:
 | Capabilities | Experimental | Implementation not done. |
 | GLSL Compatibility | Experimental | Lightly adopted in MKL's mini examples, and a subset of CTS. Need more detailed scope and more time to test its quality. |
 | Generic existential types | Experimental | Not being used or tested much |
-| Generic existential types | Experimental | Not being used or tested much |
 | Generic interface as generic constraints | Experimental | Not widely adopted, test coverage are not comprehensive but the basic feature works. Known limitations in implementation that we need to spec out for now. |
 | Geometry Shader (spirv direct) | Experimental | Still seeing bug reports from time to time, but likely more mature than Mesh Shader due to the long time it exists |
 | Link time specialization | Experimental | Adopted by one user library and tested with several user applications. No issues has been filed in last two weeks. There are known gaps in implementation but our users are not running into them. |
 | Mesh Shader (spirv-direct) | Experimental | Still seeing bugs from time to time, not thoroughly tested. |
 | Multi-entrypoint (spirv direct) | Experimental | Being adopted in many codebases including Valve's, still seeing bug reports from time to time, need time to verify its quality |
 | Multi-file Modules (__include) | Experimental | Implemented and tested with several different configurations. However, not fully tested with precompiled modules. No user code is adopting this feature. |
-| Multi-file Modules (__include) | Experimental | Implemented and tested with several different configurations. However, not fully tested with precompiled modules. No user code is adopting this feature. |
 | Non-generic Interface as generic constraints | Experimental | The basis of stdlib and widely adopted in user codebase. This is the most basic use of interface types and has been working well. |
 | Non-generic existential types (dynamic dispatch) | Experimental | Nontrivial adoption, a lot of test coverage. But syntax around existential types may change. |
-| Non-generic existential types (dynamic dispatch) | Experimental | Nontrivial adoption, a lot of test coverage. But syntax around existential types may change. |
-| Non-generic existential types (static dispatch) | Experimental | Syntax around existential types may change. |
 | Non-generic existential types (static dispatch) | Experimental | Syntax around existential types may change. |
 | Obfuscation | Experimental | Implemented a long while ago and adopted by OV, not seeing bug reports but they may be broken with latest language developments and lack of sufficient testing, especially when used in tendum with precompiled modules and link time specialization. |
 | Precompiled Modules (serialization / up-to-date-ness verification) | Experimental | Adopted by one user library and tested with serveral applications. |
 | SPIRV Debug | Experimental | Bug rate stablized, and has been working well. But need more adoption or testing to receive a higher matureness rating. |
 | SPIRV Pointers | Experimental | Adopted by many users, and address many corner case issues reported by the user. Related bug rate is converging to 0. |
-| Uniformity Analysis | Experimental | Implemented the first version, tested with 2 unit tests, no actual user code exercising it, not thoroughly tested, unlikely to work out of box when it gets actual use but expected to mature within 2 weeks in close iteration loop with adopting users. |
 | Uniformity Analysis | Experimental | Implemented the first version, tested with 2 unit tests, no actual user code exercising it, not thoroughly tested, unlikely to work out of box when it gets actual use but expected to mature within 2 weeks in close iteration loop with adopting users. |
 | `as` and `is` operators | Experimental |  |
 | `reinterpret<T>` | Experimental |  |
