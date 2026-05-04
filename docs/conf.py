@@ -145,8 +145,11 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'index.md',
                     'external/slang/docs/stdlib-doc.md',
                     'external/slang/examples/README.md',
                     'external/slang/external',
+                    'external/slang/extras/claude',
                     'external/slangpy',
                     'getting-started.md',
+                    '**/.claude',
+                    '**/.claude/**',
 ]
 
 include_patterns = [
@@ -181,6 +184,8 @@ linkcheck_ignore = [
     r"http://[^\.]+\.so.*",
     r'https://www\.shadertoy\.com/.*',
     r'https://([a-z]+\.)?khronos\.org/.*',
+    r'https://docs\.vulkan\.org/.*',
+    r'https?://[^/]+\.py(/.*)?$',
 ]
 linkcheck_report_timeouts_as_broken = True
 
