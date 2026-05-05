@@ -66,6 +66,34 @@ def add_orphan_directive(app, docname, source):
         # No frontmatter, add frontmatter with "orphan: true"
         source[0] = '---\norphan: true\n---\n' + content
 
+def render_liquid(app, docname, source):
+    """Render Jekyll-style Liquid templates so Sphinx sees the same output Jekyll does.
+
+    The shared markdown sources are authored for Jekyll, which evaluates Liquid tags
+    like ``{% capture %}`` / ``{{ var | markdownify }}``. MyST passes those through
+    unchanged, so we evaluate them here. The ``markdownify`` filter is a no-op because
+    MyST will parse the captured markdown after this hook runs.
+    """
+    content = source[0]
+    if '{%' not in content and '{{' not in content:
+        return
+
+    try:
+        from liquid import Environment
+    except ImportError:
+        return
+
+    env = Environment()
+    env.add_filter("markdownify", lambda value: value)
+
+    try:
+        source[0] = env.from_string(content).render()
+    except Exception as exc:
+        from sphinx.util import logging as sphinx_logging
+        sphinx_logging.getLogger(__name__).warning(
+            "Liquid rendering failed for %s: %s", docname, exc
+        )
+
 def latex_block_to_inline(app, docname, source):
     content = source[0]
     # Replace $$ with $ for inline math, but only when not part of a block
@@ -109,6 +137,7 @@ def setup(app):
 
     app.connect('source-read', latex_block_to_inline)
     app.connect('source-read', handle_utf16le_files)
+    app.connect('source-read', render_liquid)
 
 project = 'Slang Documentation'
 author = 'Chris Cummings, Benedikt Bitterli, Sai Bangaru, Yong Hei, Aidan Foster'
