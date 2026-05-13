@@ -5,7 +5,7 @@ date: 2026-05-14
 categories: [ "blog" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
-image: TBD
+image: /images/posts/enduring-games-console-backend.webp
 human_date: "May 14, 2026"
 featured: true
 ---
