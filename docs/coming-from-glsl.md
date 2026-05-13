@@ -777,6 +777,14 @@ void main() {
 
 **Slang:**
 ```hlsl
+struct Vertex {
+    // user-defined struct
+}
+
+struct ControlPoint {
+    // user-defined struct
+}
+
 // Hull shader requires multiple attributes and a separate patch constant function
 [shader("hull")]
 [domain("tri")]
