@@ -215,6 +215,7 @@ linkcheck_ignore = [
     r'https://([a-z]+\.)?khronos\.org/.*',
     r'https://docs\.vulkan\.org/.*',
     r'https?://[^/]+\.py(/.*)?$',
+    r"https?://en.cppreference.com/.*",
 ]
 linkcheck_report_timeouts_as_broken = True
 
