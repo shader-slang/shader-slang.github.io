@@ -208,14 +208,14 @@ suppress_warnings = ["myst.header", "myst.xref_missing", "myst.xref_ambiguous"]
 
 linkcheck_anchors = False
 linkcheck_ignore = [
-    r"https://github.com/your-name/.*",
-    r"http://claude.ai/code",
-    r"http://[^\.]+\.so.*",
-    r'https://www\.shadertoy\.com/.*',
-    r'https://([a-z]+\.)?khronos\.org/.*',
-    r'https://docs\.vulkan\.org/.*',
+    r"https?://github\.com/your-name/.*",
+    r"https?://claude\.ai/code",
+    r"https?://[^\.]+\.so.*",
+    r'https?://www\.shadertoy\.com/.*',
+    r'https?://([a-z]+\.)?khronos\.org/.*',
+    r'https?://docs\.vulkan\.org/.*',
     r'https?://[^/]+\.py(/.*)?$',
-    r"https?://en.cppreference.com/.*",
+    r"https?://([a-z]+\.)?cppreference\.com/.*",
 ]
 linkcheck_report_timeouts_as_broken = True
 
