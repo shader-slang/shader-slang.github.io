@@ -845,9 +845,11 @@ struct ControlPoint {
     // user-defined struct
 }
 
+// Must match the patch-constant function output in the hull shader
 struct PatchTessFactors {
-    // user-defined struct (matches the patch-constant function output in the hull shader)
-}
+    float4 tessFactor : SV_TessFactor;
+    float2 insideTessFactor : SV_InsideTessFactor;
+};
 
 [shader("domain")]
 [domain("tri")]
