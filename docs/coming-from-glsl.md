@@ -777,13 +777,9 @@ void main() {
 
 **Slang:**
 ```hlsl
-struct Vertex {
-    // user-defined struct
-}
+struct Vertex { /* user-defined struct */ }
 
-struct ControlPoint {
-    // user-defined struct
-}
+struct ControlPoint { /* user-defined struct */ }
 
 // Hull shader requires multiple attributes and a separate patch constant function
 [shader("hull")]
@@ -841,15 +837,10 @@ void main() {
 
 **Slang:**
 ```hlsl
-struct ControlPoint {
-    // user-defined struct
-}
+struct ControlPoint { /* user-defined struct */ }
 
-// Must match the patch-constant function output in the hull shader
-struct PatchTessFactors {
-    float4 tessFactor : SV_TessFactor;
-    float2 insideTessFactor : SV_InsideTessFactor;
-};
+// user-defined struct; must include members with SV_TessFactor and SV_InsideTessFactor semantics
+struct PatchTessFactors { }
 
 [shader("domain")]
 [domain("tri")]
@@ -897,13 +888,9 @@ void main() {
 
 **Slang:**
 ```hlsl
-struct VSOutput {
-    // user-defined struct
-}
+struct VSOutput { /* user-defined struct */ }
 
-struct GSOutput {
-    // user-defined struct
-}
+struct GSOutput { /* user-defined struct */ }
 
 [shader("geometry")]
 [maxvertexcount(3)]
@@ -953,9 +940,7 @@ void main() {
 
 **Slang:**
 ```hlsl
-struct TaskData {
-    // user-defined struct
-}
+struct TaskData { /* user-defined struct */ }
 
 [shader("amplification")]
 [numthreads(32, 1, 1)]
@@ -998,9 +983,7 @@ void main() {
 
 **Slang:**
 ```hlsl
-struct MeshVertex {
-    // user-defined struct
-}
+struct MeshVertex { /* user-defined struct */ }
 
 [shader("mesh")]
 [numthreads(32, 1, 1)]
@@ -1053,9 +1036,7 @@ void main() {
 
 **Slang:**
 ```hlsl
-struct PayloadData {
-    // user-defined struct
-}
+struct PayloadData { /* user-defined struct */ }
 
 [shader("raygeneration")]
 void main() {
@@ -1086,9 +1067,7 @@ void main() {
 
 **Slang:**
 ```hlsl
-struct PayloadData {
-    // user-defined struct
-}
+struct PayloadData { /* user-defined struct */ }
 
 [shader("closesthit")]
 void main(inout PayloadData payload, in BuiltInTriangleIntersectionAttributes attr) {
@@ -1113,9 +1092,7 @@ void main() {
 
 **Slang:**
 ```hlsl
-struct PayloadData {
-    // user-defined struct
-}
+struct PayloadData { /* user-defined struct */ }
 
 [shader("miss")]
 void main(inout PayloadData payload) {
