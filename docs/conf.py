@@ -218,11 +218,12 @@ linkcheck_ignore = [
 ]
 linkcheck_report_timeouts_as_broken = True
 
+user_agent = "Slang-Documentation-Linkcheck/1.0 (+https://github.com/shader-slang/shader-slang.github.io)"
+
 # Configure request headers for authentication
 linkcheck_request_headers = {
     "https://github.com/*": {
         "Authorization": f"token {os.environ.get('GITHUB_TOKEN', '')}",
-        "User-Agent": "Slang-Documentation-Linkcheck/1.0"
     }
 }
 
