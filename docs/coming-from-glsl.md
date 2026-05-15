@@ -841,6 +841,14 @@ void main() {
 
 **Slang:**
 ```hlsl
+struct ControlPoint {
+    // user-defined struct
+}
+
+struct PatchTessFactors {
+    // user-defined struct (matches the patch-constant function output in the hull shader)
+}
+
 [shader("domain")]
 [domain("tri")]
 float4 main(
@@ -887,6 +895,14 @@ void main() {
 
 **Slang:**
 ```hlsl
+struct VSOutput {
+    // user-defined struct
+}
+
+struct GSOutput {
+    // user-defined struct
+}
+
 [shader("geometry")]
 [maxvertexcount(3)]
 void main(
@@ -935,6 +951,10 @@ void main() {
 
 **Slang:**
 ```hlsl
+struct TaskData {
+    // user-defined struct
+}
+
 [shader("amplification")]
 [numthreads(32, 1, 1)]
 void main(
@@ -976,6 +996,10 @@ void main() {
 
 **Slang:**
 ```hlsl
+struct MeshVertex {
+    // user-defined struct
+}
+
 [shader("mesh")]
 [numthreads(32, 1, 1)]
 [outputtopology("triangle")]
@@ -1027,6 +1051,10 @@ void main() {
 
 **Slang:**
 ```hlsl
+struct PayloadData {
+    // user-defined struct
+}
+
 [shader("raygeneration")]
 void main() {
     RayDesc ray;
@@ -1056,6 +1084,10 @@ void main() {
 
 **Slang:**
 ```hlsl
+struct PayloadData {
+    // user-defined struct
+}
+
 [shader("closesthit")]
 void main(inout PayloadData payload, in BuiltInTriangleIntersectionAttributes attr) {
     // Process hit
@@ -1079,6 +1111,10 @@ void main() {
 
 **Slang:**
 ```hlsl
+struct PayloadData {
+    // user-defined struct
+}
+
 [shader("miss")]
 void main(inout PayloadData payload) {
     // Process miss
