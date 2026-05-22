@@ -1,3 +1,8 @@
+<!--
+SPDX-FileCopyrightText: 2024-2026 The Khronos Group, Inc.
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 # Shader-Slang.com website
 
 This theme is losely based on the Serif theme for Jekyll by [Zerostatic Themes](https://www.zerostatic.io).
