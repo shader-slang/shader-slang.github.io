@@ -1,12 +1,12 @@
 ---
 layout: post
 title: "Enduring Games at GDC: We're Speaking Your Slang-uage Here: A Proof-of-Concept Console Backend for the Slang Shading Language"
-date: 2026-05-14
+date: 2026-05-22
 categories: [ "blog" ]
 tags: [slang]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/enduring-games-console-backend.webp
-human_date: "May 14, 2026"
+human_date: "May 22, 2026"
 featured: true
 ---
 
@@ -22,6 +22,8 @@ You can watch the full talk on the NVIDIA Game Developer YouTube channel:
 Enduring Games has also published an accompanying implementation guide — *"BEACHCOMBER: How to Extend Slang for Your Platform"* — that distills the lessons from this project into a practical, step-by-step blueprint for adding a new backend to Slang. It covers everything from registering new target enums and inheriting an existing emitter, to defining capabilities, writing legalization passes, handling bindless and pointer support, and porting shader idioms like conditional members and union emulation. If you're thinking about targeting Slang output to a platform that isn't yet supported, this guide is your starting point.
 
 **[📄 Read the BEACHCOMBER guide](https://shader-slang.org/docs/enduring-extending-slang/BEACHCOMBER-How-to-extend-Slang.pdf)**
+
+If you are interested in exploring an implementation for your PlayStation or Xbox pipeline or project, approved hardware licensees should contact Enduring Games ([https://enduring.games/contact/](https://enduring.games/contact/))
 
 ---
 
