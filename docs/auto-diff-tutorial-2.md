@@ -55,6 +55,22 @@ Where:
 
 ## 3. Forward Pass Architecture Design
 
+### Conventions Used in the Code Listings
+
+The listings below use two user-defined identifiers that are not part of the Slang core module. Their full implementations live in the [companion example repository](https://github.com/shader-slang/neural-shading-s25/tree/main/hardware-acceleration/mlp-training); for the purposes of this tutorial, treat them as if declared once at file scope:
+
+```hlsl
+// User-defined alias for the network's storage/compute precision.
+// We use `half` (16-bit float) throughout this tutorial for throughput
+// and memory savings; swap for `float` to experiment with higher precision.
+typealias NFloat = half;
+
+// User-defined helper that emulates atomic-add of a half value via 32-bit
+// compare-and-swap, since most hardware has no native atomic-add for `half`.
+// Returns the previous value through `originalValue`.
+void InterlockedAddF16Emulated(NFloat* address, NFloat value, out NFloat originalValue);
+```
+
 ### 3.1 Top-Level Network Definition
 
 Our MLP is a composition of two feed-forward layers:
