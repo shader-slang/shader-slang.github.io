@@ -43,6 +43,12 @@ def handle_utf16le_files(app, docname, source):
             source[0] = content
 
 def add_orphan_directive(app, docname, source):
+    # Never mark the root document as an orphan: it owns the top-level toctree.
+    # This also avoids prepending YAML frontmatter to ``index.rst`` (the only
+    # non-markdown source we process), where it would render as literal text.
+    if docname == app.config.root_doc:
+        return
+
     content = source[0]
     # Check if the document already has "orphan: true"
     if 'orphan: true' in content:
