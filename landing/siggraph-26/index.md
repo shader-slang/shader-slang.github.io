@@ -1,5 +1,5 @@
 ---
-layout: default
+layout: page
 title: Slang at SIGGRAPH 2026
 description: Meet the Slang community at SIGGRAPH 2026 in Los Angeles.
 ---
