@@ -51,7 +51,6 @@ Join this Khronos community forum on the people, languages, and workflows shapin
 
 **Wednesday, July 22, 1:30-2:00 PM PDT**  
 **JW Marriott, Plaza 1**  
-*Part of Khronos DevDay*
 
 Join the Slang Birds of a Feather session for updates from the Slang community and a conversation about how the language is evolving for graphics, compute, and AI.
 
@@ -60,6 +59,6 @@ Join the Slang Birds of a Feather session for updates from the Slang community a
 **Wednesday, July 22, 1:00-1:50 PM PDT**  
 **Los Angeles Convention Center, Room 502A**
 
-This NVIDIA RTX Rendering Day session will include Slang alongside practical advances in AI-accelerated ray tracing.
+This NVIDIA RTX Rendering Day session will explore advances in ray tracing technology, including new features and support in Slang and neural rendering.
 
 _For more information about SIGGRAPH 2026, visit the [official conference website](https://s2026.siggraph.org/)._
