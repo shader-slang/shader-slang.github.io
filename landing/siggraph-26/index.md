@@ -4,9 +4,9 @@ title: Slang at SIGGRAPH 2026
 description: Meet the Slang community at SIGGRAPH 2026 in Los Angeles.
 ---
 
-Slang is coming to SIGGRAPH 2026 in Los Angeles! Join us for three courses, a Slang Birds of a Feather session, and several community events that explore modern shading, graphics, compute, and AI. Whether you are new to shader programming, building neural graphics workflows, or interested in the future of the shading ecosystem, there is a session for you.
+Slang is at SIGGRAPH 2026 in Los Angeles! Join us for three courses, a Slang Birds of a Feather session, and several community events that explore modern shading, graphics, compute, and AI. Whether you are new to shader programming, building neural graphics workflows, or interested in the future of the shading ecosystem, there is a session for you.
 
-Session materials will be added here as they become available. Join the [Slang community on Discord](https://khr.io/slangdiscord) to keep the conversation going.
+Additional session materials will be added here as they become available. Join the [Slang community on Discord](https://khr.io/slangdiscord) to keep the conversation going.
 
 ## Courses
 
@@ -16,6 +16,8 @@ Session materials will be added here as they become available. Join the [Slang c
 **Room 515 A**
 
 Discover the foundations of neural shading: using compact neural networks alongside graphics techniques to create efficient, expressive rendering workflows. This course introduces the ideas and practical tools behind neural shading for graphics developers.
+
+[View the course materials on GitHub](https://github.com/shader-slang/neural-shading-s26/).
 
 ### [Introduction to Slang: The Next-Generation Shading Language](https://s2026.conference-schedule.org/presentation/?id=gensub_172&sess=sess258)
 
@@ -30,6 +32,15 @@ Get started with Slang, the open-source shading language designed for modern gra
 **Concourse Hall**
 
 Explore how Slang can help build efficient GPU inference pipelines. This hands-on session focuses on practical machine-learning workflows and the tools needed to bring high-performance GPU code into production.
+
+## High-Performance Graphics 2026
+
+### [neural.slang: A Standard Module for Inline Neural Networks in Shaders](https://www.highperformancegraphics.org/2026/schedule/)
+
+**Friday, July 17, 11:00 AM-12:00 PM PDT**<br>
+**Hot3D Session 1**
+
+Learn about neural.slang, a standard module for integrating inline neural networks in shaders. This session is part of [High-Performance Graphics 2026](https://www.highperformancegraphics.org/2026/).
 
 ## Slang and community events
 
