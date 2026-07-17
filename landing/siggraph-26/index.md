@@ -19,6 +19,8 @@ Discover the foundations of neural shading: using compact neural networks alongs
 
 [View the course materials on GitHub](https://github.com/shader-slang/neural-shading-s26/).
 
+[Download the course slides (PDF)](https://github.com/shader-slang/neural-shading-s26/raw/refs/heads/main/slides/Neural_Shading_Course_Slides_2026.pdf).
+
 ### [Introduction to Slang: The Next-Generation Shading Language](https://s2026.conference-schedule.org/presentation/?id=gensub_172&sess=sess258)
 
 **Tuesday, July 21, 10:15-11:45 AM PDT**  
