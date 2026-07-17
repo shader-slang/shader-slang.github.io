@@ -44,6 +44,8 @@ Explore how Slang can help build efficient GPU inference pipelines. This hands-o
 
 Learn about neural.slang, a standard module for integrating inline neural networks in shaders. This session is part of [High-Performance Graphics 2026](https://www.highperformancegraphics.org/2026/).
 
+[Download the HPG talk slides (PDF)](/assets/downloads/neural_slang_hot3d.pdf).
+
 ## Slang and community events
 
 ### [Khronos Fast Forward](https://s2026.conference-schedule.org/presentation/?id=bof_115&sess=sess295)
