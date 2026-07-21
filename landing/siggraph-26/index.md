@@ -31,7 +31,7 @@ Get started with Slang, the open-source shading language designed for modern gra
 Download the full lab materials and slides below:
 
 [Lab materials with slides »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Lab-2026.zip)\
-[Slides only »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides-2026.pdf)\
+[Slides only »](https://developer.download.nvidia.com/ProGraphics/nvpro-samples/SlangLab/Slides-2026.pdf)
 
 <img src="intro-to-slang.webp" alt="The title and agenda slides from the lab. The agenda slide has a screenshot of vk_slang_editor and the course's agenda: language basics, using slangc, porting GLSL, shader I/O, debugging and tools, structs, modules, interfaces, SlangPy, and autodifferentiation." style="max-width: 100%;">
 
