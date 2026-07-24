@@ -57,7 +57,7 @@ Where:
 
 ### Conventions Used in the Code Listings
 
-The listings below use two user-defined identifiers that are not part of the Slang core module. Their full implementations live in the [companion example repository](https://github.com/shader-slang/neural-shading-s25/tree/main/hardware-acceleration/mlp-training); for the purposes of this tutorial, treat them as if declared once at file scope:
+The listings below use two user-defined identifiers that are not part of the Slang core module. They are helpers you are expected to supply; for the purposes of this tutorial, treat them as if declared once at file scope:
 
 ```hlsl
 // User-defined alias for the network's storage/compute precision.
