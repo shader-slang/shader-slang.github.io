@@ -1,6 +1,11 @@
+<!--
+SPDX-FileCopyrightText: 2024-2026 The Khronos Group, Inc.
+SPDX-License-Identifier: CC-BY-4.0
+-->
+
 ## Contributing
 
-This project welcomes contributions and suggestions. 
+This project welcomes contributions and suggestions.
 
 ## AI-Assisted Contributions
 
