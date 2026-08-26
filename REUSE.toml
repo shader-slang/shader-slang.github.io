@@ -1,0 +1,22 @@
+version = 1
+SPDX-PackageName = "Shader Slang Website"
+SPDX-PackageSupplier = "The Khronos Group, Inc."
+SPDX-PackageDownloadLocation = "https://github.com/shader-slang/shader-slang.github.io"
+
+[[annotations]]
+path = "**"
+SPDX-FileCopyrightText = "2024-2026 The Khronos Group, Inc."
+SPDX-License-Identifier = "CC-BY-4.0"
+
+[[annotations]]
+path = "_sass/bootstrap/**"
+SPDX-FileCopyrightText = "2011-2024 The Bootstrap Authors"
+SPDX-License-Identifier = "MIT"
+
+[[annotations]]
+path = "assets/fonts/**"
+SPDX-FileCopyrightText = [
+    "The Poppins Project Authors",
+    "The Chivo Project Authors"
+]
+SPDX-License-Identifier = "OFL-1.1"
