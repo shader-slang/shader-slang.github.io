@@ -215,6 +215,13 @@ linkcheck_ignore = [
     r'https://([a-z]+\.)?khronos\.org/.*',
     r'https://docs\.vulkan\.org/.*',
     r'https?://[^/]+\.py(/.*)?$',
+    # "linkify" turns bare filenames mentioned in prose (for example
+    # "see grammar.md") into external links such as http://grammar.md.
+    # The optional (:\d+) covers "file.md:line" cross-references, where the
+    # line number is parsed as a port.
+    r'https?://[^/]+\.(md|rst|slang|h\.in|hpp|cpp|h)(:\d+)?(/.*)?$',
+    # Shader Playground no longer resolves.
+    r'https?://shader-playground\.timjones\.io.*',
 ]
 linkcheck_report_timeouts_as_broken = True
 
