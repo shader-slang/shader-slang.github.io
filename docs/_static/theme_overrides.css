@@ -428,3 +428,15 @@ body.core-module-reference-page h4 {
     font-size: 1.2em !important;
     font-weight: 700 !important;
 }
+
+/* Core-module-reference Signature blocks list every overload of a function
+   inside a single <pre>, which can grow to multiple viewport heights
+   (5000px+ on dense entries like CoopMat::Load). The <pre> already has
+   `overflow: auto`, but its horizontal scrollbar sits at the bottom of the
+   block — well below the fold — so users hit horizontally-overflowing
+   signatures with no apparent way to scroll them. Cap the height so the
+   horizontal scrollbar stays in view; long overload lists scroll inside
+   the <pre> instead of stretching the page. See shader-slang/slang#11262. */
+body.core-module-reference-page article[role="main"] pre {
+    max-height: 75vh;
+}
