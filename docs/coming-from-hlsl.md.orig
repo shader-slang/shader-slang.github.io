@@ -75,13 +75,17 @@ int MyFunc()
 }
 ```
 
-#### Variable scope in `for`-loop follows the old FXC rule
+
+<<<<<<< HEAD
+#### Member functions are immutable by default
+=======
+### Variable scope in `for`-loop follows the old FXC rule
 The older version of HLSL compiler, FXC, had a little different variable scope for the `for`-loop compared to other languages.
 
 FXC produces an error or a warning for the following code:
 ```
 for (int i = 0; i < 4; i++) {...}
-for (int i = 0; i < 4; i++) {...} // FXC prints an error or warning
+for (int i = 0; i < 4; i++) {...}
 ```
 
 The warning looks like the following:
@@ -106,7 +110,8 @@ slangc.exe -lang slang -stage vertex -entry vertexMain my_shader.hlsl
 ```
 
 
-#### Member functions are immutable by default
+### Member functions are immutable by default
+>>>>>>> 90589ae (Add a new section that explains the variable scope problem with for-loop)
 By default, Slang member functions do not allow mutations to `this`. It is as if the member function has the `const` keyword in C/C++.
 
 To mutate `this`, you must explicitly use the `[mutating]` attribute on each function.
@@ -209,7 +214,7 @@ T max4(T x, T y, T z, T w)
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more detailed explanations on defining a custom interface, please refer to the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/06-interfaces-generics.html).
+For more detailed explanations on defining a custom interface, please refer to the [Slang User's Guide](https://shader-slang.com/slang/user-guide/interfaces-generics.html).
 
 
 #### `#pragma` for DXC wouldn't work for Slang
@@ -272,7 +277,7 @@ MyStruct operator+(MyStruct lhs, MyStruct rhs)
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more details, please consult the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/03-convenience-features.html#operator-overloading)
+For more details, please consult the [Slang User's Guide](https://shader-slang.com/slang/user-guide/convenience-features.html#operator-overloading)
 
 #### Subscript Operator
 Slang uses a different syntax for overloading subscript operator so both reads and writes to a subscript location can be defined.
@@ -313,7 +318,7 @@ struct MyType
 {{ somemarkdown | markdownify }}
 </td></tr></table>
 
-For more details, please consult the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/03-convenience-features.html#subscript-operator).
+For more details, please consult the [Slang User's Guide](https://shader-slang.com/slang/user-guide/convenience-features.html#subscript-operator).
 
 
 #### Implicit parameter binding
@@ -355,7 +360,7 @@ Due to this difference, some casting issues may appear as errors while migrating
 
 
 #### SPIR-V target specific functionalities
-When you target SPIR-V, there are a few things that the user may want to know. Please check the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/a2-01-spirv-target-specific.html) for more details.
+When you target SPIR-V, there are a few things that the user may want to know. Please check the [Slang User's Guide](https://shader-slang.com/slang/user-guide/spirv-target-specific.html) for more details.
 
 
 ### Debugging and Performance Tips
@@ -367,7 +372,7 @@ When debugging Slang shaders, disabling optimizations can simplify the debugging
 Slang offers a command-line option to emit or suppress `#line` directives when targeting C-like text formats such as HLSL, GLSL, Metal, and WGSL.
 When `#line` directives are emitted, they can assist in debugging with shader debugging tools, as these tools can correlate back to the original Slang shader.
 
-For more information, please refer to `LineDirectiveMode` in the [Slang User's Guide](https://docs.shader-slang.org/en/latest/external/slang/docs/user-guide/08-compiling.html).
+For more information, please refer to `LineDirectiveMode` in the [Slang User's Guide](https://shader-slang.com/slang/user-guide/compiling.html).
 
 
 #### Experiment with [ForceInline]
