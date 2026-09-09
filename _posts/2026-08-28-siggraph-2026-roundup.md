@@ -1,12 +1,12 @@
 ---
 layout: post
 title: "SIGGRAPH 2026 Materials Now Available: Recordings and Resources from Our Events"
-date: 2026-08-28 17:00:00
+date: 2026-09-09 13:00:00
 categories: [ "blog" ]
 tags: [slang, siggraph, events]
 author: "Shannon Woods, NVIDIA, Slang Working Group Chair"
 image: /images/posts/siggraph-logo-2026.webp
-human_date: "August 28, 2026"
+human_date: "September 9, 2026"
 ---
 
 Recordings and materials from our SIGGRAPH 2026 sessions are now available! Whether you missed the conference or want to revisit the content, you can find everything below — from our courses and Birds of a Feather (BOF) sessions to the High-Performance Graphics talk that kicked off the week.
