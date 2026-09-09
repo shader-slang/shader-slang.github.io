@@ -9,7 +9,7 @@ image: /images/posts/siggraph-logo-2026.webp
 human_date: "August 28, 2026"
 ---
 
-Recordings and materials from our SIGGRAPH 2026 sessions are now available! Whether you missed the conference or want to revisit the content, you can find everything below — from our courses and Birds of a Feather to the High-Performance Graphics talk that kicked off the week.
+Recordings and materials from our SIGGRAPH 2026 sessions are now available! Whether you missed the conference or want to revisit the content, you can find everything below — from our courses and Birds of a Feather (BOF) sessions to the High-Performance Graphics talk that kicked off the week.
 
 ### High-Performance Graphics 2026: neural.slang
 
