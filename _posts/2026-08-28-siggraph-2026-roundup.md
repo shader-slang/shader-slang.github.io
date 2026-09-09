@@ -33,7 +33,7 @@ This hands-on course took attendees from Slang basics through modules, interface
 
 ### Course: Hands-On Machine Learning with Slang
 
-Chris Hebert led a practical session on building GPU ML inference pipelines with Slang — implementing a CNN from scratch using a lightweight set of pre-written kernels, loading SafeTensors weights, running inference, and applying kernel fusion for better performance. Course materials are still being compiled, but will be available soon.
+Chris Hebert led a practical session on building GPU ML inference pipelines with Slang — implementing a CNN from scratch using a lightweight set of pre-written kernels, loading SafeTensors weights, running inference, and applying kernel fusion for better performance. Course materials are still being compiled, but will be announced on this blog when available.
 
 ### Real-Time Shading BOF
 
