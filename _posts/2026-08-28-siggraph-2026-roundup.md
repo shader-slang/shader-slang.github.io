@@ -40,7 +40,7 @@ Chris Hebert led a practical session on building GPU ML inference pipelines with
 The Real-Time Shading Birds of a Feather session featured several talks, tracing the evolution of procedural shading from its birth to today. The session also highlighted results from the **2026 Shader Ecosystem Survey**, which gathered responses from more than 400 developers about their workflows and top pain points. Presenters included Randi Rost, Ken Perlin, Marc Olano, and Shannon Woods.
 
 [Recording](https://www.khronos.org/developers/linkto/real-time-shading-bof)\
-[Presentation materials](https://www.khronos.org/developers/linkto/real-time-shading-bof-sigg26)
+[Presentation materials (PDF)](https://www.khronos.org/developers/linkto/real-time-shading-bof-sigg26)
 
 ### Birds of a Feather: Slang in Action
 
