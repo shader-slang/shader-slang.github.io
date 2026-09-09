@@ -22,7 +22,7 @@ The week started a couple of days before SIGGRAPH proper with a [High-Performanc
 We kicked off the week with this course covering the foundations of neural shading: building and training MLPs directly in Slang shaders, leveraging GPU tensor cores for hardware acceleration, and implementing neural materials as compact learned representations. The course included SlangPy-based Python examples and C++ implementations covering autodiff basics, cooperative vector acceleration, mipmap filtering, and a complete neural material pipeline. Instructors: Benedikt Bitterli, Chris Cummings, Kai Zhang, Shannon Woods.
 
 [Course materials on GitHub](https://github.com/shader-slang/neural-shading-s26/)\
-[Course slides (PDF)](https://github.com/shader-slang/neural-shading-s26/raw/refs/heads/main/slides/Neural_Shading_Course_Slides_2026.pdf)
+[Course slides (PDF)](https://github.com/shader-slang/neural-shading-s26/blob/refs/heads/main/slides/Neural_Shading_Course_Slides_2026.pdf)
 
 ### Course: Introduction to Slang: The Next-Generation Shading Language
 
