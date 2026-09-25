@@ -392,7 +392,7 @@ private:
 	size_t			m_byteOffset;
 	VkDescriptorSet	m_descriptorSet;
 	uint32_t		m_bindingIndex;
-uint32_t 		m_bindingArrayIndex;		
+	uint32_t 		m_bindingArrayElement;		
 	...
 };
 ```
@@ -635,7 +635,7 @@ struct ShaderCursor
 	size_t			m_byteOffset;
 	VkDescriptorSet	m_descriptorSet;
 	uint32_t		m_bindingIndex;
-uint32_t 		m_bindingArrayIndex;		
+	uint32_t 		m_bindingArrayElement;		
 	...
 };
 ```
@@ -649,7 +649,7 @@ struct ShaderOffset
 {
 	size_t			byteOffset = 0;
 	uint32_t		bindingRangeIndex = 0;
-uint32_t 		arrayIndexInBindingRange = 0;
+	uint32_t 		arrayIndexInBindingRange = 0;
 };
 ```
 
@@ -658,6 +658,7 @@ And then the shader cursor itself just tracks the offset/index information and a
 ```cpp
 struct ShaderCursor
 {
+	slang::TypeLayoutReflection *m_typeLayout;
 	MyEngine::ShaderObject*	m_object = nullptr;
 	MyEngine::ShaderOffset	m_offset;
 };
@@ -708,7 +709,7 @@ ShaderCursor ShaderCursor::field(int index)
 	ShaderCursor result = *this;
 	result.m_typeLayout = field->getTypeLayout();
 	result.m_offset.byteOffset += field->getOffset();
-	result.m_offset.bindingRangeOffset += m_typeLayout->getFieldBindingRangeOffset(index);
+	result.m_offset.bindingRangeIndex += m_typeLayout->getFieldBindingRangeOffset(index);
 
 	return result;
 }
@@ -784,7 +785,7 @@ void VulkanShaderObject::write(ShaderOffset offset, Texture* texture)
 	write.dstBinding = bindingIndex;
 	write.dstArrayElement = offset.arrayIndexInBindingRange;
 	write.descriptorCount = 1;
-	write.descriptorType = mapToDescriptorType(m_typeLayout->getBindingRangeType());
+	write.descriptorType = mapToDescriptorType(m_typeLayout->getBindingRangeType(offset.bindingRangeIndex));
 	write.pImageInfo = &image;
 
 	vkUpdateDescriptorSets(vulkanDevice,
@@ -802,9 +803,9 @@ VkDescriptorType mapToDescriptorType(slang::BindingType bindingRangeType)
 {
 	switch(bindingRangeType)
 	{
-	case slang::BindingRangeType::Texture:
+	case slang::BindingType::Texture:
 		return VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
-	case slang::BindingRangeType::MutableTexture:
+	case slang::BindingType::MutableTexture:
 		return VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
 	...
 	}
@@ -903,7 +904,7 @@ struct ShaderObjectLayoutBuilder
 		slang::TypeLayoutReflection* typeLayout);
 	void addBindingsFrom(
 		slang::TypeLayoutReflection* typeLayout,
-		uint32_t elementCount);
+		uint32_t descriptorCount);
 }
 ```
 
@@ -1005,9 +1006,9 @@ uint32_t descriptorCount)
 	for(int i = 0; i < bindingRangeCount; ++i)
 	{
 		VkDescriptorSetLayoutBinding layoutBinding;
-		layoutBinding.bindingIndex = m_bindingIndex++;
-		layoutBinding.descriptorType = mapToDescriptorType(m_typeLayout->getBindingRangeType(i));
-		layoutBinding.descriptorCount = descriptorCount * m_typeLayout->getBindingRangeBindingCount(i);
+		layoutBinding.binding = m_bindingIndex++;
+		layoutBinding.descriptorType = mapToDescriptorType(typeLayout->getBindingRangeType(i));
+		layoutBinding.descriptorCount = descriptorCount * typeLayout->getBindingRangeBindingCount(i);
 		...
 		m_bindings.push_back(layoutBinding);
 	}
@@ -1030,7 +1031,7 @@ class RHI
 	virtual ShaderObjectLayout* createShaderObjectLayout(
 	slang::TypeLayoutReflection* typeLayout) = 0;
 	virtual ShaderObject* createParameterBlock(
-		slang::ShaderObjectLayout* layout) = 0;
+		ShaderObjectLayout* layout) = 0;
 }
 ```
 
@@ -1057,7 +1058,7 @@ void appCodeToRenderSomething(
 	MyEngine::SkyLight* skyLight)
 {
 	auto globals = programLayout->getGlobalParamsTypeLayout();
-	auto skyLightParam = globals->getFieldByIndex(globals->findFieldIndex("gSkyLight"));
+	auto skyLightParam = globals->getFieldByIndex(globals->findFieldIndexByName("gSkyLight"));
 	uint32_t descriptorSetIndex = skyLightParam->getOffset(slang::ParameterCategory::RegisterSpace);
 ...
 }
@@ -1087,7 +1088,7 @@ MyEngine::SkyLight* skyLight)
 	auto computeEntryPoint = programLayout->getEntryPointByIndex(0);
 	auto params = computeEntryPoint->getTypeLayout();
 
-	auto skyLightParam = params ->getFieldByIndex(params ->findFieldIndex("gSkyLight"));
+	auto skyLightParam = params ->getFieldByIndex(params ->findFieldIndexByName("gSkyLight"));
 	uint32_t descriptorSetIndex = skyLightParam->getOffset(slang::ParameterCategory::RegisterSpace);
 ...
 }
