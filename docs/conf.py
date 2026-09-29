@@ -43,6 +43,12 @@ def handle_utf16le_files(app, docname, source):
             source[0] = content
 
 def add_orphan_directive(app, docname, source):
+    # Never mark the root document as an orphan: it owns the top-level toctree.
+    # This also avoids prepending YAML frontmatter to ``index.rst`` (the only
+    # non-markdown source we process), where it would render as literal text.
+    if docname == app.config.root_doc:
+        return
+
     content = source[0]
     # Check if the document already has "orphan: true"
     if 'orphan: true' in content:
@@ -215,6 +221,13 @@ linkcheck_ignore = [
     r'https://([a-z]+\.)?khronos\.org/.*',
     r'https://docs\.vulkan\.org/.*',
     r'https?://[^/]+\.py(/.*)?$',
+    # "linkify" turns bare filenames mentioned in prose (for example
+    # "see grammar.md") into external links such as http://grammar.md.
+    # The optional (:\d+) covers "file.md:line" cross-references, where the
+    # line number is parsed as a port.
+    r'https?://[^/]+\.(md|rst|slang|h\.in|hpp|cpp|h)(:\d+)?(/.*)?$',
+    # Shader Playground no longer resolves.
+    r'https?://shader-playground\.timjones\.io.*',
 ]
 linkcheck_report_timeouts_as_broken = True
 
