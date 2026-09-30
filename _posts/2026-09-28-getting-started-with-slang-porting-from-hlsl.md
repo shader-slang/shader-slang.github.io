@@ -22,4 +22,8 @@ We will discuss challenges for HLSL-to-Slang porting, and the best practices we 
 
 Join us for discussion both during and after the webinar on Slang’s Discord server: https://khr.io/slangdiscord
 
+<a class="btn btn-primary" href="https://khronosgroup.zoom.us/webinar/register/WN_PAR40Q-nQ2aWrhXcfSWRSw#/registration" target="_blank">Register</a>
+
+**Speakers:**
+
 - Theresa Foley, NVIDIA
